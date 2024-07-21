@@ -6,7 +6,7 @@ return {
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
     },
-    config = function() require("go").setup() end,
+    config = { lsp_codelens = false },
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
   },

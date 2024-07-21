@@ -13,4 +13,5 @@ return {
   { "projekt0n/github-nvim-theme", priority = 1000 },
   { "EdenEast/nightfox.nvim", priority = 1010 },
   { "ellisonleao/gruvbox.nvim", priority = 1000 },
+  { "rebelot/kanagawa.nvim", priority = 1000 },
 }

@@ -43,7 +43,7 @@
     # Monitors
     # coordinates are easier to calculate with `wdisplays` gui tool
     output HDMI-A-2 mode 1920x1080@60Hz render_bit_depth 10 pos 0 170
-    output DP-1 mode 2560x1440@165Hz adaptive_sync on render_bit_depth 10 pos 1920 0
+    output DP-2 mode 2560x1440@165Hz adaptive_sync on render_bit_depth 10 pos 1920 0
 
     # Wallpaper
     set $wallpapers_landscape $HOME/Wallpapers/Landscape
@@ -56,6 +56,7 @@
 
     # XWayland
     for_window [shell="xwayland"] title_format "[XWayland] %title"
+    for_window [app_id="lxqt-policykit-agent"] floating enable
 
 #
 ### Idle configuration

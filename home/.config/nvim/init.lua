@@ -24,4 +24,4 @@ require("lazy").setup("keiqu.plugins", {
   dev = { path = "~/code" },
 })
 
-vim.cmd([[colorscheme catppuccin-macchiato]])
+vim.cmd([[colorscheme tokyonight-storm]])
