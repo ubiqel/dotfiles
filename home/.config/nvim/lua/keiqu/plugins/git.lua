@@ -77,6 +77,7 @@ return {
     init = function()
       local gitlab = require("gitlab")
 
+      vim.keymap.set("n", "glb", gitlab.choose_merge_request)
       vim.keymap.set("n", "glr", gitlab.review)
       vim.keymap.set("n", "gls", gitlab.summary)
       vim.keymap.set("n", "glA", gitlab.approve)
@@ -97,6 +98,9 @@ return {
       vim.keymap.set("n", "glp", gitlab.pipeline)
       vim.keymap.set("n", "glo", gitlab.open_in_browser)
       vim.keymap.set("n", "glM", gitlab.merge)
+      vim.keymap.set("n", "glu", gitlab.copy_mr_url)
+      vim.keymap.set("n", "glP", gitlab.publish_all_drafts)
+      vim.keymap.set("n", "glD", gitlab.toggle_draft_mode)
     end,
   },
   {
