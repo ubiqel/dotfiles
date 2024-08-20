@@ -8,7 +8,7 @@ return {
     keys = {
       { "J", "<cmd>TSJToggle<cr>" },
     },
-    opts = { use_default_keymaps = false, max_join_length = 120 },
+    opts = { use_default_keymaps = false, max_join_length = 140 },
   },
 
   "tpope/vim-commentary",
@@ -85,20 +85,15 @@ return {
 
   {
     "williamboman/mason.nvim",
-    opts = { ui = { icons = { package_installed = "✓", package_pending = "➜", package_uninstalled = "✗" } } },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
-    config = function() require("keiqu.lsp") end, -- TODO: move to plugins folder
+    opts = {
+      ui = {
+        icons = {
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗",
+        },
+      },
+    },
   },
   { "mbbill/undotree" },
-  {
-    "ThePrimeagen/refactoring.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = true,
-  },
 }

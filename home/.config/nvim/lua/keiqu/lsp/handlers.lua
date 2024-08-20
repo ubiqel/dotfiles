@@ -49,10 +49,13 @@ M.setup = function()
     width = 60,
     max_width = 120,
   })
+
+  vim.lsp.inlay_hint.enable(true)
 end
 
 local function add_keymaps(bufnr)
   local nmap = require("keiqu.keymaps").nbufmap
+  local vmap = require("keiqu.keymaps").vbufmap
   local imap = require("keiqu.keymaps").ibufmap
 
   -- TODO: use documentSymbol with telescope
@@ -68,7 +71,16 @@ local function add_keymaps(bufnr)
   imap(bufnr, "<C-s>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
 
   nmap(bufnr, "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>")
+
   nmap(bufnr, "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+  vmap(bufnr, "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+
+  nmap(bufnr, "<leader>cc", "<cmd>lua vim.lsp.codelens.run()<cr>")
+  vmap(bufnr, "<leader>cc", "<cmd>lua vim.lsp.codelens.run()<cr>")
+
+  nmap(bufnr, "<leader>cC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
+  vmap(bufnr, "<leader>cC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
+  -- { "<leader>cA", LazyVim.lsp.action.source, desc = "Source Action", has = "codeAction" },
 
   nmap(bufnr, "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<cr>")
   nmap(bufnr, "]e", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>")
@@ -76,6 +88,8 @@ local function add_keymaps(bufnr)
   nmap(bufnr, "<leader>ld", "<cmd>lua vim.diagnostic.open_float()<CR>")
 
   nmap(bufnr, "<leader>lr", "<cmd>LspRestart<CR>")
+
+  nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
 end
 
 M.on_attach = function(_, bufnr) add_keymaps(bufnr) end

@@ -2,7 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = { ":TSInstall all", ":TSUpdate all" },
-    dependencies = { "nvim-treesitter/playground" },
+    dependencies = { "nvim-treesitter/playground", "nvim-treesitter/nvim-treesitter-textobjects" },
     main = "nvim-treesitter.configs",
     opts = {
       highlight = {

@@ -42,4 +42,6 @@ M.nbufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("n", lhs, rhs, opts)
 
 M.ibufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("i", lhs, rhs, opts) end
 
+M.vbufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("v", lhs, rhs, opts) end
+
 return M
