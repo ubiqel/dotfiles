@@ -1,5 +1,9 @@
 return {
   {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    opts = { ensure_installed = { "gitlint" } },
+  },
+  {
     "lewis6991/gitsigns.nvim",
     opts = {
       current_line_blame_opts = {
@@ -63,7 +67,7 @@ return {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
       "sindrets/diffview.nvim",
-      "stevearc/dressing.nvim",
+      -- "stevearc/dressing.nvim",
       "nvim-tree/nvim-web-devicons",
     },
     enabled = true,

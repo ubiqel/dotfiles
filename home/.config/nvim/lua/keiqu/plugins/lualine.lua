@@ -1,11 +1,17 @@
 return {
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons", "rmagatti/auto-session" },
+    dependencies = { "nvim-tree/nvim-web-devicons", "rmagatti/auto-session", "chrisgrieser/nvim-recorder" },
     main = "lualine",
     opts = {
       ignore_focus = { "Outline" },
       sections = {
+        lualine_c = {
+          { function() return require("recorder").recordingStatus() end },
+        },
+        lualine_z = {
+          { function() return require("recorder").displaySlots() end },
+        },
         lualine_x = {
           {
             function() return require("copilot_status").status_string() end,
@@ -31,6 +37,22 @@ return {
         error = " ",
         warning = " ",
         loading = " ",
+      },
+    },
+  },
+
+  {
+    "chrisgrieser/nvim-recorder",
+    opts = {
+      mapping = {
+        startStopRecording = "q",
+        playMacro = "Q",
+        switchSlot = "<C-q>",
+        editMacro = "cq",
+        deleteAllMacros = "dq",
+        yankMacro = "yq",
+        -- ⚠️ this should be a string you don't use in insert mode during a macro
+        addBreakPoint = "##",
       },
     },
   },

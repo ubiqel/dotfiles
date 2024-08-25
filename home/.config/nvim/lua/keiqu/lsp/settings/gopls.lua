@@ -1,7 +1,6 @@
 return {
   settings = {
     gopls = {
-      gofumpt = true,
       codelenses = {
         gc_details = false,
         generate = true,
@@ -19,7 +18,7 @@ return {
         constantValues = true,
         functionTypeParameters = true,
         parameterNames = true,
-        rangeVariableTypes = true,
+        rangeVariableTypes = false,
       },
       analyses = {
         fieldalignment = false,
@@ -30,6 +29,7 @@ return {
         useany = true,
         shadow = true,
       },
+      gofumpt = true,
       usePlaceholders = true,
       completeUnimported = true,
       staticcheck = true,
