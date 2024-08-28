@@ -6,11 +6,16 @@ return {
     opts = {
       ignore_focus = { "Outline" },
       sections = {
-        lualine_c = {
-          { function() return require("recorder").recordingStatus() end },
-        },
-        lualine_z = {
+        lualine_a = { "mode" },
+        lualine_b = {
           { function() return require("recorder").displaySlots() end },
+          "branch",
+          "diff",
+          "diagnostics",
+        },
+        lualine_c = {
+          "filename",
+          { function() return require("recorder").recordingStatus() end },
         },
         lualine_x = {
           {
@@ -20,6 +25,12 @@ return {
           "encoding",
           "fileformat",
           "filetype",
+        },
+        lualine_y = {
+          "progress",
+        },
+        lualine_z = {
+          "location",
         },
       },
     },
