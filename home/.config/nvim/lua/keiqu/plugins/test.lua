@@ -3,18 +3,16 @@ return {
     "nvim-neotest/neotest",
     dependencies = { "nvim-neotest/nvim-nio" },
     opts = {
-      -- Can be a list of adapters like what neotest expects,
-      -- or a list of adapter names,
-      -- or a table of adapter names, mapped to adapter configs.
-      -- The adapter will then be automatically loaded with the config.
-      adapters = {},
-      -- Example for loading neotest-golang with a custom config
-      -- adapters = {
-      --   ["neotest-golang"] = {
-      --     go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
-      --     dap_go_enabled = true,
-      --   },
-      -- },
+      adapters = {
+        require("neotest-golang")({
+          testify_enabled = true,
+          go_test_args = {
+            "-v",
+            "-race",
+            "-coverprofile=" .. vim.fn.getcwd() .. "/cover.cov",
+          },
+        }),
+      },
       status = { virtual_text = true },
       output = { open_on_run = true },
       quickfix = {
@@ -105,6 +103,30 @@ return {
       { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
       { "<leader>tS", function() require("neotest").run.stop() end, desc = "Stop" },
       { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end, desc = "Toggle Watch" },
+    },
+  },
+  {
+    "andythigpen/nvim-coverage",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local coverage = require("coverage")
+
+      coverage.setup({
+        lang = {
+          go = {
+            auto_reload = true,
+            coverage_file = "cover.cov",
+          },
+        },
+      })
+
+      vim.api.nvim_create_autocmd({ "BufEnter" }, {
+        pattern = { "*.go" },
+        callback = function() coverage.load(false) end,
+      })
+    end,
+    keys = {
+      { "<leader>tc", function() require("coverage").toggle() end, desc = "Toggle Coverage" },
     },
   },
   {
