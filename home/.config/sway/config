@@ -14,7 +14,7 @@
     set $right l
 
     # Terminal Emulator
-    set $term foot
+    set $term kitty
 
     # Application launcher
     # set $menu bemenu-run -p bemenu -i --fixed-height --list 15 --center -W 0.2 -H 30 -B 3 -R 10 --cw 7 --ch 20 --fn "pango:DejaVu Sans Mono 14"
@@ -42,14 +42,14 @@
 
     # Monitors
     # coordinates are easier to calculate with `wdisplays` gui tool
-    output HDMI-A-2 mode 1920x1080@60Hz render_bit_depth 10 pos 0 170
-    output DP-2 mode 2560x1440@165Hz adaptive_sync on render_bit_depth 10 pos 1920 0
+    output HDMI-A-1 mode 1920x1080@60Hz render_bit_depth 10 pos 0 170
+    output DP-3 mode 2560x1440@165Hz adaptive_sync on render_bit_depth 10 pos 1920 0
 
     # Wallpaper
     set $wallpapers_landscape $HOME/Wallpapers/Landscape
 
-    output HDMI-A-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
-    output DP-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
+    output HDMI-A-1 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
+    output DP-3 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
 
     # for sharing screen with xdg-desktop-portal-wlr
     exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
