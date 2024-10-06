@@ -35,7 +35,7 @@ local options = {
   sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
   autowriteall = true,
   laststatus = 3,
-  textwidth = 120, -- for 'gq',
+  textwidth = 140, -- for 'gq',
   shell = "/bin/bash", -- TODO: for some reason fish shell throws error (smth like `/dev/tty not found`)
 }
 
@@ -58,14 +58,12 @@ local vmap = require("keiqu.keymaps").vmap
 local xmap = require("keiqu.keymaps").xmap
 local nvmap = require("keiqu.keymaps").nvmap
 
+-- our leader
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- our leader
+-- save
 nmap("<leader>w", ":w<cr>")
-
--- useful
-nmap("<leader><leader>x", ":source %<cr>")
 
 -- yanking and pasting to/from "system" register
 nvmap("<leader>y", '"+y')
@@ -88,18 +86,6 @@ nmap("<A-j>", ":resize +2<cr>")
 nmap("<A-h>", ":vertical resize -2<cr>")
 nmap("<A-l>", ":vertical resize +2<cr>")
 
--- buffers
-nmap("<leader>bd", ":bdelete<cr>")
-nmap("<leader>b[", ":bprevious<cr>")
-nmap("<leader>b]", ":bnext<cr>")
-
--- tabs
-nmap("<leader>tn", ":tabnew<cr>")
-nmap("<leader>tc", ":tabclose<cr>")
-nmap("<leader>to", ":tabonly<cr>")
-nmap("<leader>t[", ":tabprevious<cr>")
-nmap("<leader>t]", ":tabnext<cr>")
-
 -- telescope
 nmap("<leader>ff", ":Telescope find_files<cr>")
 nmap("<leader>fg", ":Telescope live_grep<cr>")
@@ -110,9 +96,6 @@ nmap("<leader>gb", ":Telescope git_branches<cr>")
 
 -- symbols outline
 nmap("<leader>ls", ":SymbolsOutline<cr>")
-
--- trouble menu
-nmap("<leader>lt", ":TroubleToggle<cr>")
 
 -- nvim tree
 nmap("<leader>q", ":NvimTreeToggle<cr>")

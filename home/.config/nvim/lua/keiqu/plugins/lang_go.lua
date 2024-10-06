@@ -22,9 +22,9 @@ return {
         nls.builtins.code_actions.impl,
 
         -- TODO: move to sep file
-        nls.builtins.diagnostics.dotenv_linter.with({
-          extra_args = { "-s", "UnorderedKey" },
-        }),
+        -- nls.builtins.diagnostics.dotenv_linter.with({ // --TODO: creates temp files (why?)
+        --   extra_args = { "-s", "UnorderedKey" },
+        -- }),
         nls.builtins.diagnostics.fish,
         nls.builtins.diagnostics.gitlint,
         nls.builtins.diagnostics.hadolint,

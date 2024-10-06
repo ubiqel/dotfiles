@@ -1,14 +1,19 @@
 return {
   {
     "nvim-neotest/neotest",
-    dependencies = { "nvim-neotest/nvim-nio" },
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-treesitter/nvim-treesitter",
+      "fredrikaverpil/neotest-golang",
+    },
     opts = {
       adapters = {
         require("neotest-golang")({
-          testify_enabled = true,
+          -- testify_enabled = true,
           go_test_args = {
             "-v",
             "-race",
+            "-parallel=2",
             "-coverprofile=" .. vim.fn.getcwd() .. "/cover.cov",
           },
         }),
@@ -93,9 +98,10 @@ return {
     end,
     -- stylua: ignore
     keys = {
+      -- TODO: add keybindings (but not starting from 't' - it's for tabs)
       {"<leader>t", "", desc = "+test"},
-      { "<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
-      { "<leader>tT", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run All Test Files" },
+      { "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
+      { "<leader>tA", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run All Test Files" },
       { "<leader>tr", function() require("neotest").run.run() end, desc = "Run Nearest" },
       { "<leader>tl", function() require("neotest").run.run_last() end, desc = "Run Last" },
       { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
@@ -124,6 +130,8 @@ return {
         pattern = { "*.go" },
         callback = function() coverage.load(false) end,
       })
+
+      return true
     end,
     keys = {
       { "<leader>tc", function() require("coverage").toggle() end, desc = "Toggle Coverage" },

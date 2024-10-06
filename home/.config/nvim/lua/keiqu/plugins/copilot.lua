@@ -24,10 +24,9 @@ return {
         auto_refresh = true,
       },
     },
-    init = function()
-      local nmap = require("keiqu.keymaps").nmap
-
-      nmap("<leader>cp", ":Copilot enable<CR>")
-    end,
+    keys = {
+      { "<leader>cp", ":Copilot enable<CR>", desc = "Enable Copilot" },
+    },
+    init = function() vim.g.copilot_proxy = os.getenv("COPILOT_PROXY_URL") end,
   },
 }
