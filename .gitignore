@@ -2,3 +2,5 @@ home/.config/nvim/plugin/packer_compiled.lua
 home/.config/tmux/plugins
 
 .config/pgcli/log
+
+copilot.fish

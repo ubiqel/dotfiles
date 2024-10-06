@@ -1,12 +1,15 @@
 function ollama
     switch $argv[1]
-        case up '*'
+        case up start
             docker start ollama
-            docker start ollama-webui
+            docker start open-webui
+        case stop
+            docker stop ollama
+            docker stop open-webui
         case down
             docker rm ollama
-            docker rm ollama-webui
-        case 'help'
-            echo 'Usage: ollama [up|down]'
+            docker rm open-webui
+        case help '*'
+            echo 'Usage: ollama [up|start|stop|down]'
     end
 end
