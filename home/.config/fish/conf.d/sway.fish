@@ -13,7 +13,7 @@ set -x WLR_NO_HARDWARE_CURSORS 1 # get back cursor!
 set -x MOZ_ENABLE_WAYLAND 1 # not required anymore (should default to wayland), but sometimes my firefox launches via xwayland (no idea why)
 
 # for electron
-set -x ELECTRON_OZONE_PLATFORM_HINT wayland
+set -x ELECTRON_OZONE_PLATFORM_HINT auto
 
 # xwayland
 set -x XWAYLAND_NO_GLAMOR 1 # remove screen flickering
