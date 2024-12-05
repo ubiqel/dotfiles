@@ -20,6 +20,6 @@ return {
     keys = {
       { "<leader>cp", ":Copilot! attach<CR>", desc = "Attach Copilot" },
     },
-    init = function() vim.g.copilot_proxy = os.getenv("COPILOT_PROXY_URL") end,
+    -- init = function() vim.g.copilot_proxy = os.getenv("COPILOT_PROXY_URL") end,
   },
 }
