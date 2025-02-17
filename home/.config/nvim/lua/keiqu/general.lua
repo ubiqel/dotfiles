@@ -35,7 +35,7 @@ local options = {
   sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
   autowriteall = true,
   laststatus = 3,
-  textwidth = 140, -- for 'gq',
+  textwidth = 0,
   shell = "/bin/bash", -- TODO: for some reason fish shell throws error (smth like `/dev/tty not found`)
 }
 
