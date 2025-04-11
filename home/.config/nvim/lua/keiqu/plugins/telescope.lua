@@ -33,6 +33,11 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "nvim-telescope/telescope-ui-select.nvim",
+      {
+        "nvim-telescope/telescope-frecency.nvim",
+        version = "*",
+        config = function() end,
+      },
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     config = function()
@@ -75,7 +80,18 @@ return {
         actions.close(prompt_bufnr)
       end
 
+      telescope.load_extension("frecency")
+
       telescope.setup({
+        externsions = {
+          frecency = {
+            auto_validate = true,
+            matcher = "fuzzy",
+            path_display = { "filename_first" },
+            hide_current_buffer = true,
+            ignore_patterns = { "*.git/*", "*/tmp/*", "term://*", "*.mypy_cache/*", "*.venv/*", "*venv/*", "*vendor/*" },
+          },
+        },
         defaults = {
           mappings = {
             i = {

@@ -1,6 +1,8 @@
+-- return {}
 return {
   {
     "zbirenbaum/copilot.lua",
+    commit = "56621aff787f78593cd2397234ec466a2d500ba0",
     opts = {
       filetypes = {
         go = true,
