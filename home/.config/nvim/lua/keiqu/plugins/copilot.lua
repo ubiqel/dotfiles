@@ -2,7 +2,8 @@
 return {
   {
     "zbirenbaum/copilot.lua",
-    commit = "56621aff787f78593cd2397234ec466a2d500ba0",
+    event = "InsertEnter",
+    cmd = "Copilot",
     opts = {
       filetypes = {
         go = true,
@@ -17,6 +18,13 @@ return {
       panel = {
         enabled = true,
         auto_refresh = true,
+        keymap = {
+          jump_prev = "[[",
+          jump_next = "]]",
+          accept = "<CR>",
+          refresh = "gr",
+          open = "<M-CR>",
+        },
       },
     },
     keys = {

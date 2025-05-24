@@ -43,13 +43,13 @@
     # Monitors
     # coordinates are easier to calculate with `wdisplays` gui tool
     output HDMI-A-1 mode 1920x1080@60Hz render_bit_depth 10 pos 0 170
-    output DP-3 mode 2560x1440@165Hz adaptive_sync on render_bit_depth 10 pos 1920 0
+    output DP-2 mode 2560x1440@165Hz adaptive_sync off render_bit_depth 10 pos 1920 0
 
     # Wallpaper
     set $wallpapers_landscape $HOME/Wallpapers/Landscape
 
     output HDMI-A-1 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
-    output DP-3 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
+    output DP-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
 
     # for sharing screen with xdg-desktop-portal-wlr
     exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
