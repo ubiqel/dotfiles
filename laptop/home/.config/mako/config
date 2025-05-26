@@ -1,0 +1,7 @@
+default-timeout=5000
+max-visible=3
+layer=overlay
+font=Helvetica Neue 12
+
+[urgency=high]
+default-timeout=0
