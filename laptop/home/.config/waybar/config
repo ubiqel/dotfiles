@@ -1,21 +1,22 @@
 {
-  "margin-top" : 5,
+    "margin-top" : 5,
+    "margin-bottom" : 5,
     "margin-left": 10,
     "margin-right": 10,
-    "height" : 30,
+    "height" : 20,
     "modules-left": [
-      "hyprland/window"
+      "hyprland/window",
     ],
     "modules-center": [
       "hyprland/workspaces",
     ],
     "modules-right": [
-      "language",
       "pulseaudio",
+      "bluetooth",
       "network",
-      "temperature",
       "battery",
       "clock",
+      "hyprland/language",
     ],
     "hyprland/window": {
       "format": "{}",
@@ -29,12 +30,11 @@
       "format": "{icon}",
       "on-click": "activate",
       "format-icons": {
-        "active": " ",
+        "active": "",
       },
       "sort-by-number": true,
       "persistent-workspaces": {
-        "*": 4, // 5 workspaces by default on every monitor
-        "HDMI-A-1": 3 // but only three on HDMI-A-1
+        "*": 10, // 5 workspaces by default on every monitor
       },
     },
     "clock": {
@@ -90,7 +90,49 @@
       "on-click": "pwvucontrol"
     },
     "hyprland/language": {
-        "format": "{}",
-        "keyboard-name": "at-translated-set-2-keyboard"
+        "format": "{short}",
     },
+    "bluetooth" : {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "on-click": "blueman-manager",
+    },
+    "custom/spotify": {
+        "exec": "/usr/bin/python3 /home/salkrr/.config/waybar/custom/mediaplayer.py --player spotify",
+        "format": "{}  ",
+        "return-type": "json",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 18,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-out",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 24
+            }
+        ]
+    },
+    "systemd-failed-units": {
+        "hide-on-ok": false,
+        "format": "✗ {nr_failed}",
+        "format-ok": "✓",
+        "system": true,
+        "user": true
+    }
 }

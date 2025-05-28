@@ -62,17 +62,16 @@ button:hover {
 #memory,
 #temperature,
 #network,
+#bluetooth,
 #pulseaudio {
   padding: 0 10px;
 }
 #language {
-    border-radius: 20px;
-    padding-left: 10px;
-    padding-right: 10px;
+  padding-left: 5px;
 }
 
 #language {
-  color: @sky;
+  color: @peach;
 }
 
 #pulseaudio {
@@ -97,6 +96,10 @@ button:hover {
 
 #window {
   color: @rosewater;
+}
+
+#bluetooth {
+  color: @sky
 }
 
 .modules-right,
