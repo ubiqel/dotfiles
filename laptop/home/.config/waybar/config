@@ -34,7 +34,7 @@
       },
       "sort-by-number": true,
       "persistent-workspaces": {
-        "*": 10, // 5 workspaces by default on every monitor
+        "*": 0,
       },
     },
     "clock": {
