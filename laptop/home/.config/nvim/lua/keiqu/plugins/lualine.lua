@@ -18,10 +18,10 @@ return {
           { function() return require("recorder").recordingStatus() end },
         },
         lualine_x = {
-          -- {
-          --   function() return require("copilot_status").status_string() end,
-          --   cnd = function() return require("copilot_status").enabled() end,
-          -- },
+          {
+            function() return require("copilot_status").status_string() end,
+            cnd = function() return require("copilot_status").enabled() end,
+          },
           "encoding",
           "fileformat",
           "filetype",
@@ -36,21 +36,21 @@ return {
     },
   },
 
-  -- {
-  --   "jonahgoldwastaken/copilot-status.nvim",
-  --   dependencies = { "zbirenbaum/copilot.lua" },
-  --   lazy = true,
-  --   event = "BufReadPost",
-  --   opts = {
-  --     icons = {
-  --       idle = " ",
-  --       offline = " ",
-  --       error = " ",
-  --       warning = " ",
-  --       loading = " ",
-  --     },
-  --   },
-  -- },
+  {
+    "jonahgoldwastaken/copilot-status.nvim",
+    dependencies = { "zbirenbaum/copilot.lua" },
+    lazy = true,
+    event = "BufReadPost",
+    opts = {
+      icons = {
+        idle = " ",
+        offline = " ",
+        error = " ",
+        warning = " ",
+        loading = " ",
+      },
+    },
+  },
 
   {
     "chrisgrieser/nvim-recorder",
