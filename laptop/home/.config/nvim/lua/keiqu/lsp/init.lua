@@ -4,7 +4,24 @@ if not lspconfig_ok then
   return
 end
 
-local servers = { "gopls", "basedpyright", "lua_ls", "bashls", "vtsls", "helm_ls", "jdtls", "templ", "html", "htmx", "yamlls", "clangd" }
+local defaults = require("keiqu.lsp.defaults")
+defaults.setup()
+
+local servers = {
+  "gopls",
+  "basedpyright",
+  "lua_ls",
+  "bashls",
+  "vtsls",
+  "helm_ls",
+  "jdtls",
+  "templ",
+  "html",
+  "htmx",
+  "yamlls",
+  "clangd",
+  "plantuml_lsp",
+}
 
 local handlers = require("keiqu.lsp.handlers")
 handlers.setup()
