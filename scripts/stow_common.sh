@@ -4,4 +4,3 @@ set SCRIPT_DIR (dirname (realpath (status -f)))
 set STOW_DIR (dirname $SCRIPT_DIR)
 
 stow --adopt -d $STOW_DIR/common -t $HOME -v home
-stow --adopt -d $STOW_DIR/laptop -t $HOME -v home
