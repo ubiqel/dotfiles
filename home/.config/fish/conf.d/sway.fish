@@ -1,6 +1,10 @@
 # get pci card num (because it may change on restart)
 # set val $(ls -l /dev/dri/by-path/ | grep 'pci.*card' | rev | cut -c 1)
 
+set -x XDG_CURRENT_DESKTOP sway
+
+set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/keyring/ssh
+
 # Using right videocard
 set -x WLR_DRM_DEVICES /dev/dri/card0
 
