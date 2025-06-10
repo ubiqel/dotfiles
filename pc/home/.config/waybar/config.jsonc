@@ -10,15 +10,38 @@
     "modules-center": [
       "hyprland/workspaces",
     ],
+    // "modules-right": [
+    //   "pulseaudio",
+    //   "bluetooth",
+    //   "network",
+    //   "battery",
+    //   "clock",
+    //   "hyprland/language",
+    //   "tray"
+    // ],
     "modules-right": [
-      "pulseaudio",
-      "bluetooth",
-      "network",
-      "battery",
-      "clock",
-      "hyprland/language",
-      "tray"
+      "group/system-indicators",
+      "group/tray-group"
     ],
+
+    "group/system-indicators": {
+      "orientation": "horizontal",
+      "modules": [
+        "pulseaudio",
+        "bluetooth",
+        "network",
+        "clock",
+        "hyprland/language"
+      ]
+    },
+
+    "group/tray-group": {
+      "orientation": "horizontal",
+      "modules": [
+        "tray"
+      ]
+    },
+
     "hyprland/window": {
       "format": "{}",
       "max-length": 35,
@@ -97,7 +120,7 @@
         "format": " {status}",
         "format-connected": " {device_alias}",
         "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        "on-click": "blueman-manager",
+        "on-click": "overskride",
     },
     "privacy": {
         "icon-spacing": 4,
@@ -127,5 +150,11 @@
         "format-ok": "✓",
         "system": true,
         "user": true
+    },
+    "tray": {
+      "icon-size": 18,
+      "spacing": 8,
+      "show-passive-items": false,
+      "format": "{icon}"
     }
 }
