@@ -2,11 +2,6 @@
 
 set -e
 
-echo "CRON RUN >>> $(date)" >> /tmp/git_sync_cron_debug.log
-echo "Remote URL: $(git -C $1 remote get-url origin)" >> /tmp/git_sync_cron_debug.log
-env >> /tmp/git_sync_cron_debug.log
-cat /tmp/git_sync_cron_debug.log
-
 cd $1
 
 # Check for local changes (unstaged, staged, untracked)
