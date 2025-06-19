@@ -14,7 +14,7 @@ return {
   "tpope/vim-commentary",
   "tpope/vim-surround",
   "tpope/vim-repeat",
-  "psliwka/vim-smoothie",
+  -- "psliwka/vim-smoothie",
   {
     "windwp/nvim-autopairs",
     config = true,

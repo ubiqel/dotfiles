@@ -10,10 +10,11 @@ return {
       adapters = {
         require("neotest-golang")({
           -- testify_enabled = true,
+          runner = "gotestsum",
           go_test_args = {
             "-v",
             "-race",
-            "-parallel=2",
+            "-parallel=4",
             "-coverprofile=" .. vim.fn.getcwd() .. "/cover.cov",
           },
         }),

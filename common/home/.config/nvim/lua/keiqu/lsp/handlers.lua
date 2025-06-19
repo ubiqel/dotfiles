@@ -92,7 +92,23 @@ local function add_keymaps(bufnr)
   nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
 end
 
-M.on_attach = function(_, bufnr) add_keymaps(bufnr) end
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LspAttached",
+  once = true,
+  callback = vim.lsp.codelens.refresh,
+})
+
+M.on_attach = function(_, bufnr)
+  add_keymaps(bufnr)
+
+  -- refresh codelens on TextChanged and InsertLeave as well
+  vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
+    buffer = bufnr,
+    callback = vim.lsp.codelens.refresh,
+  })
+
+  vim.api.nvim_exec_autocmds("User", { pattern = "LspAttached" })
+end
 
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true

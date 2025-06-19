@@ -1,4 +1,3 @@
--- return {}
 return {
   {
     "zbirenbaum/copilot.lua",
@@ -14,6 +13,9 @@ return {
       suggestion = {
         enabled = true,
         auto_trigger = true,
+        keymap = {
+          accept = "<M-l>",
+        },
       },
       panel = {
         enabled = true,

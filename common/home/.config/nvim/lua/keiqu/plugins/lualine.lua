@@ -56,9 +56,9 @@ return {
     "chrisgrieser/nvim-recorder",
     opts = {
       mapping = {
-        startStopRecording = "q",
+        startStopRecording = "<C-r>",
         playMacro = "Q",
-        switchSlot = "<C-q>",
+        switchSlot = "<C-Q>",
         editMacro = "cq",
         deleteAllMacros = "dq",
         yankMacro = "yq",

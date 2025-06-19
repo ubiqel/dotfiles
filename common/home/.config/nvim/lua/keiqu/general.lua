@@ -94,6 +94,7 @@ nmap(
 nmap("<leader>fg", ":Telescope live_grep<cr>")
 nmap("<leader>fb", ":Telescope buffers<cr>")
 nmap("<leader>fh", ":Telescope help_tags<cr>")
+nmap("<leader>fs", ":lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<cr>")
 nmap("<leader>gs", ":Telescope git_status<cr>")
 nmap("<leader>gb", ":Telescope git_branches<cr>")
 
