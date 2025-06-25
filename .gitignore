@@ -1,5 +1,8 @@
 home/.config/nvim/plugin/packer_compiled.lua
 home/.config/tmux/plugins
+**/tmux/plugins
+**/pgcli/history
+**/pgcli/log
 
 .config/pgcli/log
 
