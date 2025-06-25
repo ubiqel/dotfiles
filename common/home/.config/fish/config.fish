@@ -11,7 +11,18 @@ if status is-interactive
 
     set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/ssh-agent.socket
 
+    # set -x LUA_PATH "$HOME/.luarocks/lib/lua/5.1/?.lua;$HOME/.luarocks/lib/lua/5.1/?.so"
+
     eval "$(/opt/homebrew/bin/brew shellenv)"
+end
+
+if test -z "$SSH_ENV"
+    set -xg SSH_ENV $HOME/.ssh/environment
+end
+
+
+if not __ssh_agent_is_started
+    __ssh_agent_start
 end
 
 # Added by OrbStack: command-line tools and integration

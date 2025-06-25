@@ -15,9 +15,9 @@
     dft = difftool
 
 [includeIf "gitdir:~/projects/"]
-    path = ~/projects/.gitconfig
-[includeIf "gitdir:~/work/"]
-    path = ~/work/.gitconfig
+    path = ~/projects/personal/.gitconfig
+[includeIf "gitdir:~/projects/work/"]
+    path = ~/projects/work/.gitconfig
 [credential "https://github.com"]
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]

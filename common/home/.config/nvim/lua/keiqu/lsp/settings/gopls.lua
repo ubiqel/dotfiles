@@ -12,11 +12,11 @@ return {
         vendor = true,
       },
       hints = {
-        assignVariableTypes = true,
+        assignVariableTypes = false,
         compositeLiteralFields = true,
         compositeLiteralTypes = true,
         constantValues = true,
-        functionTypeParameters = true,
+        functionTypeParameters = false,
         parameterNames = true,
         rangeVariableTypes = true,
       },

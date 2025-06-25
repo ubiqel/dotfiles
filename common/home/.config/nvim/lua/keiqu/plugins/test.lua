@@ -9,8 +9,8 @@ return {
     opts = {
       adapters = {
         require("neotest-golang")({
-          -- testify_enabled = true,
-          runner = "gotestsum",
+          testify_enabled = true,
+          runner = "go",
           go_test_args = {
             "-v",
             "-race",

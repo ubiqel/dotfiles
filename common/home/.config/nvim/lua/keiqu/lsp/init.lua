@@ -7,6 +7,8 @@ end
 local defaults = require("keiqu.lsp.defaults")
 defaults.setup()
 
+vim.lsp.enable("kotlin_lsp")
+
 local servers = {
   "gopls",
   "basedpyright",
@@ -21,6 +23,9 @@ local servers = {
   "yamlls",
   "clangd",
   "plantuml_lsp",
+  -- "kotlin_lsp",
+  "gradle_ls",
+  "lemminx",
 }
 
 local handlers = require("keiqu.lsp.handlers")

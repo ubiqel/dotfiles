@@ -15,6 +15,7 @@ return {
           dlvToolPath = vim.fn.exepath("dlv"),
         },
       }
+      dap.defaults.fallback.terminal_win_cmd = "50vsplit new"
 
       vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
@@ -46,72 +47,83 @@ return {
     init = function() nmap("<leader>dt", ":lua require('dap-go').debug_test()<CR>") end,
   },
 
+  -- {
+  --   "rcarriga/nvim-dap-ui",
+  --   dependencies = { "mfussenegger/nvim-dap" },
+  --   config = function()
+  --     local dap, dapui = require("dap"), require("dapui")
+
+  --     dapui.setup({
+  --       layouts = {
+  --         {
+  --           elements = {
+  --             {
+  --               id = "scopes",
+  --               size = 0.25,
+  --             },
+  --             {
+  --               id = "breakpoints",
+  --               size = 0.25,
+  --             },
+  --             {
+  --               id = "stacks",
+  --               size = 0.25,
+  --             },
+  --             {
+  --               id = "watches",
+  --               size = 0.25,
+  --             },
+  --           },
+  --           position = "left",
+  --           size = 40,
+  --         },
+  --         {
+  --           elements = {
+  --             {
+  --               id = "console",
+  --               size = 0.5,
+  --             },
+  --             {
+  --               id = "repl",
+  --               size = 0.5,
+  --             },
+  --           },
+  --           position = "bottom",
+  --           size = 10,
+  --         },
+  --       },
+  --       mappings = {
+  --         edit = "e",
+  --         expand = { "<CR>", "o" },
+  --         open = "i",
+  --         remove = "d",
+  --         repl = "r",
+  --         toggle = "t",
+  --       },
+  --     })
+
+  --     dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+  --     dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+  --     dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
+
+  --     nmap("<leader>do", function() dapui.toggle() end)
+  --   end,
+  -- },
   {
-    "rcarriga/nvim-dap-ui",
+    "igorlfs/nvim-dap-view",
     dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      local dap, dapui = require("dap"), require("dapui")
-
-      dapui.setup({
-        layouts = {
-          {
-            elements = {
-              {
-                id = "scopes",
-                size = 0.25,
-              },
-              {
-                id = "breakpoints",
-                size = 0.25,
-              },
-              {
-                id = "stacks",
-                size = 0.25,
-              },
-              {
-                id = "watches",
-                size = 0.25,
-              },
-            },
-            position = "left",
-            size = 40,
-          },
-          {
-            elements = {
-              {
-                id = "console",
-                size = 0.5,
-              },
-              {
-                id = "repl",
-                size = 0.5,
-              },
-            },
-            position = "bottom",
-            size = 10,
-          },
-        },
-        mappings = {
-          edit = "e",
-          expand = { "<CR>", "o" },
-          open = "i",
-          remove = "d",
-          repl = "r",
-          toggle = "t",
-        },
-      })
-
-      dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
-      dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
-      dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
-
-      nmap("<leader>do", function() dapui.toggle() end)
+    opts = {},
+    init = function()
+      local dap, dv = require("dap"), require("dap-view")
+      dap.listeners.before.attach["dap-view-config"] = function() dv.open() end
+      dap.listeners.before.launch["dap-view-config"] = function() dv.open() end
+      dap.listeners.before.event_terminated["dap-view-config"] = function() dv.close() end
+      dap.listeners.before.event_exited["dap-view-config"] = function() dv.close() end
     end,
   },
-
   {
     "theHamsta/nvim-dap-virtual-text",
     dependencies = { "mfussenegger/nvim-dap" },
-    config = true,
+    config = false,
   },
 }
