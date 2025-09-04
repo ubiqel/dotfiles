@@ -20,7 +20,7 @@ local servers = {
   "templ",
   "html",
   "htmx",
-  "yamlls",
+  -- "yamlls",
   "clangd",
   "plantuml_lsp",
   -- "kotlin_lsp",

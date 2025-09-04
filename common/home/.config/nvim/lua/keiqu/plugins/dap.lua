@@ -6,6 +6,7 @@ return {
     config = function()
       local dap = require("dap")
 
+      dap.defaults.fallback.terminal_win_cmd = "tabnew"
       dap.configurations.go = {
         {
           type = "go",

@@ -14,4 +14,5 @@ return {
   { "EdenEast/nightfox.nvim", priority = 1010 },
   { "ellisonleao/gruvbox.nvim", priority = 1000 },
   { "rebelot/kanagawa.nvim", priority = 1000 },
+  { "rose-pine/neovim", name = "rose-pine" },
 }

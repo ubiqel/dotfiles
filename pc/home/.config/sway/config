@@ -14,7 +14,7 @@
     set $right l
 
     # Terminal Emulator
-    set $term kitty
+    set $term ghostty
 
     # Application launcher
     # set $menu bemenu-run -p bemenu -i --fixed-height --list 15 --center -W 0.2 -H 30 -B 3 -R 10 --cw 7 --ch 20 --fn "pango:DejaVu Sans Mono 14"
@@ -128,7 +128,7 @@
     bindsym --to-code $mod+Ctrl+q exec wkill.sh
 
     # Start your launcher
-    bindsym --to-code $mod+d exec $menu
+    bindsym --to-code Ctrl+Space exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.

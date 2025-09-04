@@ -18,8 +18,11 @@ return {
     opts = function(_, opts)
       local nls = require("null-ls")
       opts.sources = vim.list_extend(opts.sources or {}, {
+        -- golang
         nls.builtins.code_actions.gomodifytags,
         nls.builtins.code_actions.impl,
+
+        nls.builtins.code_actions.refactoring,
 
         -- TODO: move to sep file
         -- nls.builtins.diagnostics.dotenv_linter.with({ // --TODO: creates temp files (why?)
@@ -31,6 +34,8 @@ return {
         nls.builtins.diagnostics.mypy,
         nls.builtins.formatting.fish_indent,
       })
+
+      nls.setup(opts)
 
       -- local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
       -- opts.on_attach = function(client, bufnr)

@@ -54,9 +54,13 @@ return {
 
   {
     "chrisgrieser/nvim-recorder",
+    init = function()
+      -- Unbind 'q' button in normal mode to avoid conflicts with the plugin like nnoremap q <Nop>
+      vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true })
+    end,
     opts = {
       mapping = {
-        startStopRecording = "<C-r>",
+        startStopRecording = "<C-q>",
         playMacro = "Q",
         switchSlot = "<C-Q>",
         editMacro = "cq",

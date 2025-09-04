@@ -13,12 +13,12 @@ return {
       },
       hints = {
         assignVariableTypes = false,
-        compositeLiteralFields = true,
+        compositeLiteralFields = false,
         compositeLiteralTypes = true,
         constantValues = true,
         functionTypeParameters = false,
-        parameterNames = true,
-        rangeVariableTypes = true,
+        parameterNames = false,
+        rangeVariableTypes = false,
       },
       analyses = {
         fieldalignment = false,

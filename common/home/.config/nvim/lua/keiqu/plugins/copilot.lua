@@ -43,10 +43,13 @@ return {
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
+    -- "deathbeam/CopilotChat.nvim",
     dependencies = {
       { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+      { "ravitemer/mcphub.nvim" },
     },
+    -- branch = "tools",
     build = "make tiktoken", -- Only on MacOS or Linux
     config = function()
       local chat = require("CopilotChat")
@@ -79,12 +82,12 @@ Always end with:
       end
 
       chat.setup({
-        model = "claude-3.7-sonnet",
+        model = "claude-sonnet-4",
         temperature = 0.3,
         -- question_header = " " .. icons.ui.User .. " ",
         -- answer_header = " " .. icons.ui.Bot .. " ",
         -- error_header = "> " .. icons.diagnostics.Warn .. " ",
-        sticky = { "#buffers", "#filenames" },
+        sticky = { "$claude-sonnet-4", "#buffers" },
         proxy = proxy,
 
         mappings = {
@@ -178,55 +181,6 @@ Always end with:
               }
             end,
           },
-
-          vectorspace = {
-            description = "Semantic search through workspace using vector embeddings. Find relevant code with natural language queries.",
-
-            schema = {
-              type = "object",
-              required = { "query" },
-              properties = {
-                query = {
-                  type = "string",
-                  description = "Natural language query to find relevant code.",
-                },
-                max = {
-                  type = "integer",
-                  description = "Maximum number of results to return.",
-                  default = 10,
-                },
-              },
-            },
-
-            resolve = function(input, source, prompt)
-              local inputstr = prompt
-              local inputMax
-              if input then
-                inputstr = input.query
-                inputMax = input.max
-              end
-
-              local embeddings = cutils.curl_post("http://localhost:8000/query", {
-                json_request = true,
-                json_response = true,
-                body = {
-                  dir = source.cwd(),
-                  text = inputstr,
-                  max = inputMax,
-                },
-              }).body
-
-              cutils.schedule_main()
-              return vim
-                .iter(embeddings)
-                :map(function(embedding)
-                  embedding.filetype = cutils.filetype(embedding.filename)
-                  return embedding
-                end)
-                :filter(function(embedding) return embedding.filetype end)
-                :totable()
-            end,
-          },
         },
       })
 
@@ -245,6 +199,102 @@ Always end with:
           end
         end)
       end, { desc = "AI Question" })
+
+      local mcp = require("mcphub")
+      mcp.on({ "servers_updated", "tool_list_changed", "resource_list_changed" }, function()
+        local hub = mcp.get_hub_instance()
+        if not hub then
+          return
+        end
+
+        local async = require("plenary.async")
+        local call_tool = async.wrap(function(server, tool, input, callback)
+          hub:call_tool(server, tool, input, {
+            callback = function(res, err) callback(res, err) end,
+          })
+        end, 4)
+
+        local access_resource = async.wrap(function(server, uri, callback)
+          hub:access_resource(server, uri, {
+            callback = function(res, err) callback(res, err) end,
+          })
+        end, 3)
+
+        for name, tool in pairs(chat.config.functions) do
+          if tool.id and tool.id:sub(1, 3) == "mcp" then
+            chat.config.functions[name] = nil
+          end
+        end
+        local resources = hub:get_resources()
+        for _, resource in ipairs(resources) do
+          local name = resource.name:lower():gsub(" ", "_"):gsub(":", "")
+          chat.config.functions[name] = {
+            id = "mcp:" .. resource.server_name .. ":" .. name,
+            uri = resource.uri,
+            description = type(resource.description) == "string" and resource.description or "",
+            resolve = function()
+              local res, err = access_resource(resource.server_name, resource.uri)
+              if err then
+                error(err)
+              end
+
+              res = res or {}
+              local result = res.result or {}
+              local content = result.contents or {}
+              local out = {}
+
+              for _, message in ipairs(content) do
+                if message.text then
+                  table.insert(out, {
+                    uri = message.uri,
+                    data = message.text,
+                    mimetype = message.mimeType,
+                  })
+                end
+              end
+
+              return out
+            end,
+          }
+        end
+
+        local tools = hub:get_tools()
+        for _, tool in ipairs(tools) do
+          chat.config.functions[tool.name] = {
+            id = "mcp:" .. tool.server_name .. ":" .. tool.name,
+            group = tool.server_name,
+            description = tool.description,
+            schema = tool.inputSchema,
+            resolve = function(input)
+              local res, err = call_tool(tool.server_name, tool.name, input)
+              if err then
+                error(err)
+              end
+
+              res = res or {}
+              local result = res.result or {}
+              local content = result.content or {}
+              local out = {}
+
+              for _, message in ipairs(content) do
+                if message.type == "text" then
+                  table.insert(out, {
+                    data = message.text,
+                  })
+                elseif message.type == "resource" and message.resource and message.resource.text then
+                  table.insert(out, {
+                    uri = message.resource.uri,
+                    data = message.resource.text,
+                    mimetype = message.resource.mimeType,
+                  })
+                end
+              end
+
+              return out
+            end,
+          }
+        end
+      end)
     end,
   },
 }

@@ -30,11 +30,6 @@ return {
         load_on_setup = true,
       },
     },
-    init = function()
-      vim.keymap.set("n", "<leader>qs", require("auto-session.session-lens").search_session, {
-        noremap = true,
-      })
-    end,
   },
   { "simrat39/symbols-outline.nvim", config = true },
   {

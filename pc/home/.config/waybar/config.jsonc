@@ -5,10 +5,10 @@
     "margin-right": 10,
     "height" : 20,
     "modules-left": [
-      "hyprland/window",
+      "sway/window",
     ],
     "modules-center": [
-      "hyprland/workspaces",
+      "sway/workspaces",
     ],
     // "modules-right": [
     //   "pulseaudio",
@@ -31,7 +31,7 @@
         "bluetooth",
         "network",
         "clock",
-        "hyprland/language"
+        "sway/language"
       ]
     },
 
@@ -42,7 +42,7 @@
       ]
     },
 
-    "hyprland/window": {
+    "sway/window": {
       "format": "{}",
       "max-length": 35,
       "rewrite": {
@@ -50,16 +50,13 @@
       },
       "separate-outputs": true,
     },
-    "hyprland/workspaces": {
+    "sway/workspaces": {
       "format": "{icon}",
       "on-click": "activate",
       "format-icons": {
         "active": "",
       },
       "sort-by-number": true,
-      "persistent-workspaces": {
-        "*": 0,
-      },
     },
     "clock": {
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",

@@ -141,6 +141,8 @@ return {
               "-E",
               ".mypy_cache",
               "--no-ignore-vcs",
+              "-i",
+              "-g",
             },
           },
           buffers = {
