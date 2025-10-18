@@ -4,6 +4,8 @@ if not lspconfig_ok then
   return
 end
 
+-- local lspconfig = vim.lsp.config
+
 local defaults = require("keiqu.lsp.defaults")
 defaults.setup()
 

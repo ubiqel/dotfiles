@@ -4,18 +4,22 @@ return {
     dependencies = {
       "nvim-neotest/nvim-nio",
       "nvim-treesitter/nvim-treesitter",
-      "fredrikaverpil/neotest-golang",
+      { "fredrikaverpil/neotest-golang", version = "*" },
     },
     opts = {
       adapters = {
         require("neotest-golang")({
           testify_enabled = true,
-          runner = "go",
+          runner = "gotestsum",
           go_test_args = {
             "-v",
             "-race",
             "-parallel=4",
-            "-coverprofile=" .. vim.fn.getcwd() .. "/cover.cov",
+            "-count=1",
+            -- "-coverpkg=all",
+            "-coverprofile="
+              .. vim.fn.getcwd()
+              .. "/cover.cov",
           },
         }),
       },
