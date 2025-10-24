@@ -87,9 +87,13 @@ nmap("<A-h>", ":vertical resize -2<cr>")
 nmap("<A-l>", ":vertical resize +2<cr>")
 
 -- telescope
+-- nmap(
+--   "<leader>ff",
+--   ':Telescope frecency workspace=CWD theme=dropdown previewer=false path_display={"filename_first"}<cr>'
+-- )
 nmap(
   "<leader>ff",
-  ':Telescope frecency workspace=CWD theme=dropdown previewer=false path_display={"filename_first"}<cr>'
+  ':Telescope find_files workspace=CWD theme=dropdown previewer=false path_display={"filename_first"}<cr>'
 )
 nmap("<leader>fg", ":Telescope live_grep<cr>")
 nmap("<leader>fb", ":Telescope buffers<cr>")

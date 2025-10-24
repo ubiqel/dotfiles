@@ -87,7 +87,7 @@ Always end with:
         -- question_header = " " .. icons.ui.User .. " ",
         -- answer_header = " " .. icons.ui.Bot .. " ",
         -- error_header = "> " .. icons.diagnostics.Warn .. " ",
-        sticky = { "$claude-sonnet-4", "#buffers" },
+        sticky = { "$claude-sonnet-4.5", "@copilot", "@neovim", "#buffers:listed" },
         proxy = proxy,
 
         mappings = {

@@ -2,8 +2,13 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = { ":TSInstall all", ":TSUpdate all" },
-    dependencies = { "nvim-treesitter/playground", "nvim-treesitter/nvim-treesitter-textobjects" },
-    main = "nvim-treesitter.configs",
+    branch = "main",
+    dependencies = {
+      -- "nvim-treesitter/playground",
+      -- "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+    -- main = "nvim-treesitter.configs",
+    lazy = false,
     opts = {
       highlight = {
         enable = true,
