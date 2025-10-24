@@ -6,21 +6,37 @@ if true # disable sway...
 
     set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/keyring/ssh
 
-# Using right videocard
+    # Using right videocard
     set -x WLR_DRM_DEVICES /dev/dri/card0
 
-# Making nvidia drivers work...
-# set -x WLR_RENDERER vulkan # remove screen flickering for Wayland apps
+    # https://github.com/swaywm/sway/issues/8854
+    # set -x WLR_SCENE_DISABLE_DIRECT_SCANOUT 1
+    # set -x WLR_DRM_NO_ATOMIC 1
+
+    # Making nvidia drivers work...
+    # set -x WLR_RENDERER vulkan # remove screen flickering for Wayland apps
     set -x WLR_RENDERER gles2 # remove screen flickering for Wayland apps
     set -x WLR_NO_HARDWARE_CURSORS 1 # get back cursor!
 
-# Firefox
+    # Firefox
     set -x MOZ_ENABLE_WAYLAND 1 # not required anymore (should default to wayland), but sometimes my firefox launches via xwayland (no idea why)
+    set -x MOZ_USE_XINPUT2 1
 
-# for electron
-    set -x ELECTRON_OZONE_PLATFORM_HINT auto
+    # General wayland environment variables
+    # set -x XDG_SESSION_TYPE wayland
+    # set -x QT_QPA_PLATFORM wayland
+    # set -x QT_WAYLAND_DISABLE_WINDOWDECORATION 2
 
-# xwayland
+    # OpenGL Variables
+    # set -x GBM_BACKEND nvidia-drm
+    # set -x __GL_GSYNC_ALLOWED 0
+    # set -x __GL_VRR_ALLOWED 0
+    # set -x __GLX_VENDOR_LIBRARY_NAME nvidia
+
+    # for electron
+    # set -x ELECTRON_OZONE_PLATFORM_HINT auto
+
+    # xwayland
     set -x XWAYLAND_NO_GLAMOR 1 # remove screen flickering
 
     set TTY1 (tty)
