@@ -232,6 +232,8 @@
 
     # Make the current focus fullscreen
     bindsym --to-code $mod+f fullscreen
+    # and remove Ctrl+Enter shortcut
+    bindsym Ctrl+Return nop
 
     # Toggle the current focus between tiling and floating mode
     bindsym --to-code $mod+Shift+space floating toggle
