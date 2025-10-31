@@ -82,7 +82,7 @@ Always end with:
       end
 
       chat.setup({
-        model = "claude-sonnet-4",
+        model = "gpt-5-mini",
         temperature = 0.3,
         -- question_header = " " .. icons.ui.User .. " ",
         -- answer_header = " " .. icons.ui.Bot .. " ",

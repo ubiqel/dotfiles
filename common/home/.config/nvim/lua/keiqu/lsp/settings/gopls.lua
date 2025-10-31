@@ -13,11 +13,11 @@ return {
       },
       hints = {
         assignVariableTypes = false,
-        compositeLiteralFields = false,
+        compositeLiteralFields = true,
         compositeLiteralTypes = true,
         constantValues = true,
         functionTypeParameters = false,
-        parameterNames = false,
+        parameterNames = true,
         rangeVariableTypes = false,
       },
       analyses = {
