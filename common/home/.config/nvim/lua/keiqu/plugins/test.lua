@@ -10,7 +10,7 @@ return {
       adapters = {
         require("neotest-golang")({
           testify_enabled = false,
-          runner = "go",
+          runner = "gotestsum",
           go_test_args = {
             "-v",
             -- "-race",
