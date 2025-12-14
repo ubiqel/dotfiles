@@ -4,9 +4,9 @@
     "margin-left": 10,
     "margin-right": 10,
     "height" : 20,
-    "modules-left": [
-      "sway/window",
-    ],
+    // "modules-left": [
+    //   "sway/window",
+    // ],
     "modules-center": [
       "sway/workspaces",
     ],

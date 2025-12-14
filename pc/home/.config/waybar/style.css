@@ -86,7 +86,7 @@ button:hover {
 }
 
 /* Modules styling for left and center */
-.modules-left,
+/* .modules-left, */
 .modules-center {
   background-color: @base;
   border-radius: 15px;
