@@ -53,15 +53,21 @@
     for_window [shell="xwayland"] title_format "[XWayland] %title"
     for_window [app_id="lxqt-policykit-agent"] floating enable
 
+    # Floating by default
+    for_window [class="Steam"] floating enable
+    for_window [class="^steam_app_.*"] floating enable
+
+    # Inhibitors
+    for_window [instance="steam_app_*"] inhibit_idle focus
 #
 ### Idle configuration
 #
     set $lock "swaylock -f -k --color 000000 --indicator-idle-visible"
 
     # stupidly hard command to lock screen only if no audio is playing (paused or there is no players)
-    exec_always swayidle -w \
-        timeout 600 'if playerctl status &>/dev/null; then [[ "$(playerctl status 2>/dev/null)" != "Playing" ]] && '$lock'; else '$lock'; fi' \
-        timeout 1200 'if playerctl status &>/dev/null; then [[ "$(playerctl status 2>/dev/null)" != "Playing" ]] && swaymsg "output * DPMS off"; else swaymsg "output * DPMS off"; fi' \
+    exec swayidle -w \
+        timeout 600 'playerctl status -a 2>/dev/null | grep -q "Playing" || $lock' \
+        timeout 1200 'playerctl status -a 2>/dev/null | grep -q "Playing" || swaymsg "output * DPMS off"' \
             resume 'swaymsg "output * DPMS on"'
 
     bindsym --to-code Ctrl+Alt+l exec $lock
@@ -84,8 +90,8 @@
 ### Audio
 #
     # Virtual speacker and mic for applying preprocessing
-    exec pactl load-module module-null-sink sink_name=Virtual-Speaker sink_properties=device.description=Virtual-Speaker
-    exec pactl load-module module-remap-source source_name=Remap-Source master=Virtual-Speaker.monitor
+    # exec pactl load-module module-null-sink sink_name=Virtual-Speaker sink_properties=device.description=Virtual-Speaker
+    # exec pactl load-module module-remap-source source_name=Remap-Source master=Virtual-Speaker.monitor
 #
 ### Control volume
 #

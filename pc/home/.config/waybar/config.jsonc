@@ -4,21 +4,9 @@
     "margin-left": 10,
     "margin-right": 10,
     "height" : 20,
-    // "modules-left": [
-    //   "sway/window",
-    // ],
     "modules-center": [
-      "sway/workspaces",
+      "sway/workspaces"
     ],
-    // "modules-right": [
-    //   "pulseaudio",
-    //   "bluetooth",
-    //   "network",
-    //   "battery",
-    //   "clock",
-    //   "hyprland/language",
-    //   "tray"
-    // ],
     "modules-right": [
       "group/system-indicators",
       "group/tray-group"
@@ -48,15 +36,15 @@
       "rewrite": {
         "": "Harsh"
       },
-      "separate-outputs": true,
+      "separate-outputs": true
     },
     "sway/workspaces": {
       "format": "{icon}",
       "on-click": "activate",
       "format-icons": {
-        "active": "",
+        "active": ""
       },
-      "sort-by-number": true,
+      "sort-by-number": true
     },
     "clock": {
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
@@ -110,14 +98,11 @@
       },
       "on-click": "pwvucontrol"
     },
-    "hyprland/language": {
-        "format": "{short}",
-    },
     "bluetooth" : {
         "format": " {status}",
         "format-connected": " {device_alias}",
         "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        "on-click": "blueberry",
+        "on-click": "blueberry"
     },
     "privacy": {
         "icon-spacing": 4,
