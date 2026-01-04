@@ -54,8 +54,12 @@
     for_window [app_id="lxqt-policykit-agent"] floating enable
 
     # Floating by default
-    for_window [class="Steam"] floating enable
+    for_window [class="steam"] floating enable
     for_window [class="^steam_app_.*"] floating enable
+    for_window [class="Godot"] floating enable
+    for_window [app_id="org.godotengine.Editor"] floating enable
+    for_window [app_id="org.godotengine.ProjectManager"] floating enable
+    for_window [app_id="nm-connection-editor"] floating enable
 
     # Inhibitors
     for_window [instance="steam_app_*"] inhibit_idle focus
