@@ -29,6 +29,8 @@ return {
         useany = true,
         shadow = false,
         ST1000 = false,
+        ST1001 = false, -- триггерится на dot imports
+        ST1003 = false, -- тригерится на код go-jet
       },
       gofumpt = true,
       usePlaceholders = false,
