@@ -1,300 +1,300 @@
 return {
-  {
-    "zbirenbaum/copilot.lua",
-    event = "InsertEnter",
-    cmd = "Copilot",
-    opts = {
-      filetypes = {
-        go = true,
-        lua = true,
-        python = true,
-        ["*"] = false,
-      },
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        keymap = {
-          accept = "<M-l>",
-        },
-      },
-      panel = {
-        enabled = true,
-        auto_refresh = true,
-        keymap = {
-          jump_prev = "[[",
-          jump_next = "]]",
-          accept = "<CR>",
-          refresh = "gr",
-          open = "<M-CR>",
-        },
-      },
-    },
-    keys = {
-      { "<leader>cp", ":Copilot! attach<CR>", desc = "Attach Copilot" },
-    },
-    init = function()
-      local proxy = nil
-      if os.getenv("COPILOT_PROXY_URL") then
-        proxy = os.getenv("COPILOT_PROXY_URL")
-      end
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   event = "InsertEnter",
+  --   cmd = "Copilot",
+  --   opts = {
+  --     filetypes = {
+  --       go = true,
+  --       lua = true,
+  --       python = true,
+  --       ["*"] = false,
+  --     },
+  --     suggestion = {
+  --       enabled = true,
+  --       auto_trigger = true,
+  --       keymap = {
+  --         accept = "<M-l>",
+  --       },
+  --     },
+  --     panel = {
+  --       enabled = true,
+  --       auto_refresh = true,
+  --       keymap = {
+  --         jump_prev = "[[",
+  --         jump_next = "]]",
+  --         accept = "<CR>",
+  --         refresh = "gr",
+  --         open = "<M-CR>",
+  --       },
+  --     },
+  --   },
+  --   keys = {
+  --     { "<leader>cp", ":Copilot! attach<CR>", desc = "Attach Copilot" },
+  --   },
+  --   init = function()
+  --     local proxy = nil
+  --     if os.getenv("COPILOT_PROXY_URL") then
+  --       proxy = os.getenv("COPILOT_PROXY_URL")
+  --     end
 
-      vim.g.copilot_proxy = proxy
-    end,
-  },
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    -- "deathbeam/CopilotChat.nvim",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" },
-      { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-      { "ravitemer/mcphub.nvim" },
-    },
-    -- branch = "tools",
-    build = "make tiktoken", -- Only on MacOS or Linux
-    config = function()
-      local chat = require("CopilotChat")
-      local prompts = require("CopilotChat.config.prompts")
-      local select = require("CopilotChat.select")
-      local cutils = require("CopilotChat.utils")
+  --     vim.g.copilot_proxy = proxy
+  --   end,
+  -- },
+  -- {
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   -- "deathbeam/CopilotChat.nvim",
+  --   dependencies = {
+  --     { "zbirenbaum/copilot.lua" },
+  --     { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+  --     { "ravitemer/mcphub.nvim" },
+  --   },
+  --   -- branch = "tools",
+  --   build = "make tiktoken", -- Only on MacOS or Linux
+  --   config = function()
+  --     local chat = require("CopilotChat")
+  --     local prompts = require("CopilotChat.config.prompts")
+  --     local select = require("CopilotChat.select")
+  --     local cutils = require("CopilotChat.utils")
 
-      local COPILOT_PLAN = [[
-You are a software architect and technical planner focused on clear, actionable development plans.
-]] .. prompts.COPILOT_BASE.system_prompt .. [[
+  --     local COPILOT_PLAN = [[
+  -- You are a software architect and technical planner focused on clear, actionable development plans.
+  -- ]] .. prompts.COPILOT_BASE.system_prompt .. [[
 
-When creating development plans:
-- Start with a high-level overview
-- Break down into concrete implementation steps
-- Identify potential challenges and their solutions
-- Consider architectural impacts
-- Note required dependencies or prerequisites
-- Estimate complexity and effort levels
-- Track confidence percentage (0-100%)
-- Format in markdown with clear sections
+  -- When creating development plans:
+  -- - Start with a high-level overview
+  -- - Break down into concrete implementation steps
+  -- - Identify potential challenges and their solutions
+  -- - Consider architectural impacts
+  -- - Note required dependencies or prerequisites
+  -- - Estimate complexity and effort levels
+  -- - Track confidence percentage (0-100%)
+  -- - Format in markdown with clear sections
 
-Always end with:
-"Current Confidence Level: X%"
-"Would you like to proceed with implementation?" (only if confidence >= 90%)
-]]
+  -- Always end with:
+  -- "Current Confidence Level: X%"
+  -- "Would you like to proceed with implementation?" (only if confidence >= 90%)
+  -- ]]
 
-      local proxy = nil
-      if os.getenv("COPILOT_PROXY_URL") then
-        proxy = os.getenv("COPILOT_PROXY_URL")
-      end
+  --     local proxy = nil
+  --     if os.getenv("COPILOT_PROXY_URL") then
+  --       proxy = os.getenv("COPILOT_PROXY_URL")
+  --     end
 
-      chat.setup({
-        model = "gpt-5-mini",
-        temperature = 0.3,
-        -- question_header = " " .. icons.ui.User .. " ",
-        -- answer_header = " " .. icons.ui.Bot .. " ",
-        -- error_header = "> " .. icons.diagnostics.Warn .. " ",
-        sticky = { "$claude-sonnet-4.5", "@copilot", "@neovim", "#buffers:listed" },
-        proxy = proxy,
+  --     chat.setup({
+  --       model = "gpt-5-mini",
+  --       temperature = 0.3,
+  --       -- question_header = " " .. icons.ui.User .. " ",
+  --       -- answer_header = " " .. icons.ui.Bot .. " ",
+  --       -- error_header = "> " .. icons.diagnostics.Warn .. " ",
+  --       sticky = { "$claude-sonnet-4.5", "@copilot", "@neovim", "#buffers:listed" },
+  --       proxy = proxy,
 
-        mappings = {
-          reset = false,
-          show_diff = {
-            full_diff = false,
-          },
-          complete = {
-            insert = "<M-l>",
-          },
-        },
+  --       mappings = {
+  --         reset = false,
+  --         show_diff = {
+  --           full_diff = false,
+  --         },
+  --         complete = {
+  --           insert = "<M-l>",
+  --         },
+  --       },
 
-        prompts = {
-          Explain = {
-            mapping = "<leader>ae",
-            description = "AI Explain",
-          },
-          Review = {
-            mapping = "<leader>ar",
-            description = "AI Review",
-          },
-          Tests = {
-            mapping = "<leader>at",
-            description = "AI Tests",
-          },
-          Fix = {
-            mapping = "<leader>af",
-            description = "AI Fix",
-          },
-          Optimize = {
-            mapping = "<leader>ao",
-            description = "AI Optimize",
-          },
-          Docs = {
-            mapping = "<leader>ad",
-            description = "AI Documentation",
-          },
-          Commit = {
-            mapping = "<leader>ac",
-            description = "AI Generate Commit",
-            -- selection = select.buffer,
-          },
-          Plan = {
-            prompt = "Create or update the development plan for the selected code. Focus on architecture, implementation steps, and potential challenges.",
-            system_prompt = COPILOT_PLAN,
-            context = "file:.copilot/plan.md",
-            progress = function() return false end,
-            callback = function(response, source)
-              chat.chat:append("Plan updated successfully!", source.winnr)
-              local plan_file = source.cwd() .. "/.copilot/plan.md"
-              local dir = vim.fn.fnamemodify(plan_file, ":h")
-              vim.fn.mkdir(dir, "p")
-              local file = io.open(plan_file, "w")
-              if file then
-                file:write(response)
-                file:close()
-              end
-            end,
-          },
-        },
+  --       prompts = {
+  --         Explain = {
+  --           mapping = "<leader>ae",
+  --           description = "AI Explain",
+  --         },
+  --         Review = {
+  --           mapping = "<leader>ar",
+  --           description = "AI Review",
+  --         },
+  --         Tests = {
+  --           mapping = "<leader>at",
+  --           description = "AI Tests",
+  --         },
+  --         Fix = {
+  --           mapping = "<leader>af",
+  --           description = "AI Fix",
+  --         },
+  --         Optimize = {
+  --           mapping = "<leader>ao",
+  --           description = "AI Optimize",
+  --         },
+  --         Docs = {
+  --           mapping = "<leader>ad",
+  --           description = "AI Documentation",
+  --         },
+  --         Commit = {
+  --           mapping = "<leader>ac",
+  --           description = "AI Generate Commit",
+  --           -- selection = select.buffer,
+  --         },
+  --         Plan = {
+  --           prompt = "Create or update the development plan for the selected code. Focus on architecture, implementation steps, and potential challenges.",
+  --           system_prompt = COPILOT_PLAN,
+  --           context = "file:.copilot/plan.md",
+  --           progress = function() return false end,
+  --           callback = function(response, source)
+  --             chat.chat:append("Plan updated successfully!", source.winnr)
+  --             local plan_file = source.cwd() .. "/.copilot/plan.md"
+  --             local dir = vim.fn.fnamemodify(plan_file, ":h")
+  --             vim.fn.mkdir(dir, "p")
+  --             local file = io.open(plan_file, "w")
+  --             if file then
+  --               file:write(response)
+  --               file:close()
+  --             end
+  --           end,
+  --         },
+  --       },
 
-        contexts = {
-          lsp_diagnostics = {
-            resolve = function()
-              local diagnostics = vim.diagnostic.get(nil, { severity = nil })
-              if vim.tbl_isempty(diagnostics) then
-                return { { content = "Without diagnostics.", filetype = "text" } }
-              end
+  --       contexts = {
+  --         lsp_diagnostics = {
+  --           resolve = function()
+  --             local diagnostics = vim.diagnostic.get(nil, { severity = nil })
+  --             if vim.tbl_isempty(diagnostics) then
+  --               return { { content = "Without diagnostics.", filetype = "text" } }
+  --             end
 
-              local lines = {}
-              for _, d in ipairs(diagnostics) do
-                table.insert(
-                  lines,
-                  string.format(
-                    "[%s] %s:%d:%d - %s",
-                    vim.diagnostic.severity[d.severity],
-                    vim.fn.bufname(d.bufnr),
-                    d.lnum + 1,
-                    d.col + 1,
-                    d.message
-                  )
-                )
-              end
+  --             local lines = {}
+  --             for _, d in ipairs(diagnostics) do
+  --               table.insert(
+  --                 lines,
+  --                 string.format(
+  --                   "[%s] %s:%d:%d - %s",
+  --                   vim.diagnostic.severity[d.severity],
+  --                   vim.fn.bufname(d.bufnr),
+  --                   d.lnum + 1,
+  --                   d.col + 1,
+  --                   d.message
+  --                 )
+  --               )
+  --             end
 
-              return {
-                {
-                  content = table.concat(lines, "\n"),
-                  filename = "lsp_diagnostics.txt",
-                  filetype = "text",
-                },
-              }
-            end,
-          },
-        },
-      })
+  --             return {
+  --               {
+  --                 content = table.concat(lines, "\n"),
+  --                 filename = "lsp_diagnostics.txt",
+  --                 filetype = "text",
+  --               },
+  --             }
+  --           end,
+  --         },
+  --       },
+  --     })
 
-      vim.keymap.set({ "n" }, "<leader>aa", chat.toggle, { desc = "AI Toggle" })
-      vim.keymap.set({ "v" }, "<leader>aa", chat.open, { desc = "AI Open" })
-      vim.keymap.set({ "n" }, "<leader>ax", chat.reset, { desc = "AI Reset" })
-      vim.keymap.set({ "n" }, "<leader>as", chat.stop, { desc = "AI Stop" })
-      vim.keymap.set({ "n" }, "<leader>am", chat.select_model, { desc = "AI Models" })
-      vim.keymap.set({ "n", "v" }, "<leader>ap", chat.select_prompt, { desc = "AI Prompts" })
-      vim.keymap.set({ "n", "v" }, "<leader>aq", function()
-        vim.ui.input({
-          prompt = "AI Question> ",
-        }, function(input)
-          if input ~= "" then
-            chat.ask(input)
-          end
-        end)
-      end, { desc = "AI Question" })
+  --     vim.keymap.set({ "n" }, "<leader>aa", chat.toggle, { desc = "AI Toggle" })
+  --     vim.keymap.set({ "v" }, "<leader>aa", chat.open, { desc = "AI Open" })
+  --     vim.keymap.set({ "n" }, "<leader>ax", chat.reset, { desc = "AI Reset" })
+  --     vim.keymap.set({ "n" }, "<leader>as", chat.stop, { desc = "AI Stop" })
+  --     vim.keymap.set({ "n" }, "<leader>am", chat.select_model, { desc = "AI Models" })
+  --     vim.keymap.set({ "n", "v" }, "<leader>ap", chat.select_prompt, { desc = "AI Prompts" })
+  --     vim.keymap.set({ "n", "v" }, "<leader>aq", function()
+  --       vim.ui.input({
+  --         prompt = "AI Question> ",
+  --       }, function(input)
+  --         if input ~= "" then
+  --           chat.ask(input)
+  --         end
+  --       end)
+  --     end, { desc = "AI Question" })
 
-      local mcp = require("mcphub")
-      mcp.on({ "servers_updated", "tool_list_changed", "resource_list_changed" }, function()
-        local hub = mcp.get_hub_instance()
-        if not hub then
-          return
-        end
+  --     local mcp = require("mcphub")
+  --     mcp.on({ "servers_updated", "tool_list_changed", "resource_list_changed" }, function()
+  --       local hub = mcp.get_hub_instance()
+  --       if not hub then
+  --         return
+  --       end
 
-        local async = require("plenary.async")
-        local call_tool = async.wrap(function(server, tool, input, callback)
-          hub:call_tool(server, tool, input, {
-            callback = function(res, err) callback(res, err) end,
-          })
-        end, 4)
+  --       local async = require("plenary.async")
+  --       local call_tool = async.wrap(function(server, tool, input, callback)
+  --         hub:call_tool(server, tool, input, {
+  --           callback = function(res, err) callback(res, err) end,
+  --         })
+  --       end, 4)
 
-        local access_resource = async.wrap(function(server, uri, callback)
-          hub:access_resource(server, uri, {
-            callback = function(res, err) callback(res, err) end,
-          })
-        end, 3)
+  --       local access_resource = async.wrap(function(server, uri, callback)
+  --         hub:access_resource(server, uri, {
+  --           callback = function(res, err) callback(res, err) end,
+  --         })
+  --       end, 3)
 
-        for name, tool in pairs(chat.config.functions) do
-          if tool.id and tool.id:sub(1, 3) == "mcp" then
-            chat.config.functions[name] = nil
-          end
-        end
-        local resources = hub:get_resources()
-        for _, resource in ipairs(resources) do
-          local name = resource.name:lower():gsub(" ", "_"):gsub(":", "")
-          chat.config.functions[name] = {
-            id = "mcp:" .. resource.server_name .. ":" .. name,
-            uri = resource.uri,
-            description = type(resource.description) == "string" and resource.description or "",
-            resolve = function()
-              local res, err = access_resource(resource.server_name, resource.uri)
-              if err then
-                error(err)
-              end
+  --       for name, tool in pairs(chat.config.functions) do
+  --         if tool.id and tool.id:sub(1, 3) == "mcp" then
+  --           chat.config.functions[name] = nil
+  --         end
+  --       end
+  --       local resources = hub:get_resources()
+  --       for _, resource in ipairs(resources) do
+  --         local name = resource.name:lower():gsub(" ", "_"):gsub(":", "")
+  --         chat.config.functions[name] = {
+  --           id = "mcp:" .. resource.server_name .. ":" .. name,
+  --           uri = resource.uri,
+  --           description = type(resource.description) == "string" and resource.description or "",
+  --           resolve = function()
+  --             local res, err = access_resource(resource.server_name, resource.uri)
+  --             if err then
+  --               error(err)
+  --             end
 
-              res = res or {}
-              local result = res.result or {}
-              local content = result.contents or {}
-              local out = {}
+  --             res = res or {}
+  --             local result = res.result or {}
+  --             local content = result.contents or {}
+  --             local out = {}
 
-              for _, message in ipairs(content) do
-                if message.text then
-                  table.insert(out, {
-                    uri = message.uri,
-                    data = message.text,
-                    mimetype = message.mimeType,
-                  })
-                end
-              end
+  --             for _, message in ipairs(content) do
+  --               if message.text then
+  --                 table.insert(out, {
+  --                   uri = message.uri,
+  --                   data = message.text,
+  --                   mimetype = message.mimeType,
+  --                 })
+  --               end
+  --             end
 
-              return out
-            end,
-          }
-        end
+  --             return out
+  --           end,
+  --         }
+  --       end
 
-        local tools = hub:get_tools()
-        for _, tool in ipairs(tools) do
-          chat.config.functions[tool.name] = {
-            id = "mcp:" .. tool.server_name .. ":" .. tool.name,
-            group = tool.server_name,
-            description = tool.description,
-            schema = tool.inputSchema,
-            resolve = function(input)
-              local res, err = call_tool(tool.server_name, tool.name, input)
-              if err then
-                error(err)
-              end
+  --       local tools = hub:get_tools()
+  --       for _, tool in ipairs(tools) do
+  --         chat.config.functions[tool.name] = {
+  --           id = "mcp:" .. tool.server_name .. ":" .. tool.name,
+  --           group = tool.server_name,
+  --           description = tool.description,
+  --           schema = tool.inputSchema,
+  --           resolve = function(input)
+  --             local res, err = call_tool(tool.server_name, tool.name, input)
+  --             if err then
+  --               error(err)
+  --             end
 
-              res = res or {}
-              local result = res.result or {}
-              local content = result.content or {}
-              local out = {}
+  --             res = res or {}
+  --             local result = res.result or {}
+  --             local content = result.content or {}
+  --             local out = {}
 
-              for _, message in ipairs(content) do
-                if message.type == "text" then
-                  table.insert(out, {
-                    data = message.text,
-                  })
-                elseif message.type == "resource" and message.resource and message.resource.text then
-                  table.insert(out, {
-                    uri = message.resource.uri,
-                    data = message.resource.text,
-                    mimetype = message.resource.mimeType,
-                  })
-                end
-              end
+  --             for _, message in ipairs(content) do
+  --               if message.type == "text" then
+  --                 table.insert(out, {
+  --                   data = message.text,
+  --                 })
+  --               elseif message.type == "resource" and message.resource and message.resource.text then
+  --                 table.insert(out, {
+  --                   uri = message.resource.uri,
+  --                   data = message.resource.text,
+  --                   mimetype = message.resource.mimeType,
+  --                 })
+  --               end
+  --             end
 
-              return out
-            end,
-          }
-        end
-      end)
-    end,
-  },
+  --             return out
+  --           end,
+  --         }
+  --       end
+  --     end)
+  --   end,
+  -- },
 }

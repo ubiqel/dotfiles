@@ -26,6 +26,7 @@ local servers = {
   "gradle_ls",
   "lemminx",
   "omnisharp",
+  "gdscript",
 }
 
 local handlers = require("keiqu.lsp.handlers")
