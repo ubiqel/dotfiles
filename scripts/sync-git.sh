@@ -18,7 +18,7 @@ BEHIND_COUNT=$(echo "$UPSTREAM_STATUS" | awk '{print $2}')
 if [ "$HAS_CHANGES" = true ]; then
     git add -A
     NOW=$(date '+%Y-%m-%d %H:%M')
-    git commit -m "Sync $NOW"
+    git commit --no-gpg-sign -m "Sync $NOW"
 fi
 
 # Always pull (rebasing)
