@@ -24,3 +24,5 @@
 	helper = !/usr/bin/gh auth git-credential
 [commit]
 	gpgsign = false
+[init]
+	defaultBranch = main
