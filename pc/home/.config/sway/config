@@ -66,15 +66,14 @@
 #
 ### Idle configuration
 #
-    set $lock "swaylock -f -k --color 000000 --indicator-idle-visible"
+    set $idle_script ~/.config/sway/idle_control.sh
 
-    # stupidly hard command to lock screen only if no audio is playing (paused or there is no players)
     exec swayidle -w \
-        timeout 600 'playerctl status -a 2>/dev/null | grep -q "Playing" || $lock' \
-        timeout 1200 'playerctl status -a 2>/dev/null | grep -q "Playing" || swaymsg "output * DPMS off"' \
-            resume 'swaymsg "output * DPMS on"'
+        timeout 600 '$idle_script lock-if-idle' \
+        timeout 1200 '$idle_script dpms-off-if-idle' \
+            resume '$idle_script dpms-on'
 
-    bindsym --to-code Ctrl+Alt+l exec $lock
+    bindsym --to-code Ctrl+Alt+l exec $idle_script lock
 #
 ### Input configuration
 #
