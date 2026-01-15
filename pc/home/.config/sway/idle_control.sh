@@ -25,6 +25,12 @@ case "$1" in
         exec swaymsg "output * dpms on"
         ;;
 
+    suspend-if-idle)
+        if ! is_playing; then
+            exec systemctl suspend
+        fi
+        ;;
+
     *)
         exit 1
         ;;
