@@ -43,7 +43,7 @@
     # Wallpaper
     set $wallpapers_landscape $HOME/Wallpapers/Landscape
 
-    # output HDMI-A-1 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
+    output DP-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
     output DP-3 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
 
     # for sharing screen with xdg-desktop-portal-wlr
@@ -68,12 +68,14 @@
 #
     set $idle_script ~/.config/sway/idle_control.sh
 
+    exec swayidle -w \
+        timeout 600 '$idle_script lock-if-idle' \
+        timeout 1200 '$idle_script dpms-off-if-idle' resume '$idle_script dpms-on' \
+        before-sleep '$idle_script lock-if-idle'
+
     # exec swayidle -w \
     #     timeout 300 '$idle_script lock-if-idle' \
-    #     timeout 360 '$idle_script dpms-off-if-idle' resume '$idle_script dpms-on' \
-    exec swayidle -w \
-        timeout 300 '$idle_script lock-if-idle' \
-        timeout 600 '$idle_script suspend-if-idle'
+    #     timeout 600 '$idle_script suspend-if-idle'
 
     bindsym --to-code Ctrl+Alt+l exec $idle_script lock
 #
