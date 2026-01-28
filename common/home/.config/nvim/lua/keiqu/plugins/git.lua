@@ -107,22 +107,21 @@ return {
       vim.keymap.set("n", "glD", gitlab.toggle_draft_mode)
     end,
   },
-  -- {
-  --   "NeogitOrg/neogit",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "sindrets/diffview.nvim",
-  --     "nvim-telescope/telescope.nvim",
-  --   },
-  --   opts = {
-  --     git_services = {
-  --       ["github.com"] = "https://github.com/${owner}/${repository}/compare/${branch_name}?expand=1",
-  --       ["bitbucket.org"] = "https://bitbucket.org/${owner}/${repository}/pull-requests/new?source=${branch_name}&t=1",
-  --       ["gitlab.com"] = "https://gitlab.com/${owner}/${repository}/merge_requests/new?merge_request[source_branch]=${branch_name}",
-  --       ["gitlab.2gis.ru"] = "https://gitlab.2gis.ru/${owner}/${repository}/merge_requests/new?merge_request[source_branch]=${branch_name}",
-  --       ["azure.com"] = "https://dev.azure.com/${owner}/_git/${repository}/pullrequestcreate?sourceRef=${branch_name}&targetRef=${target}",
-  --     },
-  --   },
-  --   config = true,
-  -- },
+  {
+    "NeogitOrg/neogit",
+    lazy = true,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    cmd = "Neogit",
+    keys = {
+      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" },
+    },
+    opts = {
+      graph_style = "kitty",
+    },
+    config = true,
+  },
 }
