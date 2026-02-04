@@ -36,21 +36,21 @@ return {
     },
   },
 
-  {
-    "jonahgoldwastaken/copilot-status.nvim",
-    dependencies = { "zbirenbaum/copilot.lua" },
-    lazy = true,
-    event = "BufReadPost",
-    opts = {
-      icons = {
-        idle = " ",
-        offline = " ",
-        error = " ",
-        warning = " ",
-        loading = " ",
-      },
-    },
-  },
+  -- {
+  --   "jonahgoldwastaken/copilot-status.nvim",
+  --   dependencies = { "zbirenbaum/copilot.lua" },
+  --   lazy = true,
+  --   event = "BufReadPost",
+  --   opts = {
+  --     icons = {
+  --       idle = " ",
+  --       offline = " ",
+  --       error = " ",
+  --       warning = " ",
+  --       loading = " ",
+  --     },
+  --   },
+  -- },
 
   {
     "chrisgrieser/nvim-recorder",
