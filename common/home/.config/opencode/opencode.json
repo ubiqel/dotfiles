@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "lsp": {
+    "templ": {
+      "command": [
+        "templ",
+        "lsp"
+      ],
+      "extensions": [
+        ".templ"
+      ],
+      "disabled": false
+    }
+  },
+  "command": {
+    "clean-comments": {
+      "template": "Go through the code in the current session and remove all redundant comments that were previously generated. Only keep comments that are essential for understanding the logic. Rewrite the modified code.",
+      "description": "Remove redundant AI-generated comments from code",
+      "agent": "build",
+      "model": "gpt-5.2-codex"
+    }
+  },
+  "plugin": [
+    "opencode-anthropic-auth@latest"
+  ]
+}
