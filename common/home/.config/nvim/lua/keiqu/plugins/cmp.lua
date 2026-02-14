@@ -26,7 +26,12 @@ return {
         vim.notify("Snippet loader 'from_vscode' for luasnip is not found!", vim.log.levels.ERROR)
         return
       end
-      snip_loader.lazy_load()
+      local snip_path = vim.fn.stdpath("config") .. "/lua/keiqu/snippets"
+      vim.notify(snip_path)
+      snip_loader.lazy_load({
+        paths = { vim.fn.stdpath("config") .. "/keiqu/snippets" },
+      }) -- load custom snippets
+      snip_loader.lazy_load() -- load friendly-snippets
 
       local autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp", vim.log.levels.ERROR)
       if not autopairs_ok then
@@ -120,8 +125,8 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            -- elseif luasnip.expand_or_jumpable() then
-            -- 	luasnip.expand_or_jump()
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
             elseif has_words_before() then
               cmp.complete()
             else
@@ -131,8 +136,8 @@ return {
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
-            -- elseif luasnip.jumpable(-1) then
-            -- 	luasnip.jump(-1)
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
             else
               fallback()
             end
@@ -169,7 +174,7 @@ return {
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
-          -- { name = "luasnip" },
+          { name = "luasnip" },
           { name = "path" },
         }, {
           { name = "buffer" },
