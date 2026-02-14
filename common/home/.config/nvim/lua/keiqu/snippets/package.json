@@ -1,0 +1,6 @@
+{
+  "name": "keiqu-snippets",
+  "contributes": {
+    "snippets": [{ "language": "templ", "path": "./templ.json" }]
+  }
+}

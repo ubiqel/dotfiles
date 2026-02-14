@@ -27,9 +27,8 @@ return {
         return
       end
       local snip_path = vim.fn.stdpath("config") .. "/lua/keiqu/snippets"
-      vim.notify(snip_path)
       snip_loader.lazy_load({
-        paths = { vim.fn.stdpath("config") .. "/keiqu/snippets" },
+        paths = { snip_path },
       }) -- load custom snippets
       snip_loader.lazy_load() -- load friendly-snippets
 
