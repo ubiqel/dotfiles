@@ -5,7 +5,7 @@ return {
       "nvim-telescope/telescope.nvim",
     },
     config = {
-      browswer = "firefox",
+      -- browser = "firefox",
       dynamic_root = false,
       picker = "telescope",
     },
