@@ -16,17 +16,6 @@ return {
         disable_inline_completion = false, -- disables inline completion for use with cmp
         ignore_filetypes = { "sh" },
         disable_keymaps = true, -- disables built in keymaps for use
-        -- condition = function()
-        --   local ft = vim.bo.filetype
-        --   local allowed_filetypes = { "go", "lua", "python", "javascript", "typescript", "java", "c", "cpp", "rust" }
-        --   for _, v in ipairs(allowed_filetypes) do
-        --     if ft == v then
-        --       return false
-        --     end
-        --   end
-
-        --   return true
-        -- end,
       })
 
       local completion_preview = require("supermaven-nvim.completion_preview")
@@ -46,7 +35,7 @@ return {
       local cwd = vim.uv.cwd()
       local basename = vim.fs.basename(cwd)
       _99.setup({
-        provider = _99.OpenCodeProvider, -- default: OpenCodeProvider
+        provider = _99.OpenCodeProvider,
         model = "anthropic/claude-sonnet-4-5",
         logger = {
           level = _99.DEBUG,
@@ -54,40 +43,12 @@ return {
           print_on_error = true,
         },
 
-        --- Completions: #rules and @files in the prompt buffer
         completion = {
-          -- I am going to disable these until i understand the
-          -- problem better.  Inside of cursor rules there is also
-          -- application rules, which means i need to apply these
-          -- differently
-          -- cursor_rules = "<custom path to cursor rules>"
-
-          --- A list of folders where you have your own SKILL.md
-          --- Expected format:
-          --- /path/to/dir/<skill_name>/SKILL.md
-          ---
-          --- Example:
-          --- Input Path:
-          --- "scratch/custom_rules/"
-          ---
-          --- Output Rules:
-          --- {path = "scratch/custom_rules/vim/SKILL.md", name = "vim"},
-          --- ... the other rules in that dir ...
-          ---
-          custom_rules = {
-            "scratch/custom_rules/",
-          },
-
-          --- Configure @file completion (all fields optional, sensible defaults)
           files = {
-            -- enabled = true,
-            -- max_file_size = 102400,     -- bytes, skip files larger than this
-            -- max_files = 5000,            -- cap on total discovered files
-            -- exclude = { ".env", ".env.*", "node_modules", ".git", ... },
+            enabled = true,
+            exclude = { ".env", ".env.*", "node_modules", ".git", ".lint-cache" },
           },
 
-          --- What autocomplete do you use.  We currently only
-          --- support cmp right now
           source = "cmp",
         },
 
@@ -105,17 +66,11 @@ return {
         },
       })
 
-      -- take extra note that i have visual selection only in v mode
-      -- technically whatever your last visual selection is, will be used
-      -- so i have this set to visual mode so i dont screw up and use an
-      -- old visual selection
-      --
-      -- likely ill add a mode check and assert on required visual mode
-      -- so just prepare for it now
       vim.keymap.set("v", "<leader>9v", function() _99.visual() end)
 
-      --- if you have a request you dont want to make any changes, just cancel it
-      vim.keymap.set("v", "<leader>9s", function() _99.stop_all_requests() end)
+      vim.keymap.set("n", "<leader>9x", function() _99.stop_all_requests() end)
+
+      vim.keymap.set("n", "<leader>9s", function() _99.search() end)
     end,
   },
 }
