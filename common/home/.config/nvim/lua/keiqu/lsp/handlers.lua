@@ -62,8 +62,8 @@ local function add_keymaps(bufnr)
   -- TODO: use lsp_dynamic_workspace_symbols with telescope
   nmap(bufnr, "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
   nmap(bufnr, "gd", "<cmd>lua require('telescope.builtin').lsp_definitions()<CR>")
-  nmap(bufnr, "gT", "<cmd>lua require('telescope.builtin').lsp_type_definitions()<CR>")
-  nmap(bufnr, "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>") -- TODO: use telescope
+  nmap(bufnr, "gy", "<cmd>lua require('telescope.builtin').lsp_type_definitions()<CR>")
+  nmap(bufnr, "gI", "<cmd>lua require('telescope.builtin').lsp_implementations()<cr>")
   nmap(bufnr, "gr", "<cmd>lua require('telescope.builtin').lsp_references()<CR>")
 
   nmap(bufnr, "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
@@ -82,14 +82,23 @@ local function add_keymaps(bufnr)
   vmap(bufnr, "<leader>cC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
   -- { "<leader>cA", LazyVim.lsp.action.source, desc = "Source Action", has = "codeAction" },
 
-  nmap(bufnr, "<leader>lf", "<cmd>lua vim.lsp.buf.formatting()<cr>")
-  nmap(bufnr, "]e", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>")
-  nmap(bufnr, "[e", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>")
+  nmap(bufnr, "<leader>lf", "<cmd>lua vim.lsp.buf.format({async = true})<cr>")
+  nmap(bufnr, "]d", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>")
+  nmap(bufnr, "[d", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>")
+
+  nmap(bufnr, "]e", function() vim.diagnostic.goto_next({ buffer = 0, severity = vim.diagnostic.severity.ERROR }) end)
+  nmap(bufnr, "[e", function() vim.diagnostic.goto_prev({ buffer = 0, severity = vim.diagnostic.severity.ERROR }) end)
   nmap(bufnr, "<leader>ld", "<cmd>lua vim.diagnostic.open_float()<CR>")
 
+  -- TODO: restarts only first server.
   nmap(bufnr, "<leader>lr", "<cmd>LspRestart<CR>")
 
-  nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
+  -- nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
+  nmap(bufnr, "<leader>lh", function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+    vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+  end)
 end
 
 vim.api.nvim_create_autocmd("User", {

@@ -36,7 +36,7 @@ local options = {
   autowriteall = true,
   laststatus = 3,
   textwidth = 0,
-  shell = "/bin/bash", -- TODO: for some reason fish shell throws error (smth like `/dev/tty not found`)
+  shell = "/usr/bin/fish",
 }
 
 for k, v in pairs(options) do
@@ -68,7 +68,7 @@ nmap("<leader>w", ":w<cr>")
 -- yanking and pasting to/from "system" register
 nvmap("<leader>y", '"+y')
 nvmap("<leader>p", '"+gp')
-nmap("<leader>Y", "+Y")
+nmap("<leader>Y", "+Y") -- TODO: wtf does this do?
 nmap("<leader>P", '"+gP')
 
 -- window navigation
@@ -76,6 +76,11 @@ nmap("<C-h>", "<C-w>h")
 nmap("<C-j>", "<C-w>j")
 nmap("<C-k>", "<C-w>k")
 nmap("<C-l>", "<C-w>l")
+
+-- tab navigation
+vim.keymap.set("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Tab: keep only current" })
+vim.keymap.set("n", "<leader><tab>c", "<cmd>tabclose<cr>", { desc = "Tab: close" })
+vim.keymap.set("n", "<leader><tab>r", "<cmd>tabprevious | tabclose#<cr>", { desc = "Tab: close current, return" })
 
 -- remove search highlight
 nmap("<leader>/", "<cmd>noh<cr><esc>")
@@ -86,11 +91,7 @@ nmap("<A-j>", ":resize +2<cr>")
 nmap("<A-h>", ":vertical resize -2<cr>")
 nmap("<A-l>", ":vertical resize +2<cr>")
 
--- telescope
--- nmap(
---   "<leader>ff",
---   ':Telescope frecency workspace=CWD theme=dropdown previewer=false path_display={"filename_first"}<cr>'
--- )
+-- Telescope
 nmap(
   "<leader>ff",
   ':Telescope find_files workspace=CWD theme=dropdown previewer=false path_display={"filename_first"}<cr>'
@@ -102,12 +103,9 @@ nmap("<leader>fs", ":lua require('telescope.builtin').lsp_dynamic_workspace_symb
 nmap("<leader>gs", ":Telescope git_status<cr>")
 nmap("<leader>gb", ":Telescope git_branches<cr>")
 
--- symbols outline
-nmap("<leader>ls", ":SymbolsOutline<cr>")
-
 -- nvim tree
-nmap("<leader>q", ":NvimTreeToggle<cr>")
 nmap("<leader>e", ":NvimTreeFindFile<cr>")
+nmap("<leader>E", ":NvimTreeToggle<cr>")
 
 -- don't loose contents of register after pasting in visual mode (substitution)
 vmap("p", '"_dP')
