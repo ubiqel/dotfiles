@@ -104,8 +104,8 @@ nmap("<leader>gs", ":Telescope git_status<cr>")
 nmap("<leader>gb", ":Telescope git_branches<cr>")
 
 -- nvim tree
-nmap("<leader>e", ":NvimTreeFindFile<cr>")
-nmap("<leader>E", ":NvimTreeToggle<cr>")
+nmap("<leader>e", ":NvimTreeToggle<cr>")
+nmap("<leader>E", ":NvimTreeFindFile<cr>")
 
 -- don't loose contents of register after pasting in visual mode (substitution)
 vmap("p", '"_dP')
