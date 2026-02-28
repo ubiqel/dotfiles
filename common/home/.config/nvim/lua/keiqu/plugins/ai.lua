@@ -36,7 +36,7 @@ return {
       local basename = vim.fs.basename(cwd)
       _99.setup({
         provider = _99.OpenCodeProvider,
-        model = "anthropic/claude-sonnet-4-5",
+        model = "openai/gpt-5.2-codex",
         logger = {
           level = _99.DEBUG,
           path = "/tmp/" .. basename .. ".99.debug",
@@ -67,10 +67,20 @@ return {
       })
 
       vim.keymap.set("v", "<leader>9v", function() _99.visual() end)
-
       vim.keymap.set("n", "<leader>9x", function() _99.stop_all_requests() end)
-
       vim.keymap.set("n", "<leader>9s", function() _99.search() end)
+
+      vim.keymap.set("n", "<leader>9d", function()
+        --- this function could be used to auto debug your project
+        _99.search({
+          additional_prompt = [[
+run `task test` and debug the test failures and provide me a comprehensive set of steps where
+the tests are breaking ]],
+        })
+      end)
+
+      vim.keymap.set("n", "<leader>9p", function() require("99.extensions.telescope").select_provider() end)
+      vim.keymap.set("n", "<leader>9m", function() require("99.extensions.telescope").select_model() end)
     end,
   },
 }
