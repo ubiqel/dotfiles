@@ -19,7 +19,7 @@ return {
             -- "-coverpkg=all",
             "-coverprofile="
               .. vim.fn.getcwd()
-              .. "/cover.out",
+              .. "/coverage.out",
           },
         }),
       },
