@@ -62,9 +62,9 @@ local function add_keymaps(bufnr)
   -- TODO: use lsp_dynamic_workspace_symbols with telescope
   nmap(bufnr, "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
   nmap(bufnr, "gd", "<cmd>lua require('telescope.builtin').lsp_definitions()<CR>")
-  nmap(bufnr, "gy", "<cmd>lua require('telescope.builtin').lsp_type_definitions()<CR>")
-  nmap(bufnr, "gI", "<cmd>lua require('telescope.builtin').lsp_implementations()<cr>")
-  nmap(bufnr, "gr", "<cmd>lua require('telescope.builtin').lsp_references()<CR>")
+  nmap(bufnr, "grt", "<cmd>lua require('telescope.builtin').lsp_type_definitions()<CR>")
+  nmap(bufnr, "gri", "<cmd>lua require('telescope.builtin').lsp_implementations()<cr>")
+  nmap(bufnr, "gre", "<cmd>lua require('telescope.builtin').lsp_references()<CR>")
 
   nmap(bufnr, "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
   nmap(bufnr, "<C-s>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
@@ -72,14 +72,14 @@ local function add_keymaps(bufnr)
 
   nmap(bufnr, "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<cr>")
 
-  nmap(bufnr, "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>")
-  vmap(bufnr, "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+  nmap(bufnr, "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>")
+  vmap(bufnr, "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>")
 
-  nmap(bufnr, "<leader>cc", "<cmd>lua vim.lsp.codelens.run()<cr>")
-  vmap(bufnr, "<leader>cc", "<cmd>lua vim.lsp.codelens.run()<cr>")
+  nmap(bufnr, "<leader>lc", "<cmd>lua vim.lsp.codelens.run()<cr>")
+  vmap(bufnr, "<leader>lc", "<cmd>lua vim.lsp.codelens.run()<cr>")
 
-  nmap(bufnr, "<leader>cC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
-  vmap(bufnr, "<leader>cC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
+  nmap(bufnr, "<leader>lC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
+  vmap(bufnr, "<leader>lC", "<cmd>lua vim.lsp.codelens.refresh()<cr>")
   -- { "<leader>cA", LazyVim.lsp.action.source, desc = "Source Action", has = "codeAction" },
 
   nmap(bufnr, "<leader>lf", "<cmd>lua vim.lsp.buf.format({async = true})<cr>")
@@ -88,10 +88,9 @@ local function add_keymaps(bufnr)
 
   nmap(bufnr, "]e", function() vim.diagnostic.goto_next({ buffer = 0, severity = vim.diagnostic.severity.ERROR }) end)
   nmap(bufnr, "[e", function() vim.diagnostic.goto_prev({ buffer = 0, severity = vim.diagnostic.severity.ERROR }) end)
-  nmap(bufnr, "<leader>ld", "<cmd>lua vim.diagnostic.open_float()<CR>")
+  nmap(bufnr, "<leader>lp", "<cmd>lua vim.diagnostic.open_float()<CR>")
 
-  -- TODO: restarts only first server.
-  nmap(bufnr, "<leader>lr", "<cmd>LspRestart<CR>")
+  -- nmap(bufnr, "<leader>vr", "<cmd>LspRestart<CR>")
 
   -- nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
   nmap(bufnr, "<leader>lh", function()
