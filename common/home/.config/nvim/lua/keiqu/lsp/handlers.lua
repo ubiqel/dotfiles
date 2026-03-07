@@ -90,9 +90,8 @@ local function add_keymaps(bufnr)
   nmap(bufnr, "[e", function() vim.diagnostic.goto_prev({ buffer = 0, severity = vim.diagnostic.severity.ERROR }) end)
   nmap(bufnr, "<leader>lp", "<cmd>lua vim.diagnostic.open_float()<CR>")
 
-  -- nmap(bufnr, "<leader>vr", "<cmd>LspRestart<CR>")
+  nmap(bufnr, "<leader>lr", "<cmd>LspRestart<CR>")
 
-  -- nmap(bufnr, "<leader>uh", "<cmd>lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<cr>")
   nmap(bufnr, "<leader>lh", function()
     local bufnr = vim.api.nvim_get_current_buf()
     local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
