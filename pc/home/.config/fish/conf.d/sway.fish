@@ -7,7 +7,7 @@ if true # if neeed to disable sway
     set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/keyring/ssh
 
     # Using right videocard
-    set -x WLR_DRM_DEVICES /dev/dri/card0
+    set -x WLR_DRM_DEVICES /dev/dri/card1:/dev/dri/card0
 
     # https://github.com/swaywm/sway/issues/8854
     # set -x WLR_SCENE_DISABLE_DIRECT_SCANOUT 1
