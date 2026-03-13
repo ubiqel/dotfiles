@@ -1,11 +1,3 @@
-local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_ok then
-  vim.notify("Plugin 'lspconfig' not found!", vim.log.levels.ERROR)
-  return
-end
-
--- local lspconfig = vim.lsp.config
-
 local defaults = require("keiqu.lsp.defaults")
 defaults.setup()
 
@@ -27,6 +19,7 @@ local servers = {
   "lemminx",
   "omnisharp",
   "gdscript",
+  "rust_analyzer",
 }
 
 local handlers = require("keiqu.lsp.handlers")
@@ -43,5 +36,6 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", opts, custom_opts)
   end
 
-  lspconfig[server].setup(opts)
+  vim.lsp.config(server, opts)
+  vim.lsp.enable(server)
 end
