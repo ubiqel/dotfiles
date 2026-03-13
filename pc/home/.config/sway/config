@@ -30,6 +30,8 @@
     exec blueman-applet
     exec pasystray
 
+    exec dex --autostart --environment sway
+
     exec 'tmux new-session -d -s temp_ressurect; sleep 5; tmux kill-session -t temp_ressurect'
 #
 ### Tools
@@ -69,13 +71,13 @@
     set $idle_script ~/.config/sway/idle_control.sh
 
     exec swayidle -w \
-        timeout 600 '$idle_script lock-if-idle' \
-        timeout 1200 '$idle_script dpms-off-if-idle' resume '$idle_script dpms-on' \
-        before-sleep '$idle_script lock-if-idle'
-
-    # exec swayidle -w \
-    #     timeout 300 '$idle_script lock-if-idle' \
-    #     timeout 600 '$idle_script suspend-if-idle'
+        idlehint 600 \
+        timeout 600  '$idle_script lock-if-idle' \
+        timeout 1200 '$idle_script dpms-off-if-idle' \
+            resume '$idle_script dpms-on' \
+        timeout 1800 '$idle_script suspend-if-idle' \
+        before-sleep '$idle_script lock' \
+        after-resume '$idle_script dpms-on'
 
     bindsym --to-code Ctrl+Alt+l exec $idle_script lock
 #

@@ -17,17 +17,17 @@ case "$1" in
 
     dpms-off-if-idle)
         if ! is_playing; then
-            exec swaymsg "output * dpms off"
+            swaymsg 'output * dpms off'
         fi
         ;;
 
     dpms-on)
-        exec swaymsg "output * dpms on"
+        swaymsg 'output * dpms on'
         ;;
 
     suspend-if-idle)
         if ! is_playing; then
-            exec systemctl suspend
+            systemctl suspend
         fi
         ;;
 
