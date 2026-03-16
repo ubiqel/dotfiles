@@ -36,7 +36,7 @@ local options = {
   autowriteall = true,
   laststatus = 3,
   textwidth = 0,
-  shell = "/usr/bin/fish",
+  shell = "fish",
 }
 
 for k, v in pairs(options) do

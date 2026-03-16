@@ -12,7 +12,7 @@ local servers = {
   "templ",
   "html",
   "htmx",
-  -- "yamlls",
+  "yamlls",
   "clangd",
   "plantuml_lsp",
   "gradle_ls",
