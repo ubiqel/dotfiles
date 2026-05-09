@@ -75,7 +75,7 @@
         timeout 600  '$idle_script lock-if-idle' \
         timeout 1200 '$idle_script dpms-off-if-idle' \
             resume '$idle_script dpms-on' \
-        timeout 1800 '$idle_script suspend-if-idle' \
+        timeout 3600 '$idle_script suspend-if-idle' \
         before-sleep '$idle_script lock' \
         after-resume '$idle_script dpms-on'
 
@@ -138,7 +138,7 @@
     bindsym --to-code $mod+Ctrl+q exec wkill.sh
 
     # Start your launcher
-    bindsym --to-code Ctrl+Space exec $menu
+    bindsym --to-code Ctrl+Shift+Space exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
