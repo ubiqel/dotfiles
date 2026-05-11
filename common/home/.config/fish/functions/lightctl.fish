@@ -1,21 +1,21 @@
 function lightctl
     function main
         switch $argv[1]
-            case get
+            case get g
                 ddcutil -d 1 getvcp 10
                 ddcutil -d 2 getvcp 10
-            case high
+            case high h
                 ddcutil -d 1 setvcp 10 100
                 ddcutil -d 2 setvcp 10 100
-            case low
+            case low l
                 ddcutil -d 1 setvcp 10 20
                 ddcutil -d 2 setvcp 10 0
-            case reset
+            case reset r
                 ddcutil -d 1 setvcp 10 60
                 ddcutil -d 2 setvcp 10 50
-            case inc
+            case inc i
                 inc_brightness 20
-            case dec
+            case dec d
                 dec_brightness 20
             case 'help' '*'
                 echo 'Usage: lightctl [get|high|low|reset|inc|dec|help]'
