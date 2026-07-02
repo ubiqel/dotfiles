@@ -30,6 +30,10 @@
       ]
     },
 
+    "sway/language": {
+        "format": "{}",
+        "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+    },
     "sway/window": {
       "format": "{}",
       "max-length": 35,
@@ -42,7 +46,6 @@
       "format": "{icon}",
       "on-click": "activate",
       "format-icons": {
-        "active": ""
       },
       "sort-by-number": true
     },
@@ -62,41 +65,36 @@
       "format": "{icon} {temperatureC}°C",
       "format-icons": ["", "", ""]
     },
-    "battery": {
-      "states": {
-        "warning": 30,
-        "critical": 15
-      },
-      "format": "{icon}  {capacity}%",
-      "format-full": "{icon}  {capacity}%",
-      "format-charging": "  {capacity}%",
-      "format-plugged": "  {capacity}%",
-      "format-alt": "{time} {icon}",
-      "format-icons": ["", "", "", "", ""]
-    },
     "network": {
-      "format-wifi": "  {signalStrength}%",
-      "format-ethernet": "{cidr} ",
-      "tooltip-format": "{ifname} via {gwaddr} ",
+      "format": "{ifname}",
+      "format-wifi": "{signalStrength}% ",
+      "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+      "format-alt": "{ifname}: {ipaddr}/{cidr}",
       "format-linked": "{ifname} (No IP) ",
       "format-disconnected": " ⚠ ",
-      "format-alt": "{ifname}: {ipaddr}/{cidr}"
+      "tooltip-format": "{ifname} via {gwaddr} 󰊗",
+      "tooltip-format-wifi": "{essid}",
+      "tooltip-format-ethernet": "{ifname} ",
+      "tooltip-format-disconnected": "Disconnected",
+      "max-length": 50
     },
     "pulseaudio": {
-      "format": "{icon}  {volume}%",
+      "format": "{icon} {volume}%",
+      "format-muted": "",
       "format-bluetooth": "{volume}% {icon} {format_source}",
       "format-bluetooth-muted": " {icon} {format_source}",
-      "format-muted": "",
       "format-icons": {
         "headphone": "",
         "hands-free": "",
         "headset": "",
         "phone": "",
+        "phone-muted": "",
         "portable": "",
         "car": "",
         "default": ["", "", ""]
       },
-      "on-click": "pwvucontrol"
+      "on-click": "pwvucontrol",
+      "scroll-step": 2,
     },
     "bluetooth" : {
         "format": " {status}",

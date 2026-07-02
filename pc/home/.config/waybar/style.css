@@ -1,45 +1,67 @@
 @import "macchiato.css";
+
+/* =============================================================================
+   Global & Window Setup
+   ========================================================================== */
 * {
   font-family: "JetBrainsMono Nerd Font", Roboto, Helvetica, Arial, sans-serif;
   font-size: 16px;
 }
+
 window#waybar {
   background-color: rgba(0, 0, 0, 0);
   border-radius: 13px;
   transition-property: background-color;
   transition-duration: .5s;
 }
+
+label:focus {
+  background-color: #000000;
+}
+
+/* =============================================================================
+   Workspaces & Buttons
+   ========================================================================== */
 button {
   /* Use box-shadow instead of border so the text isn't offset */
   box-shadow: inset 0 -3px transparent;
-  /* Avoid rounded borders under each button name */
   border: none;
   border-radius: 0;
 }
+
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
   background: inherit;
   box-shadow: inset 0 -3px #ffffff;
 }
+
 #workspaces button {
   padding: 0 5px;
   background-color: transparent;
   color: #ffffff;
 }
+
 #workspaces button:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
 #workspaces button.focused {
   background-color: @lavender;
   box-shadow: inset 0 -3px #ffffff;
 }
+
 #workspaces button.urgent {
   background-color: #eb4d4b;
 }
+
 #mode {
   background-color: #64727D;
   box-shadow: inset 0 -3px #ffffff;
 }
+
+/* =============================================================================
+   Standard Module Baselines (Colors & General Padding)
+   ========================================================================== */
 #clock,
 #battery,
 #cpu,
@@ -50,55 +72,48 @@ button:hover {
 #pulseaudio {
   padding: 0 10px;
 }
-#language {
-  padding-left: 5px;
+
+#clock          { color: @flamingo; }
+#pulseaudio     { color: @maroon; }
+#bluetooth      { color: @sky; }
+#network        { color: @yellow; }
+#temperature    { color: @sky; }
+#battery        { color: @green; }
+#window         { color: @rosewater; }
+#language       { color: @peach; padding-left: 10px; padding-right: 5px; }
+
+#pulseaudio.muted {
+  color: @text;
 }
-#language {
-  color: @peach;
+
+#battery.charging,
+#battery.plugged {
+  color: @sapphire;
 }
-#pulseaudio {
-  color: @maroon;
-}
-#network {
-  color: @yellow;
-}
-#temperature {
-  color: @sky;
-}
-#battery {
-  color: @green;
-}
-#clock {
-  color: @flamingo;
-}
-#window {
-  color: @rosewater;
-}
-#bluetooth {
-  color: @sky;
-}
+
+/* System Tray */
 #tray {
   color: @blue;
   padding: 0 5px;
 }
+
 #tray > * {
   padding: 0 2px;
 }
 
-/* Modules styling for left and center */
-/* .modules-left, */
-.modules-center {
-  background-color: @base;
-  border-radius: 15px;
-}
+/* =============================================================================
+   Containers & Pill Layouts (.modules / groups)
+   ========================================================================== */
 .modules-left {
   padding: 0 20px;
 }
+
 .modules-center {
+  background-color: @base;
+  border-radius: 15px;
   padding: 0 10px;
 }
 
-/* Individual group styling */
 #system-indicators {
   background-color: @base;
   border-radius: 15px;
@@ -112,16 +127,40 @@ button:hover {
   padding: 0 10px;
 }
 
-
-#battery.charging,
-#battery.plugged {
-  color: @sapphire;
+/* =============================================================================
+   Pill Fine-Tuning (Separators & Custom Paddings)
+   ========================================================================== */
+/* Add a vertical separator line to every module in the pill except the last one */
+#system-indicators > widget:not(:last-child) {
+  border-right: 2px solid @surface0;
 }
+
+/* Adjust internal padding so the text doesn't hug the separator lines */
+#system-indicators #pulseaudio,
+#system-indicators #bluetooth,
+#system-indicators #network,
+#system-indicators #clock {
+  padding: 0 12px;
+}
+
+/* Custom alignment overrides for specific elements within the pill */
+#system-indicators > widget:first-child #pulseaudio {
+  padding-left: 4px;
+}
+
+#system-indicators #network {
+  padding-right: 20px;
+}
+
+/* =============================================================================
+   Animations
+   ========================================================================== */
 @keyframes blink {
   to {
     color: #000000;
   }
 }
+
 /* Using steps() instead of linear as a timing function to limit cpu usage */
 #battery.critical:not(.charging) {
   background-color: #f53c3c;
@@ -131,10 +170,4 @@ button:hover {
   animation-timing-function: steps(12);
   animation-iteration-count: infinite;
   animation-direction: alternate;
-}
-label:focus {
-  background-color: #000000;
-}
-#pulseaudio.muted {
-  color: @text;
 }
