@@ -15,6 +15,7 @@
     "group/system-indicators": {
       "orientation": "horizontal",
       "modules": [
+        "idle_inhibitor",
         "pulseaudio",
         "bluetooth",
         "network",
@@ -30,6 +31,13 @@
       ]
     },
 
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
     "sway/language": {
         "format": "{}",
         "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
@@ -52,18 +60,6 @@
     "clock": {
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
       "format-alt": "{:%Y-%m-%d}"
-    },
-    "cpu": {
-      "format": "  {usage}%",
-      "tooltip": false
-    },
-    "memory": {
-      "format": "{}%  "
-    },
-    "temperature": {
-      "critical-threshold": 80,
-      "format": "{icon} {temperatureC}°C",
-      "format-icons": ["", "", ""]
     },
     "network": {
       "format": "{ifname}",

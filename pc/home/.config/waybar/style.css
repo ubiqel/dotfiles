@@ -63,20 +63,18 @@ button:hover {
    Standard Module Baselines (Colors & General Padding)
    ========================================================================== */
 #clock,
-#battery,
-#cpu,
-#memory,
-#temperature,
 #network,
 #bluetooth,
+#idle_inhibitor,
 #pulseaudio {
   padding: 0 10px;
 }
 
+#idle_inhibitor { color: @mauve; padding-left: 6px; padding-right: 20px; }
 #clock          { color: @flamingo; }
 #pulseaudio     { color: @maroon; }
 #bluetooth      { color: @sky; }
-#network        { color: @yellow; }
+#network        { color: @yellow; padding-right: 20px; }
 #temperature    { color: @sky; }
 #battery        { color: @green; }
 #window         { color: @rosewater; }
@@ -128,46 +126,9 @@ button:hover {
 }
 
 /* =============================================================================
-   Pill Fine-Tuning (Separators & Custom Paddings)
+   Pill Fine-Tuning (Separators)
    ========================================================================== */
 /* Add a vertical separator line to every module in the pill except the last one */
 #system-indicators > widget:not(:last-child) {
   border-right: 2px solid @surface0;
-}
-
-/* Adjust internal padding so the text doesn't hug the separator lines */
-#system-indicators #pulseaudio,
-#system-indicators #bluetooth,
-#system-indicators #network,
-#system-indicators #clock {
-  padding: 0 12px;
-}
-
-/* Custom alignment overrides for specific elements within the pill */
-#system-indicators > widget:first-child #pulseaudio {
-  padding-left: 4px;
-}
-
-#system-indicators #network {
-  padding-right: 20px;
-}
-
-/* =============================================================================
-   Animations
-   ========================================================================== */
-@keyframes blink {
-  to {
-    color: #000000;
-  }
-}
-
-/* Using steps() instead of linear as a timing function to limit cpu usage */
-#battery.critical:not(.charging) {
-  background-color: #f53c3c;
-  color: #ffffff;
-  animation-name: blink;
-  animation-duration: 0.5s;
-  animation-timing-function: steps(12);
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
 }
