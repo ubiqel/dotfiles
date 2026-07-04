@@ -1,0 +1,10 @@
+[Unit]
+Description=Re-probe ddcci devices after resume
+After=suspend.target hibernate.target hybrid-sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ddcci-setup
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target

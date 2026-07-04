@@ -1,0 +1,57 @@
+#!/bin/bash
+set -euo pipefail
+
+# Control ddcci-backlight devices for Waybar.
+# Usage: waybar-ddcci <get|up|down|cycle> <device>
+
+DEVICE="${2:-}"
+[ -z "$DEVICE" ] && exit 1
+
+current() {
+    brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%' || echo 0
+}
+
+apply() {
+    brightnessctl -d "$DEVICE" set "$1" >/dev/null
+}
+
+case "$1" in
+    get)
+        current
+        ;;
+    up)
+        apply '+5%'
+        ;;
+    down)
+        apply '5%-'
+        ;;
+    cycle)
+        cur="$(current)"
+        presets=(0 50 100)
+        next="${presets[0]}"
+        for p in "${presets[@]}"; do
+            if [ "$cur" -lt "$p" ]; then
+                next="$p"
+                break
+            fi
+            # If exactly on a preset, jump to the next one.
+            if [ "$cur" -eq "$p" ]; then
+                found=0
+                for q in "${presets[@]}"; do
+                    if [ "$found" -eq 1 ]; then
+                        next="$q"
+                        break 2
+                    fi
+                    [ "$q" -eq "$cur" ] && found=1
+                done
+                # Wrap around if at the last preset.
+                next="${presets[0]}"
+                break
+            fi
+        done
+        apply "${next}%"
+        ;;
+    *)
+        exit 1
+        ;;
+esac

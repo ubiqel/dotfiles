@@ -1,0 +1,12 @@
+[Unit]
+Description=Probe ddcci devices on display I2C buses
+After=systemd-modules-load.service
+Wants=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ddcci-setup
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

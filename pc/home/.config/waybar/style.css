@@ -23,13 +23,11 @@ label:focus {
    Workspaces & Buttons
    ========================================================================== */
 button {
-  /* Use box-shadow instead of border so the text isn't offset */
   box-shadow: inset 0 -3px transparent;
   border: none;
   border-radius: 0;
 }
 
-/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
   background: inherit;
   box-shadow: inset 0 -3px #ffffff;
@@ -66,7 +64,9 @@ button:hover {
 #network,
 #bluetooth,
 #idle_inhibitor,
-#pulseaudio {
+#pulseaudio,
+#custom-monitor1_brightness,
+#custom-monitor2_brightness {
   padding: 0 10px;
 }
 
@@ -79,6 +79,10 @@ button:hover {
 #battery        { color: @green; }
 #window         { color: @rosewater; }
 #language       { color: @peach; padding-left: 10px; padding-right: 5px; }
+
+/* Brightness Module Colors (Using Catppuccin Accents) */
+#custom-monitor1_brightness { color: @teal; }
+#custom-monitor2_brightness { color: @sapphire; padding-right: 15px; }
 
 #pulseaudio.muted {
   color: @text;
@@ -103,10 +107,16 @@ button:hover {
    Containers & Pill Layouts (.modules / groups)
    ========================================================================== */
 .modules-left {
-  padding: 0 20px;
+  padding: 0 0px; /* Reduced to align perfectly with margins */
 }
 
 .modules-center {
+  background-color: @base;
+  border-radius: 15px;
+  padding: 0 10px;
+}
+
+#brightness-group {
   background-color: @base;
   border-radius: 15px;
   padding: 0 10px;
@@ -128,7 +138,8 @@ button:hover {
 /* =============================================================================
    Pill Fine-Tuning (Separators)
    ========================================================================== */
-/* Add a vertical separator line to every module in the pill except the last one */
-#system-indicators > widget:not(:last-child) {
+/* Add a vertical separator line to every module in the pills except the last one */
+#system-indicators > widget:not(:last-child),
+#brightness-group > widget:not(:last-child) {
   border-right: 2px solid @surface0;
 }

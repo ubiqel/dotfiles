@@ -4,6 +4,10 @@
     "margin-left": 10,
     "margin-right": 10,
     "height" : 20,
+
+    "modules-left": [
+      "group/brightness-group"
+    ],
     "modules-center": [
       "sway/workspaces"
     ],
@@ -11,6 +15,17 @@
       "group/system-indicators",
       "group/tray-group"
     ],
+
+    // =============================================================================
+    // Pill Groups
+    // =============================================================================
+    "group/brightness-group": {
+      "orientation": "horizontal",
+      "modules": [
+        "custom/monitor2_brightness",
+        "custom/monitor1_brightness"
+      ]
+    },
 
     "group/system-indicators": {
       "orientation": "horizontal",
@@ -31,6 +46,32 @@
       ]
     },
 
+    // =============================================================================
+    // Backlight Modules (via ddcci-backlight + brightnessctl)
+    // =============================================================================
+    "custom/monitor1_brightness": {
+        "format": "󰃠 M1: {}%",
+        "interval": 5,
+        "exec": "waybar-ddcci get ddcci4",
+        "on-click": "waybar-ddcci cycle ddcci4",
+        "on-scroll-up": "waybar-ddcci up ddcci4",
+        "on-scroll-down": "waybar-ddcci down ddcci4",
+        "tooltip": false
+    },
+
+    "custom/monitor2_brightness": {
+        "format": "󰃠 M2: {}%",
+        "interval": 5,
+        "exec": "waybar-ddcci get ddcci5",
+        "on-click": "waybar-ddcci cycle ddcci5",
+        "on-scroll-up": "waybar-ddcci up ddcci5",
+        "on-scroll-down": "waybar-ddcci down ddcci5",
+        "tooltip": false
+    },
+
+    // =============================================================================
+    // Core Modules
+    // =============================================================================
     "idle_inhibitor": {
         "format": "{icon}",
         "format-icons": {
@@ -41,6 +82,7 @@
     "sway/language": {
         "format": "{}",
         "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
+        "hide-single-layout": false
     },
     "sway/window": {
       "format": "{}",
@@ -67,7 +109,7 @@
       "format-ethernet": "{ipaddr}/{cidr} 󰊗",
       "format-alt": "{ifname}: {ipaddr}/{cidr}",
       "format-linked": "{ifname} (No IP) ",
-      "format-disconnected": " ⚠ ",
+      "format-disconnected": " ⚠",
       "tooltip-format": "{ifname} via {gwaddr} 󰊗",
       "tooltip-format-wifi": "{essid}",
       "tooltip-format-ethernet": "{ifname} ",
@@ -77,8 +119,8 @@
     "pulseaudio": {
       "format": "{icon} {volume}%",
       "format-muted": "",
-      "format-bluetooth": "{volume}% {icon} {format_source}",
-      "format-bluetooth-muted": " {icon} {format_source}",
+      "format-bluetooth": "{volume}% {icon}",
+      "format-bluetooth-muted": " {icon}",
       "format-icons": {
         "headphone": "",
         "hands-free": "",
@@ -90,7 +132,7 @@
         "default": ["", "", ""]
       },
       "on-click": "pwvucontrol",
-      "scroll-step": 2,
+      "scroll-step": 2
     },
     "bluetooth" : {
         "format": " {status}",
@@ -132,5 +174,18 @@
       "spacing": 8,
       "show-passive-items": false,
       "format": "{icon}"
+    },
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 14,
+        "icon-theme": "Numix-Circle",
+        "tooltip-format": "{title}",
+        "on-click": "activate",
+        "on-click-middle": "close",
+        "ignore-list": [],
+        "app_ids-mapping": {},
+        "rewrite": {
+            ".*(steam_app_[0-9]+).*": "Game"
+        }
     }
 }
