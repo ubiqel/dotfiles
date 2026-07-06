@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Control ddcci-backlight devices for Waybar.
-# Usage: waybar-ddcci <get|up|down|cycle> <device>
+# Usage: waybar-ddcci <get|up|down|cycle|cycle-reverse> <device>
 
 DEVICE="${2:-}"
 [ -z "$DEVICE" ] && exit 1
@@ -13,6 +13,44 @@ current() {
 
 apply() {
     brightnessctl -d "$DEVICE" set "$1" >/dev/null
+}
+
+# Cycle through presets. Direction: 1 = forward (0,50,100), -1 = reverse (100,50,0).
+cycle() {
+    local direction="$1"
+    cur="$(current)"
+
+    if [ "$direction" -eq 1 ]; then
+        presets=(0 50 100)
+    else
+        presets=(100 50 0)
+    fi
+
+    next="${presets[0]}"
+    for p in "${presets[@]}"; do
+        if [ "$direction" -eq 1 ] && [ "$cur" -lt "$p" ]; then
+            next="$p"
+            break
+        elif [ "$direction" -eq -1 ] && [ "$cur" -gt "$p" ]; then
+            next="$p"
+            break
+        fi
+        # If exactly on a preset, jump to the next one in the sequence.
+        if [ "$cur" -eq "$p" ]; then
+            found=0
+            for q in "${presets[@]}"; do
+                if [ "$found" -eq 1 ]; then
+                    next="$q"
+                    break 2
+                fi
+                [ "$q" -eq "$cur" ] && found=1
+            done
+            # Wrap around if at the last preset.
+            next="${presets[0]}"
+            break
+        fi
+    done
+    apply "${next}%"
 }
 
 case "$1" in
@@ -26,30 +64,10 @@ case "$1" in
         apply '5%-'
         ;;
     cycle)
-        cur="$(current)"
-        presets=(0 50 100)
-        next="${presets[0]}"
-        for p in "${presets[@]}"; do
-            if [ "$cur" -lt "$p" ]; then
-                next="$p"
-                break
-            fi
-            # If exactly on a preset, jump to the next one.
-            if [ "$cur" -eq "$p" ]; then
-                found=0
-                for q in "${presets[@]}"; do
-                    if [ "$found" -eq 1 ]; then
-                        next="$q"
-                        break 2
-                    fi
-                    [ "$q" -eq "$cur" ] && found=1
-                done
-                # Wrap around if at the last preset.
-                next="${presets[0]}"
-                break
-            fi
-        done
-        apply "${next}%"
+        cycle 1
+        ;;
+    cycle-reverse)
+        cycle -1
         ;;
     *)
         exit 1

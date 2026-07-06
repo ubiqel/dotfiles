@@ -54,6 +54,7 @@
         "interval": 5,
         "exec": "waybar-ddcci get ddcci4",
         "on-click": "waybar-ddcci cycle ddcci4",
+        "on-click-right": "waybar-ddcci cycle-reverse ddcci4",
         "on-scroll-up": "waybar-ddcci up ddcci4",
         "on-scroll-down": "waybar-ddcci down ddcci4",
         "tooltip": false
@@ -64,6 +65,7 @@
         "interval": 5,
         "exec": "waybar-ddcci get ddcci5",
         "on-click": "waybar-ddcci cycle ddcci5",
+        "on-click-right": "waybar-ddcci cycle-reverse ddcci5",
         "on-scroll-up": "waybar-ddcci up ddcci5",
         "on-scroll-down": "waybar-ddcci down ddcci5",
         "tooltip": false
