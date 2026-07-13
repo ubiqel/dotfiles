@@ -77,7 +77,7 @@
             resume '$idle_script dpms-on' \
         timeout 3600 '$idle_script suspend-if-idle' \
         before-sleep '$idle_script lock' \
-        after-resume '$idle_script dpms-on && pkill -USR2 waybar' #pkill waybar for fixing empty value in sway/language module
+        after-resume '$idle_script dpms-on'
 
     bindsym --to-code Ctrl+Alt+l exec $idle_script lock
 #
