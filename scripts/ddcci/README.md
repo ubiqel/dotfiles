@@ -21,12 +21,19 @@ On kernel 6.8+ the `ddcci` driver can no longer auto-probe displays. The setup
 script manually instantiates a DDC/CI client at address `0x37` on every display
 I²C adapter.
 
-## Stale I²C clients
+## Stale I²C clients and driver state
 
 Some monitors can leave a stale I²C client at `0x37` without a bound backlight
 device, usually after an aborted probe. The kernel then returns `EBUSY` on any
 new probe attempt, so `ddcci-setup.sh` detects and removes those stale clients
 before re-probing.
+
+A few monitors (e.g. Gigabyte M27Q P) return a malformed DDC/CI capability
+string. The `ddcci` driver creates an internal device reference but fails to
+register the backlight device. Later probes then fail with `EEXIST` because the
+stale internal reference is still present. When normal probing fails,
+`ddcci-setup.sh` unloads and reloads the `ddcci` modules to clear that state,
+then re-probes.
 
 ## Usage
 
