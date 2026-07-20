@@ -7,6 +7,11 @@ set -euo pipefail
 DEVICE="${2:-}"
 [ -z "$DEVICE" ] && exit 1
 
+CACHEDIR="${XDG_RUNTIME_DIR:-/tmp}/waybar-brightness-cache"
+mkdir -p "$CACHEDIR"
+CACHEFILE="$CACHEDIR/$DEVICE"
+LOCKFILE="$CACHEDIR/$DEVICE.lock"
+
 current() {
     brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%' || echo 0
 }
@@ -15,7 +20,14 @@ apply() {
     brightnessctl -d "$DEVICE" set "$1" >/dev/null
 }
 
-# Cycle through presets. Direction: 1 = forward (0,50,100), -1 = reverse (100,50,0).
+cached_or_live() {
+    if [ -f "$CACHEFILE" ] && [ "$(($(date +%s) - $(stat -c %Y "$CACHEFILE")))" -lt 2 ]; then
+        cat "$CACHEFILE"
+    else
+        current | tee "$CACHEFILE"
+    fi
+}
+
 cycle() {
     local direction="$1"
     cur="$(current)"
@@ -35,7 +47,6 @@ cycle() {
             next="$p"
             break
         fi
-        # If exactly on a preset, jump to the next one in the sequence.
         if [ "$cur" -eq "$p" ]; then
             found=0
             for q in "${presets[@]}"; do
@@ -45,22 +56,30 @@ cycle() {
                 fi
                 [ "$q" -eq "$cur" ] && found=1
             done
-            # Wrap around if at the last preset.
             next="${presets[0]}"
             break
         fi
     done
+
+    # Cache expected value before slow DDC/CI write.
+    echo "$next" > "$CACHEFILE"
     apply "${next}%"
 }
 
 case "$1" in
     get)
-        current
+        cached_or_live
         ;;
     up)
+        cur="$(current)"
+        val=$((cur + 5 > 100 ? 100 : cur + 5))
+        echo "$val" > "$CACHEFILE"
         apply '+5%'
         ;;
     down)
+        cur="$(current)"
+        val=$((cur - 5 < 0 ? 0 : cur - 5))
+        echo "$val" > "$CACHEFILE"
         apply '5%-'
         ;;
     cycle)
