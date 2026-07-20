@@ -6,6 +6,7 @@
     "height" : 20,
 
     "modules-left": [
+      "group/power-group",
       "group/brightness-group"
     ],
     "modules-center": [
@@ -19,6 +20,14 @@
     // =============================================================================
     // Pill Groups
     // =============================================================================
+    "group/power-group": {
+      "orientation": "horizontal",
+      "modules": [
+        "custom/poweroff",
+        "custom/suspend"
+      ]
+    },
+
     "group/brightness-group": {
       "orientation": "horizontal",
       "modules": [
@@ -47,10 +56,30 @@
     },
 
     // =============================================================================
+    // Suspend Module
+    // =============================================================================
+    "custom/suspend": {
+        "format": "{}",
+        "exec": "echo ''",
+        "interval": "once",
+        "on-click": "systemctl suspend",
+        "tooltip": false
+    },
+
+    "custom/poweroff": {
+        "format": "{}",
+        "exec": "echo ''",
+        "interval": "once",
+        "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
+        "tooltip": false
+    },
+
+    // =============================================================================
     // Backlight Modules (via ddcci-backlight + brightnessctl)
     // =============================================================================
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
+        "exec-on-event": true,
         "interval": 5,
         "exec": "waybar-ddcci get ddcci4",
         "on-click": "waybar-ddcci cycle ddcci4",
@@ -62,6 +91,7 @@
 
     "custom/monitor2_brightness": {
         "format": "󰃠 M2: {}%",
+        "exec-on-event": true,
         "interval": 5,
         "exec": "waybar-ddcci get ddcci5",
         "on-click": "waybar-ddcci cycle ddcci5",
