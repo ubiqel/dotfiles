@@ -14,8 +14,8 @@ if true # if neeed to disable sway
     # set -x WLR_DRM_NO_ATOMIC 1
 
     # Making nvidia drivers work...
-    # set -x WLR_RENDERER vulkan
-    set -x WLR_RENDERER gles2
+    set -x WLR_RENDERER vulkan
+    # set -x WLR_RENDERER gles2
     # set -x WLR_NO_HARDWARE_CURSORS 1 # get back cursor!
 
     # Firefox
