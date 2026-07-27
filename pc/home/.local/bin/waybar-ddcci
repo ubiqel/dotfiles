@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
 # Control ddcci-backlight devices for Waybar.
 # Usage: waybar-ddcci <get|up|down|cycle|cycle-reverse> <device>
@@ -13,7 +13,7 @@ CACHEFILE="$CACHEDIR/$DEVICE"
 LOCKFILE="$CACHEDIR/$DEVICE.lock"
 
 current() {
-    brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%' || echo 0
+    timeout 3 brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%'
 }
 
 apply() {
@@ -24,7 +24,9 @@ cached_or_live() {
     if [ -f "$CACHEFILE" ] && [ "$(($(date +%s) - $(stat -c %Y "$CACHEFILE")))" -lt 2 ]; then
         cat "$CACHEFILE"
     else
-        current | tee "$CACHEFILE"
+        local val
+        val="$(current)"
+        echo "${val:-$(cat "$CACHEFILE" 2>/dev/null || echo 0)}" | tee "$CACHEFILE"
     fi
 }
 
