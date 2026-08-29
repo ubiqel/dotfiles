@@ -60,12 +60,12 @@ return {
     end,
     opts = {
       mapping = {
-        startStopRecording = "<C-q>",
+        startStopRecording = "<leader>mr",
         playMacro = "Q",
-        switchSlot = "<C-Shift-Q>", -- TODO: change
-        editMacro = "cq",
-        deleteAllMacros = "dq",
-        yankMacro = "yq",
+        switchSlot = "<leader>ms",
+        editMacro = "<leader>me",
+        deleteAllMacros = "<leader>md",
+        yankMacro = "<leader>my",
         -- ⚠️ this should be a string you don't use in insert mode during a macro
         addBreakPoint = "##",
       },

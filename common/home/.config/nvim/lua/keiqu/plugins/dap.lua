@@ -6,18 +6,6 @@ return {
     config = function()
       local dap = require("dap")
 
-      dap.defaults.fallback.terminal_win_cmd = "tabnew"
-      dap.configurations.go = {
-        {
-          type = "go",
-          request = "launch",
-          name = "Launch file",
-          program = "${file}",
-          dlvToolPath = vim.fn.exepath("dlv"),
-        },
-      }
-      dap.defaults.fallback.terminal_win_cmd = "50vsplit new"
-
       vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
@@ -36,7 +24,6 @@ return {
       nmap("<leader>dp", function() dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end)
       nmap("<leader>dx", function() dap.terminate() end)
       nmap("<leader>dc", function() dap.clear_breakpoints() end)
-      nmap("<leader>dr", function() dap.repl.open() end)
       nmap("<leader>dl", function() dap.run_last() end)
     end,
   },
@@ -113,13 +100,21 @@ return {
   {
     "igorlfs/nvim-dap-view",
     dependencies = { "mfussenegger/nvim-dap" },
-    opts = {},
+    config = true,
+    opts = {
+      winbar = {
+        default_section = "scopes",
+      },
+    },
     init = function()
       local dap, dv = require("dap"), require("dap-view")
       dap.listeners.before.attach["dap-view-config"] = function() dv.open() end
       dap.listeners.before.launch["dap-view-config"] = function() dv.open() end
-      dap.listeners.before.event_terminated["dap-view-config"] = function() dv.close() end
-      dap.listeners.before.event_exited["dap-view-config"] = function() dv.close() end
+      -- dap.listeners.before.event_terminated["dap-view-config"] = function() dv.close() end
+      -- dap.listeners.before.event_exited["dap-view-config"] = function() dv.close() end
+      --
+
+      nmap("<leader>do", function() dv.toggle() end)
     end,
   },
   {

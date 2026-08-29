@@ -4,8 +4,8 @@ return {
     dependencies = {
       "nvim-telescope/telescope.nvim",
     },
-    config = {
-      -- browser = "firefox",
+    opts = {
+      browser = "firefox",
       dynamic_root = false,
       picker = "telescope",
     },
