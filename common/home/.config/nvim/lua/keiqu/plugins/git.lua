@@ -50,11 +50,6 @@ return {
     },
   },
   {
-    "tpope/vim-fugitive",
-    config = function() vim.g.fugitive_gitlab_domains = { "https://gitlab.2gis.ru" } end,
-    dependencies = { "shumphrey/fugitive-gitlab.vim" },
-  },
-  {
     "sindrets/diffview.nvim",
     init = function()
       local nmap = require("keiqu.keymaps").nmap
@@ -70,7 +65,7 @@ return {
       -- "stevearc/dressing.nvim",
       "nvim-tree/nvim-web-devicons",
     },
-    enabled = true,
+    enabled = false,
     build = function() require("gitlab.server").build(true) end, -- Builds the Go binary
     opts = {
       config_path = vim.fn.expand("$HOME/work"),
