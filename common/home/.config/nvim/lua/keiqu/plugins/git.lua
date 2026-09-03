@@ -106,7 +106,7 @@ return {
     "NeogitOrg/neogit",
     lazy = true,
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      "m00qek/baleia.nvim",
       "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
@@ -117,6 +117,5 @@ return {
     opts = {
       graph_style = "kitty",
     },
-    config = true,
   },
 }

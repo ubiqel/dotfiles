@@ -10,7 +10,7 @@ return {
 
       require("illuminate").configure({
         providers = { "lsp", "treesitter" },
-        filetypes_denylist = { "netrw", "fugitiveblame" },
+        filetypes_denylist = { "netrw" },
       })
     end,
   },
