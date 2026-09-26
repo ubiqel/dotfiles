@@ -20,7 +20,5 @@
       "model": "gpt-5.2-codex"
     }
   },
-  "plugin": [
-    "opencode-anthropic-auth@latest"
-  ]
+  "plugin": []
 }
