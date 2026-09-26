@@ -43,7 +43,7 @@
 #
 
     # Wallpaper
-    set $wallpapers_landscape $HOME/Wallpapers/Landscape
+    set $wallpapers_landscape $HOME/Pictures/Wallpapers/Landscape
 
     output DP-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
     output DP-3 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
@@ -132,10 +132,6 @@
 
     # Kill focused window
     bindsym --to-code $mod+q kill
-
-    # TODO: doesn't work for some reason. maybe
-    # The script is working fine when executed from terminal
-    bindsym --to-code $mod+Ctrl+q exec wkill.sh
 
     # Start your launcher
     bindsym --to-code Ctrl+Shift+Space exec $menu

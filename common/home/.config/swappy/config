@@ -1,2 +1,3 @@
 [Default]
-save_dir=$HOME/Screenshots
+save_dir=$HOME/Pictures/Screenshots
+auto_save=true
