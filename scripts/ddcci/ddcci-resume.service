@@ -4,6 +4,8 @@ After=suspend.target hibernate.target hybrid-sleep.target
 
 [Service]
 Type=oneshot
+# ddcutil 3.x aborts initialization without a usable HOME (dynamic-sleep cache).
+Environment=HOME=/root
 ExecStart=/usr/local/bin/ddcci-setup
 
 [Install]

@@ -2,15 +2,96 @@
 set -uo pipefail
 
 # Control ddcci-backlight devices for Waybar.
-# Usage: waybar-ddcci <get|up|down|cycle|cycle-reverse> <device>
+# Usage: waybar-ddcci <get|up|down|cycle|cycle-reverse|resolve> <role>
+#
+# <role> is a stable monitor role (e.g. M1) defined in
+# ~/.config/waybar/ddcci-monitors.conf, or a legacy raw device (ddcciN).
+# Roles are resolved to the current ddcci bus device on demand, so the Waybar
+# config does not need to be rewritten when i2c bus numbers change.
 
-DEVICE="${2:-}"
-[ -z "$DEVICE" ] && exit 1
+ACTION="${1:-}"
+ROLE="${2:-}"
+[ -z "$ACTION" ] && exit 1
+[ -z "$ROLE" ] && exit 1
 
+MAPPING="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/ddcci-monitors.conf"
 CACHEDIR="${XDG_RUNTIME_DIR:-/tmp}/waybar-brightness-cache"
 mkdir -p "$CACHEDIR"
-CACHEFILE="$CACHEDIR/$DEVICE"
-LOCKFILE="$CACHEDIR/$DEVICE.lock"
+
+# Resolve a monitor role to a ddcci backlight device name.
+# Prints the device on success and returns 0; returns 1 if unresolvable.
+resolve_role() {
+    local role="$1" file dev="" identity line
+
+    # Legacy: raw device name.
+    if [[ "$role" =~ ^ddcci[0-9]+$ ]]; then
+        if [ -d "/sys/class/backlight/$role" ]; then
+            echo "$role"
+            return 0
+        fi
+        return 1
+    fi
+
+    # Cached resolution, invalidated when the device disappears.
+    file="$CACHEDIR/$role.dev"
+    if [ -f "$file" ]; then
+        dev="$(cat "$file" 2>/dev/null || true)"
+        if [ -n "$dev" ] && [ -d "/sys/class/backlight/$dev" ]; then
+            echo "$dev"
+            return 0
+        fi
+    fi
+
+    # Look up the monitor identity for this role.
+    [ -f "$MAPPING" ] || return 1
+    identity="$(grep -E "^${role}=" "$MAPPING" 2>/dev/null | head -1 | cut -d= -f2- || true)"
+    [ -n "$identity" ] || return 1
+
+    command -v ddcutil >/dev/null 2>&1 || return 1
+
+    # Find the display whose Monitor identity matches and derive its device
+    # (ddcci device names are ddcci<bus>).
+    local raw="" bus="" mon=""
+    raw="$(ddcutil detect --brief 2>/dev/null || true)"
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^Display[[:space:]]+[0-9]+ ]]; then
+            if [ "$mon" = "$identity" ] && [ -n "$bus" ]; then
+                dev="ddcci${bus}"
+                break
+            fi
+            bus=""
+            mon=""
+        elif [[ "$line" =~ I2C[[:space:]]bus:[[:space:]]+/dev/i2c-([0-9]+) ]]; then
+            bus="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*Monitor:[[:space:]]*(.*)$ ]]; then
+            mon="${BASH_REMATCH[1]}"
+        fi
+    done <<<"$raw"
+    if [ -z "$dev" ] && [ "$mon" = "$identity" ] && [ -n "$bus" ]; then
+        dev="ddcci${bus}"
+    fi
+
+    [ -n "$dev" ] || return 1
+    [ -d "/sys/class/backlight/$dev" ] || return 1
+
+    echo "$dev" > "$file"
+    echo "$dev"
+    return 0
+}
+
+DEVICE="$(resolve_role "$ROLE" || true)"
+
+if [ "$ACTION" = "resolve" ]; then
+    if [ -n "$DEVICE" ]; then
+        echo "$DEVICE"
+        exit 0
+    fi
+    exit 1
+fi
+
+[ -n "$DEVICE" ] || exit 1
+
+CACHEFILE="$CACHEDIR/$ROLE"
 
 current() {
     timeout 3 brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%'
@@ -68,7 +149,7 @@ cycle() {
     apply "${next}%"
 }
 
-case "$1" in
+case "$ACTION" in
     get)
         cached_or_live
         ;;

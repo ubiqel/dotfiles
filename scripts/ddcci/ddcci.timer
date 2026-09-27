@@ -1,0 +1,9 @@
+[Unit]
+Description=Probe ddcci devices shortly after boot
+
+[Timer]
+OnBootSec=30s
+Unit=ddcci.service
+
+[Install]
+WantedBy=timers.target

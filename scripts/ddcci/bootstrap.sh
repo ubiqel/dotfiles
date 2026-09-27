@@ -58,13 +58,24 @@ done
 log "Installing system files..."
 sudo install -Dm755 "$SCRIPT_DIR/ddcci-setup.sh" /usr/local/bin/ddcci-setup
 sudo install -Dm644 "$SCRIPT_DIR/ddcci.service" /etc/systemd/system/ddcci.service
+sudo install -Dm644 "$SCRIPT_DIR/ddcci.timer" /etc/systemd/system/ddcci.timer
 sudo install -Dm644 "$SCRIPT_DIR/ddcci-resume.service" /etc/systemd/system/ddcci-resume.service
 sudo install -Dm644 "$SCRIPT_DIR/ddcci.modules.conf" /etc/modules-load.d/ddcci.conf
+sudo install -Dm644 "$SCRIPT_DIR/99-ddcci.rules" /etc/udev/rules.d/99-ddcci.rules
 
 # --- Enable and start services ---------------------------------------------
 log "Enabling ddcci services..."
 sudo systemctl daemon-reload
-sudo systemctl enable --now ddcci.service ddcci-resume.service
+# The one-shot probe is triggered by ddcci.timer and by DRM hotplug events,
+# never directly at boot (displays are not DDC/CI-ready that early).
+sudo systemctl disable --now ddcci.service 2>/dev/null || true
+# Enable the timer now; enable (but do not start) the resume unit, which must
+# only run after an actual suspend/resume.
+sudo systemctl enable --now ddcci.timer
+sudo systemctl enable ddcci-resume.service
+sudo udevadm control --reload
+# Probe now so the mapping check below sees the devices right away.
+sudo systemctl start ddcci.service
 
 # --- Deploy dotfiles -------------------------------------------------------
 log "Deploying dotfiles..."
@@ -74,7 +85,7 @@ stow -d pc -t "$HOME" home --adopt
 
 # --- Verify mapping --------------------------------------------------------
 log "Verifying device mapping..."
-"$SCRIPT_DIR/verify-mapping.sh"
+"$SCRIPT_DIR/verify-mapping.sh" || log "Mapping verification reported problems; review the output above."
 
 # --- Reload Waybar ---------------------------------------------------------
 log "Reloading Waybar..."

@@ -5,6 +5,11 @@ set -euo pipefail
 # On kernel >= 6.8 the driver cannot auto-probe displays, so we instantiate
 # a DDC/CI client at address 0x37 on adapters that have connected monitors.
 #
+# Displays are not always DDC/CI-ready when the service first runs (especially
+# during early boot or right after resume), so this script waits for ddcutil to
+# report at least one connected display before probing, and exits non-zero if it
+# ultimately fails to create the backlight devices.
+#
 # Some monitors (e.g. Gigabyte M27Q P) return a malformed DDC/CI capability
 # string. The ddcci driver then creates an internal device reference but fails
 # to register the backlight device. Subsequent probes fail with EEXIST because
@@ -12,6 +17,12 @@ set -euo pipefail
 # this script unloads and reloads the ddcci modules to clear that state.
 
 log() { echo "[ddcci-setup] $*"; }
+
+# How long to wait for connected displays to appear before giving up (seconds).
+DDCCI_WAIT_SECONDS="${DDCCI_WAIT_SECONDS:-90}"
+# How long to wait for a probed device to bind (attempts * delay seconds).
+DDCCI_PROBE_ATTEMPTS="${DDCCI_PROBE_ATTEMPTS:-10}"
+DDCCI_PROBE_DELAY="${DDCCI_PROBE_DELAY:-2}"
 
 # Load modules. Ignore errors if already loaded.
 load_modules() {
@@ -67,26 +78,51 @@ cleanup_all_stale_clients() {
     done
 }
 
-# Detect connected display I2C buses using ddcutil.
-detect_buses() {
+# Cached output of `ddcutil detect --brief`.
+DDCUTIL_OUTPUT=""
+
+# Run ddcutil and cache its output. Returns 0 if a display was found.
+detect_displays() {
     if ! command -v ddcutil >/dev/null 2>&1; then
-        return
+        return 1
     fi
+    # --disable-dynamic-sleep avoids ddcutil's dynamic-sleep stats cache, which
+    # requires HOME/XDG and otherwise aborts initialization under systemd.
+    DDCUTIL_OUTPUT="$(ddcutil detect --brief --disable-dynamic-sleep 2>/dev/null || true)"
+    grep -q '^Display[[:space:]]' <<<"$DDCUTIL_OUTPUT"
+}
+
+# Wait until ddcutil reports at least one connected display.
+wait_for_displays() {
+    local waited=0
+    while :; do
+        if detect_displays; then
+            return 0
+        fi
+        if [ "$waited" -ge "$DDCCI_WAIT_SECONDS" ]; then
+            return 1
+        fi
+        log "No connected displays yet; retrying in 2s (waited ${waited}s/${DDCCI_WAIT_SECONDS}s)..."
+        sleep 2
+        waited=$((waited + 2))
+    done
+}
+
+# Parse connected display I2C buses from the cached ddcutil output.
+detect_buses() {
     while IFS= read -r line; do
         if [[ "$line" =~ I2C[[:space:]]bus:[[:space:]]+/dev/i2c-([0-9]+) ]]; then
             echo "${BASH_REMATCH[1]}"
         fi
-    done < <(ddcutil detect 2>/dev/null || true)
+    done <<<"$DDCUTIL_OUTPUT"
 }
 
 # Try to probe connected buses and wait for backlight devices to bind.
 # Returns 0 if all connected buses are bound, 1 otherwise.
 try_probe() {
     local buses=("$@")
-    local max_attempts=10
-    local delay=2
 
-    for ((attempt=1; attempt<=max_attempts; attempt++)); do
+    for ((attempt=1; attempt<=DDCCI_PROBE_ATTEMPTS; attempt++)); do
         local remaining=0
         for bus in "${buses[@]}"; do
             if has_backlight "$bus"; then
@@ -106,22 +142,36 @@ try_probe() {
             return 0
         fi
 
-        log "Waiting ${delay}s for ${remaining} adapter(s) to bind (attempt ${attempt}/${max_attempts})..."
-        sleep "$delay"
+        log "Waiting ${DDCCI_PROBE_DELAY}s for ${remaining} adapter(s) to bind (attempt ${attempt}/${DDCCI_PROBE_ATTEMPTS})..."
+        sleep "$DDCCI_PROBE_DELAY"
     done
 
     return 1
 }
 
 # Main logic.
+
+# Serialize concurrent triggers (boot timer, DRM hotplug, resume) so two probes
+# cannot delete each other's I2C clients.
+exec 9>"/run/ddcci-setup.lock"
+if ! flock -n 9; then
+    log "Another ddcci-setup instance is already running; skipping."
+    exit 0
+fi
+
 load_modules
 cleanup_all_stale_clients
+
+if ! wait_for_displays; then
+    log "No connected displays detected after ${DDCCI_WAIT_SECONDS}s."
+    exit 1
+fi
 
 mapfile -t BUSES < <(detect_buses)
 
 if [ ${#BUSES[@]} -eq 0 ]; then
     log "No connected display I2C buses found."
-    exit 0
+    exit 1
 fi
 
 log "Connected display buses: ${BUSES[*]}"
@@ -140,4 +190,4 @@ if try_probe "${BUSES[@]}"; then
 fi
 
 log "Warning: connected adapter(s) still not bound after driver reset."
-exit 0
+exit 1

@@ -76,16 +76,17 @@
 
     // =============================================================================
     // Backlight Modules (via ddcci-backlight + brightnessctl)
+    // M1/M2 are stable roles defined in ddcci-monitors.conf, not bus numbers.
     // =============================================================================
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
         "exec-on-event": true,
         "interval": 5,
-        "exec": "waybar-ddcci get ddcci4",
-        "on-click": "waybar-ddcci cycle ddcci4",
-        "on-click-right": "waybar-ddcci cycle-reverse ddcci4",
-        "on-scroll-up": "waybar-ddcci up ddcci4",
-        "on-scroll-down": "waybar-ddcci down ddcci4",
+        "exec": "waybar-ddcci get M1",
+        "on-click": "waybar-ddcci cycle M1",
+        "on-click-right": "waybar-ddcci cycle-reverse M1",
+        "on-scroll-up": "waybar-ddcci up M1",
+        "on-scroll-down": "waybar-ddcci down M1",
         "tooltip": false
     },
 
@@ -93,11 +94,11 @@
         "format": "󰃠 M2: {}%",
         "exec-on-event": true,
         "interval": 5,
-        "exec": "waybar-ddcci get ddcci5",
-        "on-click": "waybar-ddcci cycle ddcci5",
-        "on-click-right": "waybar-ddcci cycle-reverse ddcci5",
-        "on-scroll-up": "waybar-ddcci up ddcci5",
-        "on-scroll-down": "waybar-ddcci down ddcci5",
+        "exec": "waybar-ddcci get M2",
+        "on-click": "waybar-ddcci cycle M2",
+        "on-click-right": "waybar-ddcci cycle-reverse M2",
+        "on-scroll-up": "waybar-ddcci up M2",
+        "on-scroll-down": "waybar-ddcci down M2",
         "tooltip": false
     },
 
