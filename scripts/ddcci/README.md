@@ -157,6 +157,27 @@ mapping. For a brand new monitor, list the identities and add a role:
 ddcutil detect --brief | grep Monitor:
 ```
 
+### Uninstall
+
+To undo the system-level setup, run the uninstaller (prompts for `sudo`):
+
+```bash
+./scripts/ddcci/unbootstrap.sh
+```
+
+This stops and disables the units, removes the installed unit files, udev rule,
+modules-load config and `/usr/local/bin/ddcci-setup`, deletes the `0x37` I²C
+clients, unloads the `ddcci` kernel modules and removes the
+`ddcci-driver-linux-dkms-git` package.
+
+Options:
+
+- `--keep-driver` — keep the `ddcci-driver-linux-dkms-git` package.
+- `--remove-packages` — also remove `brightnessctl` and `ddcutil`.
+
+The dotfiles deployed into `$HOME` by `stow_pc.sh` are **not** touched, since
+undoing a `stow --adopt` deployment could delete unrelated user configuration.
+
 ### Cycle presets in Waybar
 
 - Scroll up/down: ±5%
