@@ -20,6 +20,7 @@ local servers = {
   "omnisharp",
   "gdscript",
   "rust_analyzer",
+  "ols",
 }
 
 local handlers = require("keiqu.lsp.handlers")
