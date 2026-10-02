@@ -74,8 +74,9 @@ sudo systemctl disable --now ddcci.service 2>/dev/null || true
 sudo systemctl enable --now ddcci.timer
 sudo systemctl enable ddcci-resume.service
 sudo udevadm control --reload
-# Probe now so the mapping check below sees the devices right away.
-sudo systemctl start ddcci.service
+# Probe now so the mapping check below sees the devices right away. A transient
+# failure is fine: ddcci.service retries on failure.
+sudo systemctl start ddcci.service || log "Initial probe failed; ddcci.service will keep retrying."
 
 # --- Deploy dotfiles -------------------------------------------------------
 log "Deploying dotfiles..."

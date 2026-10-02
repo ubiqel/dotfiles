@@ -1,13 +1,19 @@
 #!/bin/bash
 set -uo pipefail
 
-# Control ddcci-backlight devices for Waybar.
+# Control monitor brightness for Waybar.
 # Usage: waybar-ddcci <get|up|down|cycle|cycle-reverse|resolve> <role>
 #
 # <role> is a stable monitor role (e.g. M1) defined in
 # ~/.config/waybar/ddcci-monitors.conf, or a legacy raw device (ddcciN).
-# Roles are resolved to the current ddcci bus device on demand, so the Waybar
-# config does not need to be rewritten when i2c bus numbers change.
+#
+# Each role resolves to a target:
+#   ddcciN  - the ddcci-backlight kernel device (fast path)
+#   bus:N   - ddcutil fallback on I2C bus N. Used when the kernel driver failed
+#             to bind (e.g. the monitor returns a malformed DDC/CI capability
+#             string, leaving a stale core device). ddcutil still works.
+# The target is re-resolved automatically when it disappears, and a ddcutil
+# fallback is upgraded to the kernel device if that device later appears.
 
 ACTION="${1:-}"
 ROLE="${2:-}"
@@ -18,45 +24,23 @@ MAPPING="${XDG_CONFIG_HOME:-$HOME/.config}/waybar/ddcci-monitors.conf"
 CACHEDIR="${XDG_RUNTIME_DIR:-/tmp}/waybar-brightness-cache"
 mkdir -p "$CACHEDIR"
 
-# Resolve a monitor role to a ddcci backlight device name.
-# Prints the device on success and returns 0; returns 1 if unresolvable.
-resolve_role() {
-    local role="$1" file dev="" identity line
+# Look up a role's EDID identity and derive its target.
+# Prints "ddcciN" or "bus:N"; returns 1 if it cannot be found.
+lookup_role_target() {
+    local role="$1" identity raw bus mon line
 
-    # Legacy: raw device name.
-    if [[ "$role" =~ ^ddcci[0-9]+$ ]]; then
-        if [ -d "/sys/class/backlight/$role" ]; then
-            echo "$role"
-            return 0
-        fi
-        return 1
-    fi
-
-    # Cached resolution, invalidated when the device disappears.
-    file="$CACHEDIR/$role.dev"
-    if [ -f "$file" ]; then
-        dev="$(cat "$file" 2>/dev/null || true)"
-        if [ -n "$dev" ] && [ -d "/sys/class/backlight/$dev" ]; then
-            echo "$dev"
-            return 0
-        fi
-    fi
-
-    # Look up the monitor identity for this role.
     [ -f "$MAPPING" ] || return 1
     identity="$(grep -E "^${role}=" "$MAPPING" 2>/dev/null | head -1 | cut -d= -f2- || true)"
     [ -n "$identity" ] || return 1
 
     command -v ddcutil >/dev/null 2>&1 || return 1
 
-    # Find the display whose Monitor identity matches and derive its device
-    # (ddcci device names are ddcci<bus>).
-    local raw="" bus="" mon=""
-    raw="$(ddcutil detect --brief 2>/dev/null || true)"
+    raw="$(ddcutil detect --brief --disable-dynamic-sleep 2>/dev/null || true)"
+    bus=""
+    mon=""
     while IFS= read -r line; do
         if [[ "$line" =~ ^Display[[:space:]]+[0-9]+ ]]; then
             if [ "$mon" = "$identity" ] && [ -n "$bus" ]; then
-                dev="ddcci${bus}"
                 break
             fi
             bus=""
@@ -67,38 +51,145 @@ resolve_role() {
             mon="${BASH_REMATCH[1]}"
         fi
     done <<<"$raw"
-    if [ -z "$dev" ] && [ "$mon" = "$identity" ] && [ -n "$bus" ]; then
-        dev="ddcci${bus}"
+
+    if [ "$mon" = "$identity" ] && [ -n "$bus" ]; then
+        if [ -d "/sys/class/backlight/ddcci${bus}" ]; then
+            echo "ddcci${bus}"
+        else
+            echo "bus:${bus}"
+        fi
+        return 0
     fi
-
-    [ -n "$dev" ] || return 1
-    [ -d "/sys/class/backlight/$dev" ] || return 1
-
-    echo "$dev" > "$file"
-    echo "$dev"
-    return 0
+    return 1
 }
 
-DEVICE="$(resolve_role "$ROLE" || true)"
+# Resolve a role to a target, with positive/negative caching.
+resolve_target() {
+    local role="$1" file cache missfile last now ttl bus
+
+    # Legacy: raw device name.
+    if [[ "$role" =~ ^ddcci[0-9]+$ ]]; then
+        if [ -d "/sys/class/backlight/$role" ]; then
+            echo "$role"
+            return 0
+        fi
+        return 1
+    fi
+
+    file="$CACHEDIR/$role.target"
+    if [ -f "$file" ]; then
+        cache="$(cat "$file" 2>/dev/null || true)"
+        if [[ "$cache" == bus:* ]]; then
+            bus="${cache#bus:}"
+            # Prefer the kernel device once it appears.
+            if [ -d "/sys/class/backlight/ddcci${bus}" ]; then
+                echo "ddcci${bus}" > "$file"
+                echo "ddcci${bus}"
+                return 0
+            fi
+            if [ -d "/sys/bus/i2c/devices/i2c-${bus}" ]; then
+                echo "$cache"
+                return 0
+            fi
+        elif [ -n "$cache" ] && [ -d "/sys/class/backlight/$cache" ]; then
+            echo "$cache"
+            return 0
+        fi
+    fi
+
+    # Throttle repeated misses so Waybar polling does not spam ddcutil (which
+    # contends with ddcci-setup for the i2c bus locks) while a target is
+    # missing. DDCCI_MISS_TTL=0 disables throttling (used by verify-mapping).
+    missfile="$CACHEDIR/$role.miss"
+    if [ "${DDCCI_MISS_TTL:-15}" -gt 0 ] && [ -f "$missfile" ]; then
+        last="$(cat "$missfile" 2>/dev/null || echo 0)"
+        now="$(date +%s)"
+        ttl="${DDCCI_MISS_TTL:-15}"
+        if [ $((now - last)) -lt "$ttl" ]; then
+            return 1
+        fi
+    fi
+
+    cache="$(lookup_role_target "$role" || true)"
+    if [ -n "$cache" ]; then
+        rm -f "$missfile"
+        echo "$cache" > "$file"
+        echo "$cache"
+        return 0
+    fi
+
+    date +%s > "$missfile" 2>/dev/null || true
+    return 1
+}
+
+TARGET="$(resolve_target "$ROLE" || true)"
 
 if [ "$ACTION" = "resolve" ]; then
-    if [ -n "$DEVICE" ]; then
-        echo "$DEVICE"
+    if [ -n "$TARGET" ]; then
+        echo "$TARGET"
         exit 0
     fi
     exit 1
 fi
 
-[ -n "$DEVICE" ] || exit 1
+[ -n "$TARGET" ] || exit 1
 
 CACHEFILE="$CACHEDIR/$ROLE"
+MAXFILE="$CACHEDIR/$ROLE.max"
 
+bus_number() { echo "${TARGET#bus:}"; }
+
+# Read the current brightness percentage. Also refreshes the max value for
+# ddcutil targets.
 current() {
-    timeout 3 brightnessctl -d "$DEVICE" -m info 2>/dev/null | cut -d, -f4 | tr -d '%'
+    local cur max out
+    case "$TARGET" in
+        bus:*)
+            out="$(timeout 5 ddcutil --bus "$(bus_number)" --disable-dynamic-sleep getvcp 10 --brief 2>/dev/null | awk '{print $4, $5}')"
+            cur="${out%% *}"
+            max="${out##* }"
+            if [ -n "$cur" ] && [ -n "$max" ] && [ "$max" -gt 0 ] 2>/dev/null; then
+                echo "$max" > "$MAXFILE"
+                echo $(( cur * 100 / max ))
+            fi
+            ;;
+        *)
+            timeout 3 brightnessctl -d "$TARGET" -m info 2>/dev/null | cut -d, -f4 | tr -d '%'
+            ;;
+    esac
 }
 
+# Current brightness, falling back to the last cached value.
+current_or_cached() {
+    local c
+    c="$(current)"
+    if [ -z "$c" ]; then
+        c="$(cat "$CACHEFILE" 2>/dev/null || echo 0)"
+    fi
+    echo "$c"
+}
+
+# Set brightness to an absolute percentage.
 apply() {
-    brightnessctl -d "$DEVICE" set "$1" >/dev/null
+    local pct="$1" max val
+    case "$TARGET" in
+        bus:*)
+            if [ ! -f "$MAXFILE" ]; then
+                current >/dev/null 2>&1 || true
+            fi
+            max="$(cat "$MAXFILE" 2>/dev/null || echo 100)"
+            if ! [ "$max" -gt 0 ] 2>/dev/null; then
+                max=100
+            fi
+            val=$(( pct * max / 100 ))
+            [ "$val" -gt "$max" ] && val="$max"
+            [ "$val" -lt 0 ] && val=0
+            timeout 5 ddcutil --bus "$(bus_number)" --disable-dynamic-sleep setvcp 10 "$val" >/dev/null 2>&1
+            ;;
+        *)
+            brightnessctl -d "$TARGET" set "${pct}%" >/dev/null
+            ;;
+    esac
 }
 
 cached_or_live() {
@@ -113,7 +204,7 @@ cached_or_live() {
 
 cycle() {
     local direction="$1"
-    cur="$(current)"
+    cur="$(current_or_cached)"
 
     if [ "$direction" -eq 1 ]; then
         presets=(0 50 100)
@@ -144,9 +235,9 @@ cycle() {
         fi
     done
 
-    # Cache expected value before slow DDC/CI write.
+    # Cache expected value before the slow DDC/CI write.
     echo "$next" > "$CACHEFILE"
-    apply "${next}%"
+    apply "$next"
 }
 
 case "$ACTION" in
@@ -154,16 +245,16 @@ case "$ACTION" in
         cached_or_live
         ;;
     up)
-        cur="$(current)"
+        cur="$(current_or_cached)"
         val=$((cur + 5 > 100 ? 100 : cur + 5))
         echo "$val" > "$CACHEFILE"
-        apply '+5%'
+        apply "$val"
         ;;
     down)
-        cur="$(current)"
+        cur="$(current_or_cached)"
         val=$((cur - 5 < 0 ? 0 : cur - 5))
         echo "$val" > "$CACHEFILE"
-        apply '5%-'
+        apply "$val"
         ;;
     cycle)
         cycle 1

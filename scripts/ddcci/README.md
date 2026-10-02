@@ -42,6 +42,13 @@ fails, so the failure is visible instead of silent. A `flock` on
 `/run/ddcci-setup.lock` keeps the boot timer, hotplug and resume triggers from
 probing concurrently.
 
+Some monitors (notably the Gigabyte M27Q P) only become DDC/CI-ready well after
+boot, so the first probe after a reboot can still fail. `ddcci.service` therefore
+uses `Restart=on-failure` with `RestartSec=20` (up to 20 starts / 30 minutes) to
+keep retrying until the backlight devices are created. `waybar-ddcci` throttles
+repeated resolution misses (`DDCCI_MISS_TTL`, default 15 s) so Waybar polling
+does not spam `ddcutil` and contend with an in-progress probe.
+
 ### ddcutil needs a usable HOME
 
 `ddcutil` 3.x aborts initialization when it cannot determine its dynamic-sleep
@@ -75,11 +82,29 @@ new probe attempt, so `ddcci-setup.sh` detects and removes those stale clients
 before re-probing.
 
 A few monitors (e.g. Gigabyte M27Q P) return a malformed DDC/CI capability
-string. The `ddcci` driver creates an internal device reference but fails to
-register the backlight device. Later probes then fail with `EEXIST` because the
-stale internal reference is still present. When normal probing fails,
-`ddcci-setup.sh` unloads and reloads the `ddcci` modules to clear that state,
-then re-probes.
+string. The `ddcci` bus driver still registers a core device (`ddcci4`) even
+though the capability string is malformed; the `ddcci-backlight` probe then
+fails with `-EIO`, but the core device is left registered. Every later probe for
+that bus then fails with `-EEXIST` (`sysfs: cannot create duplicate filename
+'/bus/ddcci/devices/ddcci4'`), so only a full module reload clears it — giving
+just one fresh attempt per reload. When normal probing fails, `ddcci-setup.sh`
+unloads and reloads the `ddcci` modules to clear that state, then re-probes. It
+also raises the driver's writable `delay` parameter (`DDCCI_DELAY`, default
+150 ms) because the malformed capability read is often timing-related.
+
+### ddcutil fallback
+
+Because that driver bug can leave a monitor with no kernel backlight device for
+a long time, `waybar-ddcci` falls back to `ddcutil` for any role whose
+`/sys/class/backlight/ddcciN` is unavailable:
+
+- `waybar-ddcci resolve M1` prints either `ddcciN` (kernel device) or `bus:N`
+  (ddcutil fallback).
+- The fallback reads/writes VCP `0x10` on that I2C bus; it is slower than the
+  kernel device but keeps brightness working. If the kernel device later
+  appears, the next resolution upgrades back to it automatically.
+- `verify-mapping.sh` reports which mode each monitor is using and treats a
+  working fallback as success (it is not an error).
 
 ## Usage
 

@@ -23,12 +23,24 @@ DDCCI_WAIT_SECONDS="${DDCCI_WAIT_SECONDS:-90}"
 # How long to wait for a probed device to bind (attempts * delay seconds).
 DDCCI_PROBE_ATTEMPTS="${DDCCI_PROBE_ATTEMPTS:-10}"
 DDCCI_PROBE_DELAY="${DDCCI_PROBE_DELAY:-2}"
+# Delay after bus writes, in ms (ddcci module parameter; default 60). A larger
+# value helps monitors that return malformed capability strings on short delays.
+DDCCI_DELAY="${DDCCI_DELAY:-150}"
+
+# Set the driver's writable delay parameter (best effort).
+set_delay() {
+    local param="/sys/module/ddcci/parameters/delay"
+    if [ -w "$param" ]; then
+        echo "$DDCCI_DELAY" > "$param" 2>/dev/null || true
+    fi
+}
 
 # Load modules. Ignore errors if already loaded.
 load_modules() {
     modprobe ddcci 2>/dev/null || true
     modprobe ddcci-backlight 2>/dev/null || true
     sleep 0.5
+    set_delay
 }
 
 # Unload modules to clear stale internal driver state.
@@ -64,6 +76,21 @@ probe_bus() {
     local bus="$1"
     log "Probing i2c-${bus}"
     printf 'ddcci 0x37\n' > "/sys/bus/i2c/devices/i2c-${bus}/new_device" 2>/dev/null || true
+}
+
+# Delete every 0x37 client on every adapter, including bound ones. Needed before
+# unloading the modules so that a stale core ddcci device (left behind when a
+# malformed capability string makes the backlight probe fail with EEXIST) is
+# actually cleared on reload.
+delete_all_clients() {
+    for adapter in /sys/bus/i2c/devices/i2c-*; do
+        [ -d "$adapter" ] || continue
+        local bus
+        bus=$(basename "$adapter" | sed 's/i2c-//')
+        if [ -e "$adapter/${bus}-0037" ]; then
+            delete_client "$bus"
+        fi
+    done
 }
 
 # Clean up stale clients on all adapters before probing.
@@ -181,6 +208,7 @@ if try_probe "${BUSES[@]}"; then
 fi
 
 log "Normal probing failed. Resetting ddcci driver state..."
+delete_all_clients
 unload_modules
 load_modules
 cleanup_all_stale_clients
@@ -190,4 +218,7 @@ if try_probe "${BUSES[@]}"; then
 fi
 
 log "Warning: connected adapter(s) still not bound after driver reset."
+# Do not leave the failed probes' I2C clients behind: a stale client keeps the
+# bus locked and prevents the next (retried) run from detecting/probing it.
+cleanup_all_stale_clients
 exit 1

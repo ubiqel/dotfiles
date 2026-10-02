@@ -20,6 +20,9 @@ if [ -z "$WAYBAR_DDCCI" ] && [ -x "$HOME/.local/bin/waybar-ddcci" ]; then
     WAYBAR_DDCCI="$HOME/.local/bin/waybar-ddcci"
 fi
 
+# Always do a fresh resolution when checking, bypassing the miss throttle.
+export DDCCI_MISS_TTL=0
+
 # Extract the role (or legacy device) used by a Waybar module.
 config_dev() {
     local module="$1"
@@ -104,6 +107,7 @@ fi
 echo ""
 echo "Waybar module mapping:"
 problems=0
+fallback_used=0
 for role in M1 M2; do
     case "$role" in
         M1) module=monitor1 ;;
@@ -117,21 +121,39 @@ for role in M1 M2; do
     fi
     dev="$(resolve_ref "$ref")"
     if [ -n "$dev" ]; then
-        echo "  $role: $ref -> $dev (present)"
+        case "$dev" in
+            bus:*)
+                fallback_used=1
+                echo "  $role: $ref -> $dev (ddcutil fallback; kernel device ddcci${dev#bus:} missing)"
+                ;;
+            *)
+                echo "  $role: $ref -> $dev (kernel device)"
+                ;;
+        esac
     else
         echo "  $role: $ref -> NOT RESOLVED (monitor not detected or backlight missing)"
         problems=1
     fi
 done
 
-if [ ${#stale[@]} -gt 0 ]; then
-    problems=1
+# Brightness works through the fallback, so only unresolved roles are errors.
+need_fix=0
+if [ "$fallback_used" -eq 1 ] || [ ${#stale[@]} -gt 0 ]; then
+    need_fix=1
 fi
 
 if [ "$problems" -eq 0 ]; then
     echo ""
-    echo "Mapping looks consistent."
-    exit 0
+    if [ "$need_fix" -eq 1 ]; then
+        echo "Brightness works, but some monitors use the ddcutil fallback"
+        echo "(kernel ddcci devices are missing or have stale I2C clients)."
+    else
+        echo "Mapping looks consistent."
+    fi
+    # An explicit --fix still tries to restore the kernel devices.
+    if [ "$FIX" -ne 1 ] || [ "$need_fix" -eq 0 ]; then
+        exit 0
+    fi
 fi
 
 if [ "$FIX" -ne 1 ]; then
@@ -170,7 +192,10 @@ for role in M1 M2; do
     ref="$(config_dev "$module")"
     dev="$(resolve_ref "$ref")"
     if [ -n "$dev" ]; then
-        echo "  $role: $ref -> $dev (present)"
+        case "$dev" in
+            bus:*) echo "  $role: $ref -> $dev (ddcutil fallback)" ;;
+            *)     echo "  $role: $ref -> $dev (kernel device)" ;;
+        esac
     else
         echo "  $role: $ref -> STILL NOT RESOLVED"
         problems=1
