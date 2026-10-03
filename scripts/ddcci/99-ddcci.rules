@@ -1,3 +1,0 @@
-# Re-probe ddcci backlights when a DRM connector goes connected, e.g. after
-# boot, when a monitor is powered on, or when the cable is re-plugged.
-ACTION=="change", SUBSYSTEM=="drm", ENV{DEVTYPE}=="drm_connector", ENV{HOTPLUG}=="1", TAG+="systemd", ENV{SYSTEMD_WANTS}+="ddcci.service"

@@ -75,30 +75,36 @@
     },
 
     // =============================================================================
-    // Backlight Modules (via ddcci-backlight + brightnessctl)
-    // M1/M2 are stable roles defined in ddcci-monitors.conf, not bus numbers.
+    // Backlight Modules (via the `shine` DDC/CI tool)
+    // M1/M2 are stable roles defined in ~/.config/shine/monitors.conf.
+    // Scroll up/down: +/-5%. Left click: cycle 0 -> 50 -> 100. Right click:
+    // cycle-reverse. Each module listens on its own real-time signal
+    // (SIGRTMIN+8 / SIGRTMIN+9); the event command notifies Waybar *after* the
+    // write so the new value shows immediately.
     // =============================================================================
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
-        "exec-on-event": true,
+        "exec-on-event": false,
         "interval": 5,
-        "exec": "waybar-ddcci get M1",
-        "on-click": "waybar-ddcci cycle M1",
-        "on-click-right": "waybar-ddcci cycle-reverse M1",
-        "on-scroll-up": "waybar-ddcci up M1",
-        "on-scroll-down": "waybar-ddcci down M1",
+        "signal": 8,
+        "exec": "shine get M1",
+        "on-click": "shine cycle M1; pkill -SIGRTMIN+8 waybar",
+        "on-click-right": "shine cycle-reverse M1; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-up": "shine up M1; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-down": "shine down M1; pkill -SIGRTMIN+8 waybar",
         "tooltip": false
     },
 
     "custom/monitor2_brightness": {
         "format": "󰃠 M2: {}%",
-        "exec-on-event": true,
+        "exec-on-event": false,
         "interval": 5,
-        "exec": "waybar-ddcci get M2",
-        "on-click": "waybar-ddcci cycle M2",
-        "on-click-right": "waybar-ddcci cycle-reverse M2",
-        "on-scroll-up": "waybar-ddcci up M2",
-        "on-scroll-down": "waybar-ddcci down M2",
+        "signal": 9,
+        "exec": "shine get M2",
+        "on-click": "shine cycle M2; pkill -SIGRTMIN+9 waybar",
+        "on-click-right": "shine cycle-reverse M2; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-up": "shine up M2; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-down": "shine down M2; pkill -SIGRTMIN+9 waybar",
         "tooltip": false
     },
 
