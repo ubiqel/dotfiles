@@ -55,7 +55,6 @@ return {
     opts = {
       formatters_by_ft = {
         go = { "goimports", "gofumpt" },
-        odin = { "odinfmt" },
       },
     },
   },
