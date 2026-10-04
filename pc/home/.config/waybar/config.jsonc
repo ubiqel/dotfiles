@@ -39,7 +39,7 @@
     "group/system-indicators": {
       "orientation": "horizontal",
       "modules": [
-        "idle_inhibitor",
+        "inhibitor",
         "pulseaudio",
         "bluetooth",
         "network",
@@ -111,7 +111,8 @@
     // =============================================================================
     // Core Modules
     // =============================================================================
-    "idle_inhibitor": {
+    "inhibitor": {
+        "what": ["idle", "sleep", "shutdown"],
         "format": "{icon}",
         "format-icons": {
             "activated": "",

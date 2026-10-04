@@ -63,7 +63,7 @@ button:hover {
 #clock,
 #network,
 #bluetooth,
-#idle_inhibitor,
+#inhibitor,
 #pulseaudio,
 #custom-suspend,
 #custom-poweroff,
@@ -72,7 +72,7 @@ button:hover {
   padding: 0 10px;
 }
 
-#idle_inhibitor { color: @mauve; padding-left: 6px; padding-right: 20px; }
+#inhibitor { color: @mauve; padding-left: 6px; padding-right: 20px; }
 #clock          { color: @flamingo; }
 #pulseaudio     { color: @maroon; }
 #bluetooth      { color: @sky; }
