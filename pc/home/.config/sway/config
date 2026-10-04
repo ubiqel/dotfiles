@@ -22,6 +22,8 @@
 #
 ### Autostart
 #
+    exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
     exec /usr/bin/lxqt-policykit-agent
 
     exec mako
@@ -31,6 +33,8 @@
     exec pasystray
 
     exec dex --autostart --environment sway
+
+    exec darkman run
 
     exec 'tmux new-session -d -s temp_ressurect; sleep 5; tmux kill-session -t temp_ressurect'
 #
@@ -294,18 +298,6 @@
 # Read `man 5 sway-bar` for more information about this section.
     bar {
         swaybar_command waybar
-
-        position top
-
-        # When the status_command prints a new line to stdout, swaybar updates.
-        # The default just shows the current date and time.
-        status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-
-        colors {
-            statusline #ffffff
-            background #323232
-            inactive_workspace #32323200 #32323200 #5c5c5c
-        }
     }
 #
 # Gaps and borders
