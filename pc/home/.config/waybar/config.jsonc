@@ -40,6 +40,7 @@
       "orientation": "horizontal",
       "modules": [
         "inhibitor",
+        "custom/darkman",
         "pulseaudio",
         "bluetooth",
         "network",
@@ -105,6 +106,18 @@
         "on-click-right": "shine cycle-reverse M2; pkill -SIGRTMIN+9 waybar",
         "on-scroll-up": "shine up M2; pkill -SIGRTMIN+9 waybar",
         "on-scroll-down": "shine down M2; pkill -SIGRTMIN+9 waybar",
+        "tooltip": false
+    },
+
+    // =============================================================================
+    // Darkman Module
+    // =============================================================================
+    "custom/darkman": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "if darkman get | grep -q 'dark'; then echo '{\"text\":\"\",\"class\":\"dark\"}'; else echo '{\"text\":\"󰖨\",\"class\":\"light\"}'; fi",
+        "on-click": "darkman toggle",
+        "interval": 5,
         "tooltip": false
     },
 

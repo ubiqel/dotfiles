@@ -65,6 +65,7 @@ button:hover {
 #bluetooth,
 #inhibitor,
 #pulseaudio,
+#custom-darkman,
 #custom-suspend,
 #custom-poweroff,
 #custom-monitor1_brightness,
@@ -73,6 +74,8 @@ button:hover {
 }
 
 #inhibitor { color: @mauve; padding-left: 6px; padding-right: 20px; }
+#custom-darkman       { color: @blue; padding-left: 8px; padding-right: 14px; }
+#custom-darkman.light { color: @yellow; }
 #clock          { color: @flamingo; }
 #pulseaudio     { color: @maroon; }
 #bluetooth      { color: @sky; }
