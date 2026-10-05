@@ -138,7 +138,7 @@
     bindsym --to-code $mod+q kill
 
     # Start your launcher
-    bindsym --to-code Ctrl+Shift+Space exec $menu
+    bindsym --to-code $mod+Space exec $menu
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -246,10 +246,10 @@
     bindsym Ctrl+Return nop
 
     # Toggle the current focus between tiling and floating mode
-    bindsym --to-code $mod+Shift+space floating toggle
+    bindsym --to-code $mod+Shift+Space floating toggle
 
     # Swap focus between the tiling area and the floating area
-    bindsym --to-code $mod+space focus mode_toggle
+    bindsym --to-code $mod+p focus mode_toggle
 
     # Move focus to the parent container
     bindsym --to-code $mod+a focus parent
