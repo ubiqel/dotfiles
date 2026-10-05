@@ -1,3 +1,4 @@
 macos-option-as-alt = true
 confirm-close-surface = false
 font-size=14
+theme = dark:TokyoNight Storm,light:Gruvbox Light Hard
