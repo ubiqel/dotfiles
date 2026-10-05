@@ -61,7 +61,7 @@
     // =============================================================================
     "custom/suspend": {
         "format": "{}",
-        "exec": "echo ''",
+        "exec": "echo '󰒲'",
         "interval": "once",
         "on-click": "systemctl suspend",
         "tooltip": false
