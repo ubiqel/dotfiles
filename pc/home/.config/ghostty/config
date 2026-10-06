@@ -2,4 +2,4 @@ font-size=12
 font-family=BlexMono Nerd Font Mono
 confirm-close-surface=false
 keybind=ctrl+shift+q=unbind
-theme = dark:TokyoNight Storm,light:Gruvbox Light Hard
+theme = dark:Catppuccin Mocha,light:Gruvbox Light
