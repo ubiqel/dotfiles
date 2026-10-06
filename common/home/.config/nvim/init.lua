@@ -17,8 +17,24 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("keiqu.plugins", {
-  dev = { path = "~/code" },
+require("lazy").setup("keiqu.plugins")
+
+-- Configure colorscheme
+local function set_theme()
+  if vim.o.background == "dark" then
+    vim.cmd("colorscheme catppuccin-mocha")
+  else
+    vim.cmd("colorscheme gruvbox")
+  end
+end
+
+-- 1. Listen for dynamic changes while Neovim is ALREADY open
+vim.api.nvim_create_autocmd("OptionSet", {
+  pattern = "background",
+  callback = set_theme,
 })
 
-vim.cmd([[colorscheme catppuccin-mocha]])
+-- 2. Wait for Neovim to fully start up BEFORE setting the initial theme
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = set_theme,
+})
