@@ -36,5 +36,6 @@ vim.api.nvim_create_autocmd("OptionSet", {
 
 -- 2. Wait for Neovim to fully start up BEFORE setting the initial theme
 vim.api.nvim_create_autocmd("VimEnter", {
+  nested = true, -- for lualine to correctly set it's theme (does it through autocmd on background change)
   callback = set_theme,
 })
