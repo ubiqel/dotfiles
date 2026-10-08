@@ -12,6 +12,10 @@ if true
     # Performance / Direct Scanout
     set -x WLR_SCENE_DISABLE_DIRECT_SCANOUT 1
 
+    # Ignore simpledrm (boot framebuffer) so sway doesn't build a multi-GPU renderer.
+    # by-path keeps the NVIDIA card pinned even if card numbering changes.
+    set -x WLR_DRM_DEVICES (realpath /dev/dri/by-path/pci-0000:01:00.0-card)
+
     # App integrations
     set -x MOZ_ENABLE_WAYLAND 1
     set -x ELECTRON_OZONE_PLATFORM_HINT auto
