@@ -88,11 +88,11 @@
         "exec-on-event": false,
         "interval": 5,
         "signal": 8,
-        "exec": "shine get M1",
-        "on-click": "shine cycle M1; pkill -SIGRTMIN+8 waybar",
-        "on-click-right": "shine cycle-reverse M1; pkill -SIGRTMIN+8 waybar",
-        "on-scroll-up": "shine up M1; pkill -SIGRTMIN+8 waybar",
-        "on-scroll-down": "shine down M1; pkill -SIGRTMIN+8 waybar",
+        "exec": "shine get 'edid:GBT:M27Q P:23133B000026'",
+        "on-click": "shine cycle 'edid:GBT:M27Q P:23133B000026' --steps=0,50,100; pkill -SIGRTMIN+8 waybar",
+        "on-click-right": "shine cycle 'edid:GBT:M27Q P:23133B000026' --steps=100,50,0; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-up": "shine up 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-down": "shine down 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
         "tooltip": false
     },
 
@@ -101,11 +101,11 @@
         "exec-on-event": false,
         "interval": 5,
         "signal": 9,
-        "exec": "shine get M2",
-        "on-click": "shine cycle M2; pkill -SIGRTMIN+9 waybar",
-        "on-click-right": "shine cycle-reverse M2; pkill -SIGRTMIN+9 waybar",
-        "on-scroll-up": "shine up M2; pkill -SIGRTMIN+9 waybar",
-        "on-scroll-down": "shine down M2; pkill -SIGRTMIN+9 waybar",
+        "exec": "shine get 'edid:XMI:Mi Monitor:7041110045904'",
+        "on-click": "shine cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=0,50,100; pkill -SIGRTMIN+9 waybar",
+        "on-click-right": "shine cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=100,50,0; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-up": "shine up 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-down": "shine down 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
         "tooltip": false
     },
 
