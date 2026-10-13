@@ -76,23 +76,18 @@
     },
 
     // =============================================================================
-    // Backlight Modules (via the `shine` DDC/CI tool)
-    // M1/M2 are stable roles defined in ~/.config/shine/monitors.conf.
-    // Scroll up/down: +/-5%. Left click: cycle 0 -> 50 -> 100. Right click:
-    // cycle-reverse. Each module listens on its own real-time signal
-    // (SIGRTMIN+8 / SIGRTMIN+9); the event command notifies Waybar *after* the
-    // write so the new value shows immediately.
+    // Backlight Modules
     // =============================================================================
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
         "exec-on-event": false,
         "interval": 5,
         "signal": 8,
-        "exec": "shine get 'edid:GBT:M27Q P:23133B000026'",
-        "on-click": "shine cycle 'edid:GBT:M27Q P:23133B000026' --steps=0,50,100; pkill -SIGRTMIN+8 waybar",
-        "on-click-right": "shine cycle 'edid:GBT:M27Q P:23133B000026' --steps=100,50,0; pkill -SIGRTMIN+8 waybar",
-        "on-scroll-up": "shine up 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
-        "on-scroll-down": "shine down 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
+        "exec": "monlux get 'edid:GBT:M27Q P:23133B000026'",
+        "on-click": "monlux cycle 'edid:GBT:M27Q P:23133B000026' --steps=0,50,100; pkill -SIGRTMIN+8 waybar",
+        "on-click-right": "monlux cycle 'edid:GBT:M27Q P:23133B000026' --steps=100,50,0; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-up": "monlux up 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
+        "on-scroll-down": "monlux down 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
         "tooltip": false
     },
 
@@ -101,11 +96,11 @@
         "exec-on-event": false,
         "interval": 5,
         "signal": 9,
-        "exec": "shine get 'edid:XMI:Mi Monitor:7041110045904'",
-        "on-click": "shine cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=0,50,100; pkill -SIGRTMIN+9 waybar",
-        "on-click-right": "shine cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=100,50,0; pkill -SIGRTMIN+9 waybar",
-        "on-scroll-up": "shine up 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
-        "on-scroll-down": "shine down 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
+        "exec": "monlux get 'edid:XMI:Mi Monitor:7041110045904'",
+        "on-click": "monlux cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=0,50,100; pkill -SIGRTMIN+9 waybar",
+        "on-click-right": "monlux cycle 'edid:XMI:Mi Monitor:7041110045904' --steps=100,50,0; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-up": "monlux up 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
+        "on-scroll-down": "monlux down 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
         "tooltip": false
     },
 
