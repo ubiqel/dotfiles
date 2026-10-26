@@ -91,6 +91,12 @@ nmap("<A-j>", ":resize +2<cr>")
 nmap("<A-h>", ":vertical resize -2<cr>")
 nmap("<A-l>", ":vertical resize +2<cr>")
 
+-- move lines up/down
+nmap("<C-A-k>", ":m .-2<cr>==")
+nmap("<C-A-j>", ":m .+1<cr>==")
+vmap("<C-A-k>", ":m '<-2<cr>gv=gv")
+vmap("<C-A-j>", ":m '>+1<cr>gv=gv")
+
 -- Telescope
 nmap(
   "<leader>ff",
