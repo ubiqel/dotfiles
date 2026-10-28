@@ -32,6 +32,15 @@ return {
       }) -- load custom snippets
       snip_loader.lazy_load() -- load friendly-snippets
 
+      local snip_lua_loader_ok, snip_lua_loader = pcall(require, "luasnip/loaders/from_lua")
+      if not snip_lua_loader_ok then
+        vim.notify("Snippet loader 'from_lua' for luasnip is not found!", vim.log.levels.ERROR)
+        return
+      end
+      snip_lua_loader.lazy_load({
+        paths = { snip_path },
+      }) -- load custom Lua snippets (needed for dynamic dates)
+
       local autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp", vim.log.levels.ERROR)
       if not autopairs_ok then
         vim.notify("Plugin 'nvim-autopairs.completion.cmp' not found!", vim.log.levels.ERROR)
