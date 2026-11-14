@@ -10,7 +10,10 @@
     "sidebar": "auto",
     "scrollbar": false,
     "thinking": "hide",
-    "verbosity": "medium"
+    "verbosity": "medium",
+    "grouping": "auto",
+    "image_preview": false,
+    "permissions": "prompt"
   },
   "animations": true,
   "prompt": {
