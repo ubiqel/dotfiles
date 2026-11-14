@@ -1,7 +1,15 @@
 local servers = require("keiqu.lsp.servers")
 
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+capabilities.workspace = vim.tbl_deep_extend("force", capabilities.workspace or {}, {
+  fileOperations = {
+    didRename = true,
+    willRename = true,
+  },
+})
+
 vim.lsp.config("*", {
-  capabilities = require("cmp_nvim_lsp").default_capabilities(),
+  capabilities = capabilities,
 })
 
 vim.diagnostic.config({
@@ -14,7 +22,7 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = "",
     },
   },
-  update_in_insert = true,
+  update_in_insert = false,
   underline = true,
   severity_sort = true,
   float = {
@@ -26,8 +34,6 @@ vim.diagnostic.config({
     prefix = "",
   },
 })
-
-vim.lsp.inlay_hint.enable(true)
 
 require("keiqu.lsp.keymaps").setup()
 
