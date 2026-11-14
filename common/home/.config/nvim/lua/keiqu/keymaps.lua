@@ -1,47 +1,35 @@
-local defaultOpts = { noremap = true, silent = true }
-
-local M = {}
-
-M.map = function(mode, lhs, rhs, opts)
-  if opts == nil then
-    opts = defaultOpts
-  end
-
-  -- TODO: why not works?
-  -- vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+local function map(mode, lhs, rhs, opts)
+  opts = vim.tbl_extend("force", { silent = true }, opts or {})
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
-M.bufmap = function(bufnr)
-  return function(mode, lhs, rhs, opts)
-    if opts == nil then
-      opts = defaultOpts
-    end
-    opts.buffer = bufnr
+-- save
+map("n", "<leader>w", "<cmd>write<cr>", { desc = "Save buffer" })
 
-    vim.keymap.set(mode, lhs, rhs, opts)
-  end
-end
+-- yanking and pasting to/from the system clipboard
+map({ "n", "x" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+map({ "n", "x" }, "<leader>p", '"+gp', { desc = "Paste from system clipboard" })
+map({ "n", "x" }, "<leader>P", '"+gP', { desc = "Paste from system clipboard before cursor" })
 
--- TODO: remove this shit
-M.nmap = function(lhs, rhs, opts) M.map("n", lhs, rhs, opts) end
+-- tab navigation
+map("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Tab: keep only current" })
+map("n", "<leader><tab>c", "<cmd>tabclose<cr>", { desc = "Tab: close" })
+map("n", "<leader><tab>r", "<cmd>tabprevious | tabclose#<cr>", { desc = "Tab: close current, return" })
 
-M.imap = function(lhs, rhs, opts) M.map("i", lhs, rhs, opts) end
+-- remove search highlight
+map("n", "<leader>/", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
 
-M.vmap = function(lhs, rhs, opts) M.map("v", lhs, rhs, opts) end
+-- resize windows
+map("n", "<A-k>", "<cmd>resize -2<cr>", { desc = "Resize window up" })
+map("n", "<A-j>", "<cmd>resize +2<cr>", { desc = "Resize window down" })
+map("n", "<A-h>", "<cmd>vertical resize -2<cr>", { desc = "Resize window left" })
+map("n", "<A-l>", "<cmd>vertical resize +2<cr>", { desc = "Resize window right" })
 
-M.xmap = function(lhs, rhs, opts) M.map("x", lhs, rhs, opts) end
+-- move lines up/down
+map("n", "<C-A-k>", "<cmd>move .-2<cr>==", { desc = "Move line up" })
+map("n", "<C-A-j>", "<cmd>move .+1<cr>==", { desc = "Move line down" })
+map("x", "<C-A-k>", "<cmd>move '<-2<cr>gv=gv", { desc = "Move selection up" })
+map("x", "<C-A-j>", "<cmd>move '>+1<cr>gv=gv", { desc = "Move selection down" })
 
-M.tmap = function(lhs, rhs, opts) M.map("t", lhs, rhs, opts) end
-
-M.nimap = function(lhs, rhs, opts) M.map({ "n", "i" }, lhs, rhs, opts) end
-
-M.nvmap = function(lhs, rhs, opts) M.map({ "n", "v" }, lhs, rhs, opts) end
-
-M.nbufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("n", lhs, rhs, opts) end
-
-M.ibufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("i", lhs, rhs, opts) end
-
-M.vbufmap = function(bufnr, lhs, rhs, opts) M.bufmap(bufnr)("v", lhs, rhs, opts) end
-
-return M
+-- don't lose the register after pasting in visual mode
+map({ "x", "s" }, "p", '"_dP', { desc = "Paste without yanking" })

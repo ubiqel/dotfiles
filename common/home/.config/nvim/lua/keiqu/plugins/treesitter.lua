@@ -1,34 +1,67 @@
+local parsers = {
+  "go",
+  "gomod",
+  "gowork",
+  "gosum",
+  "python",
+  "lua",
+  "luadoc",
+  "vim",
+  "vimdoc",
+  "bash",
+  "fish",
+  "json",
+  "jsonc",
+  "yaml",
+  "toml",
+  "markdown",
+  "markdown_inline",
+  "html",
+  "css",
+  "javascript",
+  "typescript",
+  "tsx",
+  "templ",
+  "c_sharp",
+  "gdscript",
+  "rust",
+  "odin",
+  "java",
+  "diff",
+  "gitcommit",
+  "gitignore",
+  "git_config",
+  "query",
+  "regex",
+  "xml",
+  "dockerfile",
+  "make",
+  "c",
+  "cpp",
+  "helm",
+  "gotmpl",
+}
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    build = { ":TSInstall all", ":TSUpdate all" },
     branch = "main",
-    dependencies = {
-      -- "nvim-treesitter/playground",
-      -- "nvim-treesitter/nvim-treesitter-textobjects",
-    },
-    -- main = "nvim-treesitter.configs",
     lazy = false,
-    opts = {
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = {
-        enable = true,
-      },
-      playground = {
-        enable = true,
-      },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "gnn",
-          node_incremental = "g[",
-          scope_incremental = "gs[",
-          node_decremental = "g]",
-        },
-      },
-    },
+    build = ":TSUpdate",
+    config = function()
+      local ts = require("nvim-treesitter")
+      ts.setup()
+
+      local installed = {}
+      for _, parser in ipairs(ts.get_installed("parsers")) do
+        installed[parser] = true
+      end
+
+      local missing = vim.tbl_filter(function(parser) return not installed[parser] end, parsers)
+
+      if #missing > 0 then
+        ts.install(missing)
+      end
+    end,
   },
 }

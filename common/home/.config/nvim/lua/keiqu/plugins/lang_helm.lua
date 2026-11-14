@@ -1,5 +1,4 @@
 return {
-  {
-    "towolf/vim-helm",
-  },
+  { "towolf/vim-helm" },
+  { "Glench/Vim-Jinja2-Syntax" },
 }

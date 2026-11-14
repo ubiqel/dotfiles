@@ -1,4 +1,4 @@
-local git_pull_branch = function(prompt_bufnr)
+local function git_pull_branch(prompt_bufnr)
   local utils = require("telescope.utils")
   local action_state = require("telescope.actions.state")
 
@@ -32,21 +32,23 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
-      "nvim-telescope/telescope-ui-select.nvim",
-      -- {
-      --   "nvim-telescope/telescope-frecency.nvim",
-      --   version = "*",
-      --   config = function() end,
-      -- },
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
+    keys = {
+      { "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find files" },
+      { "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
+      { "<leader>fb", function() require("telescope.builtin").buffers() end, desc = "Buffers" },
+      { "<leader>fh", function() require("telescope.builtin").help_tags() end, desc = "Help tags" },
+      {
+        "<leader>fs",
+        function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end,
+        desc = "Workspace symbols",
+      },
+      { "<leader>gs", function() require("telescope.builtin").git_status() end, desc = "Git status" },
+      { "<leader>gb", function() require("telescope.builtin").git_branches() end, desc = "Git branches" },
+    },
     config = function()
-      local ok, telescope = pcall(require, "telescope")
-      if not ok then
-        vim.notify("Plugin 'telescope' not found!", vim.log.levels.ERROR)
-        return
-      end
-
+      local telescope = require("telescope")
       local actions = require("telescope.actions")
       local action_layout = require("telescope.actions.layout")
       local action_state = require("telescope.actions.state")
@@ -64,7 +66,6 @@ return {
         local entries = current_picker.manager:iter()
 
         for entry in entries do
-          -- if it's current buffer then keep it
           if entry.bufnr == vim.api.nvim_get_current_buf() then
             goto continue
           end
@@ -80,18 +81,7 @@ return {
         actions.close(prompt_bufnr)
       end
 
-      -- telescope.load_extension("frecency")
-
       telescope.setup({
-        -- externsions = {
-        --   frecency = {
-        --     auto_validate = true,
-        --     matcher = "fuzzy",
-        --     path_display = { "filename_first" },
-        --     hide_current_buffer = true,
-        --     ignore_patterns = { "*.git/*", "*/tmp/*", "term://*", "*.mypy_cache/*", "*.venv/*", "*venv/*", "*vendor/*" },
-        --   },
-        -- },
         defaults = {
           mappings = {
             i = {
@@ -101,10 +91,8 @@ return {
               ["<C-k>"] = actions.move_selection_previous,
             },
           },
-
           color_devicons = true,
           layout_strategy = "flex",
-
           vimgrep_arguments = {
             "rg",
             "--color=never",
@@ -128,6 +116,7 @@ return {
           find_files = {
             theme = "dropdown",
             previewer = false,
+            path_display = { "filename_first" },
             find_command = {
               "fd",
               "--hidden",
@@ -197,6 +186,8 @@ return {
           },
         },
       })
+
+      pcall(telescope.load_extension, "fzf")
     end,
   },
 }

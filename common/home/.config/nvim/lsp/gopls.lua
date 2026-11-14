@@ -29,15 +29,15 @@ return {
         useany = true,
         shadow = false,
         ST1000 = false,
-        ST1001 = false, -- триггерится на dot imports
-        ST1003 = false, -- тригерится на код go-jet
+        ST1001 = false,
+        ST1003 = false,
       },
       gofumpt = true,
       usePlaceholders = false,
       completeUnimported = true,
       staticcheck = true,
       directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules", "-.linter-cache" },
-      semanticTokens = false, -- TODO: experiment with it (it seems to be broken; but lazyvim has solution in it's config)
+      semanticTokens = false,
     },
   },
 }

@@ -1,74 +1,42 @@
 return {
-  { "saadparwaiz1/cmp_luasnip", dependencies = { "L3MON4D3/LuaSnip", "rafamadriz/friendly-snippets" } },
-  "hrsh7th/cmp-nvim-lsp",
-  "hrsh7th/cmp-buffer",
-  "hrsh7th/cmp-path",
-  "hrsh7th/cmp-cmdline",
+  {
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
+    build = "make install_jsregexp",
+  },
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "nvim-autopairs",
-      "cmp_luasnip",
-      "cmp-nvim-lsp",
-      "cmp-buffer",
-      "cmp-path",
-      "cmp-cmdline",
+      { "windwp/nvim-autopairs", config = true },
+      "saadparwaiz1/cmp_luasnip",
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-nvim-lua",
+      "rafamadriz/friendly-snippets",
     },
     config = function()
-      local luasnip_ok, luasnip = pcall(require, "luasnip")
-      if not luasnip_ok then
-        vim.notify("Plugin 'luasnip' not found!", vim.log.levels.ERROR)
-        return
-      end
+      local cmp = require("cmp")
+      local luasnip = require("luasnip")
+      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      local cmp_types = require("cmp.types")
 
-      local snip_loader_ok, snip_loader = pcall(require, "luasnip/loaders/from_vscode")
-      if not snip_loader_ok then
-        vim.notify("Snippet loader 'from_vscode' for luasnip is not found!", vim.log.levels.ERROR)
-        return
-      end
       local snip_path = vim.fn.stdpath("config") .. "/lua/keiqu/snippets"
-      snip_loader.lazy_load({
-        paths = { snip_path },
-      }) -- load custom snippets
-      snip_loader.lazy_load() -- load friendly-snippets
-
-      local snip_lua_loader_ok, snip_lua_loader = pcall(require, "luasnip/loaders/from_lua")
-      if not snip_lua_loader_ok then
-        vim.notify("Snippet loader 'from_lua' for luasnip is not found!", vim.log.levels.ERROR)
-        return
-      end
-      snip_lua_loader.lazy_load({
-        paths = { snip_path },
-      }) -- load custom Lua snippets (needed for dynamic dates)
-
-      local autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp", vim.log.levels.ERROR)
-      if not autopairs_ok then
-        vim.notify("Plugin 'nvim-autopairs.completion.cmp' not found!", vim.log.levels.ERROR)
-        return
-      end
-
-      local cmp_ok, cmp = pcall(require, "cmp")
-      if not cmp_ok or cmp == nil then
-        vim.notify("Plugin 'cmp' not found!", vim.log.levels.ERROR)
-        return
-      end
-
-      local cmp_types_ok, cmp_types = pcall(require, "cmp.types")
-      if not cmp_types_ok then
-        vim.notify("Plugin 'cmp.types' not found!", vim.log.levels.ERROR)
-        return
-      end
+      require("luasnip/loaders/from_vscode").lazy_load({ paths = { snip_path } })
+      require("luasnip/loaders/from_vscode").lazy_load()
+      require("luasnip/loaders/from_lua").lazy_load({ paths = { snip_path } })
 
       local function has_words_before()
-        if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+        if vim.bo.buftype == "prompt" then
           return false
         end
 
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        local line, col = cursor[1], cursor[2]
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
 
-      -- Setup nvim-cmp.
       local kind_icons = {
         Array = "",
         Boolean = "󰨙",
@@ -110,15 +78,18 @@ return {
         Variable = "󰀫",
       }
 
+      local source_menu = {
+        nvim_lsp = "[LSP]",
+        nvim_lua = "[Nvim]",
+        luasnip = "[Snippet]",
+        buffer = "[Buffer]",
+        path = "[Path]",
+      }
+
       cmp.setup({
         snippet = {
           expand = function(args) luasnip.lsp_expand(args.body) end,
         },
-
-        style = {
-          winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
-        },
-
         mapping = {
           ["<C-j>"] = cmp.mapping.select_next_item(),
           ["<C-k>"] = cmp.mapping.select_prev_item(),
@@ -128,7 +99,6 @@ return {
             i = cmp.mapping.abort(),
             c = cmp.mapping.close(),
           }),
-
           ["<CR>"] = cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Replace }),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -151,26 +121,14 @@ return {
             end
           end, { "i", "s" }),
         },
-
         formatting = {
           fields = { "kind", "abbr", "menu" },
           format = function(entry, vim_item)
-            local name = entry.source.name
-
-            vim_item.kind = string.format("%s", kind_icons[vim_item.kind])
-            vim_item.menu = ({
-              nvim_lsp = "[LSP]",
-              nvim_lua = "[Nvim]",
-              luasnip = "[Snippet]",
-              buffer = "[Buffer]",
-              path = "[Path]",
-              dadbod = "[DB]",
-            })[name]
-
+            vim_item.kind = kind_icons[vim_item.kind] or vim_item.kind
+            vim_item.menu = source_menu[entry.source.name]
             return vim_item
           end,
         },
-
         completion = {
           keyword_length = 2,
           autocomplete = {
@@ -178,7 +136,6 @@ return {
             cmp_types.cmp.TriggerEvent.TextChanged,
           },
         },
-
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
@@ -187,7 +144,6 @@ return {
         }, {
           { name = "buffer" },
         }),
-
         sorting = {
           priority_weight = 2,
           comparators = {
@@ -202,16 +158,11 @@ return {
             cmp.config.compare.order,
           },
         },
-
         window = {
           documentation = {
             border = "solid",
             height = 200,
           },
-        },
-
-        experimental = {
-          ghost_text = false,
         },
       })
 
@@ -239,17 +190,8 @@ return {
 
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
-      --set max height of items
-      vim.cmd([[ set pumheight=6 ]])
-
-      --set highlights
-      local highlights = {
-        CmpItemMenu = { fg = "#E1A4EB" },
-      }
-
-      for group, hl in pairs(highlights) do
-        vim.api.nvim_set_hl(0, group, hl)
-      end
+      vim.opt.pumheight = 6
+      vim.api.nvim_set_hl(0, "CmpItemMenu", { link = "Comment" })
     end,
   },
 }

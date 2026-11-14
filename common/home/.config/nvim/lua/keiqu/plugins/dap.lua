@@ -1,5 +1,3 @@
-local nmap = require("keiqu.keymaps").nmap
-
 return {
   {
     "mfussenegger/nvim-dap",
@@ -11,96 +9,35 @@ return {
       vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticHint", linehl = "", numhl = "" })
       vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DiagnosticError", linehl = "", numhl = "" })
 
-      nmap("<F1>", function() dap.step_over() end)
-      nmap("<F2>", function() dap.step_into() end)
-      nmap("<F3>", function() dap.step_out() end)
-      nmap("<F5>", function() dap.continue() end)
-      nmap("<F6>", function() dap.pause() end)
-      nmap("<F8>", function() dap.up() end)
-      nmap("<F9>", function() dap.down() end)
-      nmap("<F10>", function() dap.step_back() end)
-      nmap("<leader>db", function() dap.toggle_breakpoint() end)
-      nmap("<leader>dB", function() dap.set_breakpoint(vim.fn.input("Breakpoint condition: ")) end)
-      nmap("<leader>dp", function() dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end)
-      nmap("<leader>dx", function() dap.terminate() end)
-      nmap("<leader>dc", function() dap.clear_breakpoints() end)
-      nmap("<leader>dl", function() dap.run_last() end)
+      local function map(lhs, rhs, desc) vim.keymap.set("n", lhs, rhs, { desc = desc, silent = true }) end
+
+      map("<F1>", function() dap.step_over() end, "DAP: step over")
+      map("<F2>", function() dap.step_into() end, "DAP: step into")
+      map("<F3>", function() dap.step_out() end, "DAP: step out")
+      map("<F5>", function() dap.continue() end, "DAP: continue")
+      map("<F6>", function() dap.pause() end, "DAP: pause")
+      map("<F8>", function() dap.up() end, "DAP: up")
+      map("<F9>", function() dap.down() end, "DAP: down")
+      map("<F10>", function() dap.step_back() end, "DAP: step back")
+      map("<leader>db", function() dap.toggle_breakpoint() end, "DAP: toggle breakpoint")
+      map(
+        "<leader>dB",
+        function() dap.set_breakpoint(vim.fn.input("Breakpoint condition: ")) end,
+        "DAP: conditional breakpoint"
+      )
+      map(
+        "<leader>dp",
+        function() dap.set_breakpoint(nil, nil, vim.fn.input("Log point message: ")) end,
+        "DAP: log point"
+      )
+      map("<leader>dx", function() dap.terminate() end, "DAP: terminate")
+      map("<leader>dc", function() dap.clear_breakpoints() end, "DAP: clear breakpoints")
+      map("<leader>dl", function() dap.run_last() end, "DAP: run last")
     end,
   },
-
-  {
-    "leoluz/nvim-dap-go",
-    dependencies = { "mfussenegger/nvim-dap" },
-    opts = {},
-    init = function() nmap("<leader>dt", ":lua require('dap-go').debug_test()<CR>") end,
-  },
-
-  -- {
-  --   "rcarriga/nvim-dap-ui",
-  --   dependencies = { "mfussenegger/nvim-dap" },
-  --   config = function()
-  --     local dap, dapui = require("dap"), require("dapui")
-
-  --     dapui.setup({
-  --       layouts = {
-  --         {
-  --           elements = {
-  --             {
-  --               id = "scopes",
-  --               size = 0.25,
-  --             },
-  --             {
-  --               id = "breakpoints",
-  --               size = 0.25,
-  --             },
-  --             {
-  --               id = "stacks",
-  --               size = 0.25,
-  --             },
-  --             {
-  --               id = "watches",
-  --               size = 0.25,
-  --             },
-  --           },
-  --           position = "left",
-  --           size = 40,
-  --         },
-  --         {
-  --           elements = {
-  --             {
-  --               id = "console",
-  --               size = 0.5,
-  --             },
-  --             {
-  --               id = "repl",
-  --               size = 0.5,
-  --             },
-  --           },
-  --           position = "bottom",
-  --           size = 10,
-  --         },
-  --       },
-  --       mappings = {
-  --         edit = "e",
-  --         expand = { "<CR>", "o" },
-  --         open = "i",
-  --         remove = "d",
-  --         repl = "r",
-  --         toggle = "t",
-  --       },
-  --     })
-
-  --     dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
-  --     dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
-  --     dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
-
-  --     nmap("<leader>do", function() dapui.toggle() end)
-  --   end,
-  -- },
   {
     "igorlfs/nvim-dap-view",
     dependencies = { "mfussenegger/nvim-dap" },
-    config = true,
     opts = {
       winbar = {
         default_section = "scopes",
@@ -110,16 +47,8 @@ return {
       local dap, dv = require("dap"), require("dap-view")
       dap.listeners.before.attach["dap-view-config"] = function() dv.open() end
       dap.listeners.before.launch["dap-view-config"] = function() dv.open() end
-      -- dap.listeners.before.event_terminated["dap-view-config"] = function() dv.close() end
-      -- dap.listeners.before.event_exited["dap-view-config"] = function() dv.close() end
-      --
 
-      nmap("<leader>do", function() dv.toggle() end)
+      vim.keymap.set("n", "<leader>do", function() dv.toggle() end, { desc = "DAP: toggle view", silent = true })
     end,
-  },
-  {
-    "theHamsta/nvim-dap-virtual-text",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = false,
   },
 }

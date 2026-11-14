@@ -1,42 +1,34 @@
-local defaults = require("keiqu.lsp.defaults")
-defaults.setup()
+local servers = require("keiqu.lsp.servers")
 
-local servers = {
-  "gopls",
-  "basedpyright",
-  "lua_ls",
-  "bashls",
-  "vtsls",
-  "helm_ls",
-  "jdtls",
-  "templ",
-  "html",
-  "htmx",
-  "yamlls",
-  "clangd",
-  "plantuml_lsp",
-  "gradle_ls",
-  "lemminx",
-  "omnisharp",
-  "gdscript",
-  "rust_analyzer",
-  "ols",
-}
+vim.lsp.config("*", {
+  capabilities = require("cmp_nvim_lsp").default_capabilities(),
+})
 
-local handlers = require("keiqu.lsp.handlers")
-handlers.setup()
+vim.diagnostic.config({
+  virtual_text = false,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.HINT] = "",
+      [vim.diagnostic.severity.INFO] = "",
+    },
+  },
+  update_in_insert = true,
+  underline = true,
+  severity_sort = true,
+  float = {
+    focusable = false,
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+})
 
-for _, server in pairs(servers) do
-  local opts = {
-    on_attach = handlers.on_attach,
-    capabilities = handlers.capabilities,
-  }
+vim.lsp.inlay_hint.enable(true)
 
-  local has_custom_opts, custom_opts = pcall(require, "keiqu.lsp.settings." .. server)
-  if has_custom_opts then
-    opts = vim.tbl_deep_extend("force", opts, custom_opts)
-  end
+require("keiqu.lsp.keymaps").setup()
 
-  vim.lsp.config(server, opts)
-  vim.lsp.enable(server)
-end
+vim.lsp.enable(servers.enabled)
