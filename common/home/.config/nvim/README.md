@@ -29,7 +29,7 @@ after/ftplugin/             filetype-specific options
 | --- | --- |
 | A new plugin | `lua/keiqu/plugins/<feature>.lua` |
 | A new LSP server | `lsp/<server>.lua`, then add it to `lua/keiqu/lsp/servers.lua` |
-| A new formatter | `lua/keiqu/plugins/formatting.lua` |
+| A language formatter | the matching `lang_*.lua` file; global defaults live in `formatting.lua` |
 | A new Treesitter parser | `lua/keiqu/plugins/treesitter.lua` |
 | A new Mason tool | `lua/keiqu/plugins/mason.lua` |
 | A global keymap | `lua/keiqu/keymaps.lua` |
@@ -39,6 +39,12 @@ after/ftplugin/             filetype-specific options
 Plugin specs are flat on purpose: lazy.nvim imports one level from
 `lua/keiqu/plugins/`, so language-specific specs use names such as
 `lang_go.lua` and `lang_lua.lua` instead of nested directories.
+
+Language-specific conform entries stay in the matching `lang_*.lua` file.
+`formatters_by_ft` is a map, so lazy.nvim merges it safely across specs.
+List-valued options such as Mason tools, Treesitter parsers, and none-ls
+sources stay centralized because lazy.nvim replaces lists instead of
+concatenating them.
 
 ## LSP
 
