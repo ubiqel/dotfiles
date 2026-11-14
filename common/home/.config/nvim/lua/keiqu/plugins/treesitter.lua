@@ -1,3 +1,5 @@
+-- jinja/jinja_inline are intentionally omitted: the upstream queries do not
+-- currently parse with the installed parser.
 local parsers = {
   "go",
   "gomod",

@@ -46,6 +46,8 @@ Plugin specs are flat on purpose: lazy.nvim imports one level from
   and for the servers Mason should install.
 - `lsp/<server>.lua` files are loaded automatically by Neovim 0.11+ and can
   override or extend the defaults shipped by `nvim-lspconfig`.
+- Use `after/lsp/<server>.lua` when a list field such as `filetypes` must
+  replace, rather than merge with, the `nvim-lspconfig` default.
 - Add a Mason-installed server to `servers.lua` and Mason will install it on the
   next start. Servers that are not Mason packages (for example
   `plantuml_lsp`) are excluded from the Mason list and must be installed
