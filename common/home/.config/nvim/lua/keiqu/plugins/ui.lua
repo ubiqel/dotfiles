@@ -180,6 +180,7 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
+      delay = 500,
       spec = {
         { "<leader><tab>", group = "tabs" },
         { "<leader>c", group = "code" },
