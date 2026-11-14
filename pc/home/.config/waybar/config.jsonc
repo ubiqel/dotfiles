@@ -131,7 +131,7 @@
             "stopped": "⊘"
         },
         "tooltip": true,
-        "on-click": "voxtype record toggle",
+        "on-click": "voxtype-configure-launcher",
         "on-click-right": "systemctl --user restart voxtype"
     },
 

@@ -132,7 +132,7 @@ model = "large-v3"
 # The array form helps with multilingual users where Whisper might misdetect
 # the language, especially for short sentences.
 # See: https://github.com/openai/whisper#available-models-and-languages
-language = "auto"
+language = ["en", "ru"]
 
 # Translate non-English speech to English
 translate = false
