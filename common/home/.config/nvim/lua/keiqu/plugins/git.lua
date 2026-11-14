@@ -51,7 +51,19 @@ return {
   {
     "sindrets/diffview.nvim",
     keys = {
-      { "<leader>gd", function() require("diffview").open() end, desc = "Open diffview" },
+      {
+        "<leader>gd",
+        function()
+          for _, view in ipairs(require("diffview.lib").views) do
+            if view.tabpage and vim.api.nvim_tabpage_is_valid(view.tabpage) then
+              vim.api.nvim_set_current_tabpage(view.tabpage)
+              return
+            end
+          end
+          require("diffview").open()
+        end,
+        desc = "Open diffview",
+      },
     },
   },
   {
