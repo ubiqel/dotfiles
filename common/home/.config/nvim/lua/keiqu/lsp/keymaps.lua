@@ -140,17 +140,6 @@ function M.setup()
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
 
-      if not vim.b[bufnr].keiqu_lsp_folds and has(bufnr, "textDocument/foldingRange") then
-        local wins = vim.fn.win_findbuf(bufnr)
-        if #wins > 0 then
-          vim.b[bufnr].keiqu_lsp_folds = true
-          for _, win in ipairs(wins) do
-            vim.wo[win].foldmethod = "expr"
-            vim.wo[win].foldexpr = "v:lua.vim.lsp.foldexpr()"
-          end
-        end
-      end
-
       if not vim.b[bufnr].keiqu_lsp_codelens and has(bufnr, "textDocument/codeLens") then
         vim.b[bufnr].keiqu_lsp_codelens = true
         vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave" }, {
