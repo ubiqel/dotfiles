@@ -14,11 +14,13 @@
   },
   "command": {
     "clean-comments": {
-      "template": "Go through the code in the current session and remove all redundant comments that were previously generated. Only keep comments that are essential for understanding the logic. Rewrite the modified code.",
+      "template": "Go through the code in the current session and remove all redundant comments that were previously generated. Only keep comments that are essential for understanding the logic (explain why not how).",
       "description": "Remove redundant AI-generated comments from code",
       "agent": "build",
-      "model": "gpt-5.2-codex"
     }
+  },
+  "compaction": {
+    "auto": true
   },
   "plugin": []
 }
