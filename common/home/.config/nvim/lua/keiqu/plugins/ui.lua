@@ -204,7 +204,6 @@ return {
         { "<leader>m", group = "macros" },
         { "<leader>r", group = "rename/refactor" },
         { "<leader>n", group = "noice" },
-        { "<leader>s", group = "search" },
         { "<leader>t", group = "test" },
         { "<leader>x", group = "diagnostics" },
       },
