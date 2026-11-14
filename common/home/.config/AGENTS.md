@@ -12,3 +12,11 @@
 
 - Be critical of the user's thoughts and decisions. Do not agree just to be agreeable.
 - If an idea is wrong or weak, say so directly and explain why. If it is bullshit, argue against it and prove it wrong.
+
+# UI
+
+- While testing UI changes you can take screenshots using `grim` tool.
+
+# Code exploration
+
+- If given link to some Git repo that you will need to explore, clone it to /tmp subdirectory and explore locally.
