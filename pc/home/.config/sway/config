@@ -42,6 +42,8 @@
 #
     bindsym --to-code Print exec grim -g "$(slurp)" - | swappy -f -
 
+    bindsym --no-repeat Super_R exec voxtype record start
+    bindsym --release Super_R exec voxtype record stop
 #
 ### Output configuration
 #
@@ -313,4 +315,5 @@
 # Other
 #
 include /etc/sway/config.d/*
+include ~/.config/sway/conf.d/*.conf
 include ~/.config/sway/outputs
