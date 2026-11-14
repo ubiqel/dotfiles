@@ -64,6 +64,17 @@ return {
           ["cmp.entry.get_documentation"] = true,
         },
       },
+      views = {
+        notify = {
+          timeout = 5000,
+        },
+      },
+      routes = {
+        {
+          filter = { event = "notify", min_height = 10 },
+          view = "split",
+        },
+      },
       presets = {
         bottom_search = true,
         command_palette = true,
@@ -79,11 +90,12 @@ return {
         mode = "c",
         desc = "Redirect command line",
       },
-      { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice: last message" },
-      { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice: history" },
-      { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice: all" },
-      { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Noice: dismiss all" },
-      { "<leader>snt", function() require("noice").cmd("pick") end, desc = "Noice: picker" },
+      { "<leader>nh", function() require("noice").cmd("history") end, desc = "Noice: history" },
+      { "<leader>nl", function() require("noice").cmd("last") end, desc = "Noice: last message" },
+      { "<leader>ne", function() require("noice").cmd("errors") end, desc = "Noice: errors" },
+      { "<leader>na", function() require("noice").cmd("all") end, desc = "Noice: all" },
+      { "<leader>nd", function() require("noice").cmd("dismiss") end, desc = "Noice: dismiss all" },
+      { "<leader>nt", function() require("noice").cmd("pick") end, desc = "Noice: picker" },
     },
   },
   {
@@ -191,6 +203,7 @@ return {
         { "<leader>l", group = "LSP" },
         { "<leader>m", group = "macros" },
         { "<leader>r", group = "rename/refactor" },
+        { "<leader>n", group = "noice" },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "test" },
         { "<leader>x", group = "diagnostics" },
