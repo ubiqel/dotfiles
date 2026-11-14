@@ -7,6 +7,10 @@ return {
       diagnostics = {
         globals = { "vim" },
       },
+      hint = {
+        enable = true,
+        arrayIndex = "Disable",
+      },
       workspace = {
         checkThirdParty = false,
       },
