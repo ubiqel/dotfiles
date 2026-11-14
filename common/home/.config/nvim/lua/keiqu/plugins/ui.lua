@@ -36,7 +36,6 @@ return {
   },
   {
     "chrisgrieser/nvim-recorder",
-    init = function() vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true }) end,
     opts = {
       mapping = {
         startStopRecording = "<leader>mr",
