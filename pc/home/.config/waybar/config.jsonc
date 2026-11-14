@@ -41,6 +41,7 @@
       "modules": [
         "inhibitor",
         "custom/darkman",
+        "custom/voxtype",
         "pulseaudio",
         "bluetooth",
         "network",
@@ -114,6 +115,24 @@
         "on-click": "darkman toggle",
         "interval": 5,
         "tooltip": false
+    },
+
+    // =============================================================================
+    // Voxtype Module
+    // =============================================================================
+    "custom/voxtype": {
+        "exec": "voxtype status --follow --format json",
+        "return-type": "json",
+        "format": "{icon}",
+        "format-icons": {
+            "idle": "",
+            "recording": "●",
+            "transcribing": "◐",
+            "stopped": "⊘"
+        },
+        "tooltip": true,
+        "on-click": "voxtype record toggle",
+        "on-click-right": "systemctl --user restart voxtype"
     },
 
     // =============================================================================

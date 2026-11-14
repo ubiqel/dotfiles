@@ -69,7 +69,8 @@ button:hover {
 #custom-suspend,
 #custom-poweroff,
 #custom-monitor1_brightness,
-#custom-monitor2_brightness {
+#custom-monitor2_brightness,
+#custom-voxtype {
   padding: 0 10px;
 }
 
@@ -84,6 +85,12 @@ button:hover {
 #battery        { color: @green; }
 #window         { color: @rosewater; }
 #language       { color: @peach; padding-left: 10px; padding-right: 5px; }
+
+/* Voxtype Status */
+#custom-voxtype              { color: @green; }
+#custom-voxtype.recording    { color: @red; animation: pulse 1s ease-in-out infinite; }
+#custom-voxtype.transcribing { color: @yellow; }
+#custom-voxtype.stopped      { color: @overlay0; }
 
 /* Brightness Module Colors (Using Catppuccin Accents) */
 #custom-monitor1_brightness { color: @teal; padding-right: 5px; }
@@ -158,4 +165,10 @@ button:hover {
 #power-group > widget:not(:last-child),
 #brightness-group > widget:not(:last-child) {
   border-right: 2px solid @surface0;
+}
+
+@keyframes pulse {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 1; }
 }
