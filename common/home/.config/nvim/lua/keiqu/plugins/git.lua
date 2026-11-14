@@ -54,15 +54,39 @@ return {
       {
         "<leader>gd",
         function()
-          for _, view in ipairs(require("diffview.lib").views) do
-            if view.tabpage and vim.api.nvim_tabpage_is_valid(view.tabpage) then
+          local lib = require("diffview.lib")
+          local current_view = lib.get_current_view()
+          local root = current_view
+              and current_view.adapter
+              and current_view.adapter.ctx
+              and current_view.adapter.ctx.toplevel
+            or vim.fs.root(0, { ".git" })
+            or vim.fn.getcwd()
+
+          for _, view in ipairs(lib.views) do
+            local valid = view.tabpage and vim.api.nvim_tabpage_is_valid(view.tabpage)
+            local default = view.rev_arg == nil and #(view.path_args or {}) == 0
+            local ctx = view.adapter and view.adapter.ctx
+            local same_root = ctx and ctx.toplevel == root
+
+            if valid and default and same_root then
               vim.api.nvim_set_current_tabpage(view.tabpage)
               return
             end
           end
+
+          if current_view then
+            local target = lib.get_prev_non_view_tabpage()
+            if target then
+              vim.api.nvim_set_current_tabpage(target)
+            else
+              vim.cmd("tabnew")
+            end
+          end
+
           require("diffview").open()
         end,
-        desc = "Open diffview",
+        desc = "Open default diffview",
       },
     },
   },
