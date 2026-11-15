@@ -1,0 +1,56 @@
+@import "latte.css";
+@import "base.css";
+
+/* =============================================================================
+   Muted Accents
+   Latte's accents are much louder on a light bar than Macchiato's are on a
+   dark one. Blend them toward the text color to keep the hues readable without
+   the neon look. Red is left alone so errors and recording state still pop.
+   ========================================================================== */
+@define-color rosewater #a27272;
+@define-color flamingo #a36872;
+@define-color pink #ab66a4;
+@define-color mauve #7042b9;
+@define-color maroon #a8495c;
+@define-color peach #b75c31;
+@define-color yellow #a4753b;
+@define-color green #458044;
+@define-color teal #2c7786;
+@define-color sky #2183b3;
+@define-color sapphire #327f97;
+@define-color blue #305dbd;
+@define-color lavender #6371c2;
+
+/* =============================================================================
+   Light Theme Overrides
+   base.css hardcodes a few dark-theme colors that need light equivalents.
+   ========================================================================== */
+label:focus {
+  background-color: @text;
+  color: @base;
+}
+
+button:hover {
+  box-shadow: inset 0 -3px @text;
+}
+
+#workspaces button {
+  color: @text;
+}
+
+#workspaces button:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+#workspaces button.focused {
+  color: @base;
+  box-shadow: inset 0 -3px @text;
+}
+
+#workspaces button.urgent {
+  color: @base;
+}
+
+#mode {
+  box-shadow: inset 0 -3px @text;
+}

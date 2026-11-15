@@ -311,6 +311,9 @@
     smart_borders on
 
     default_border pixel 2
+
+    # Titlebar and border colors, kept in sync with darkman.
+    include ~/.cache/sway/theme-colors.conf
 #
 # Other
 #

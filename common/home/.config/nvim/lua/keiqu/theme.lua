@@ -2,7 +2,7 @@ local function set_theme()
   if vim.o.background == "dark" then
     vim.cmd.colorscheme("catppuccin-mocha")
   else
-    vim.cmd.colorscheme("gruvbox")
+    vim.cmd.colorscheme("onedark")
   end
 end
 
