@@ -9,5 +9,21 @@
   },
   "compaction": {
     "auto": true
+  },
+  "mcp": {
+    "servers": {
+      "browse": {
+        "type": "local",
+        "command": [
+          "/home/salkirr/.local/bin/browse",
+          "mcp"
+        ],
+        "cwd": "~",
+        "pool": true,
+        "environment": {
+          "OPENCODE_BROWSER_RUNTIME": "auto-update"
+        }
+      }
+    }
   }
 }
