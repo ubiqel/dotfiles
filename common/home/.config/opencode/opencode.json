@@ -10,6 +10,12 @@
   "compaction": {
     "auto": true
   },
+  "worktree": {
+    "directory": ".lane/trees"
+  },
+  "watcher": {
+    "ignore": [".lane/**"]
+  },
   "mcp": {
     "servers": {
       "browse": {

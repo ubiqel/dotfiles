@@ -9,28 +9,7 @@
   "session": {
     "sidebar": "auto",
     "scrollbar": false,
-    "thinking": "hide",
-    "verbosity": "medium",
-    "grouping": "auto",
-    "image_preview": false,
-    "permissions": "prompt"
+    "thinking": "show"
   },
-  "animations": true,
-  "prompt": {
-    "editor": false,
-    "image_preview": true
-  },
-  "debug": {
-    "devtools": false
-  },
-  "attention": {
-    "notifications": true,
-    "sound": true
-  },
-  "tabs": {
-    "indicators": "status"
-  },
-  "plugins": [
-    "opencode-sidebar-token-metrics"
-  ]
+  "animations": true
 }
