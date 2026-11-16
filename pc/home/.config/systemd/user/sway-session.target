@@ -1,0 +1,8 @@
+[Unit]
+Description=sway compositor session
+Documentation=man:systemd.special(7)
+# graphical-session.target refuses manual start, so this target pulls it in
+# as a dependency. Units ordered with WantedBy=graphical-session.target then
+# start with the session.
+BindsTo=graphical-session.target
+After=graphical-session.target

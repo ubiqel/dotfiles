@@ -320,3 +320,10 @@
 include /etc/sway/config.d/*
 include ~/.config/sway/conf.d/*.conf
 include ~/.config/sway/outputs
+#
+# Systemd user session (after the includes above: 50-systemd-user.conf imports
+# WAYLAND_DISPLAY into the systemd user environment first).
+# graphical-session.target refuses manual start, so start our wrapper target,
+# which pulls it in and with it units listed in graphical-session.target.wants.
+#
+exec_always systemctl --user start sway-session.target
