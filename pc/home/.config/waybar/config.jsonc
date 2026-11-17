@@ -2,11 +2,6 @@
     "include": [
         "base.jsonc"
     ],
-    "margin-top": 5,
-    "margin-bottom": 5,
-    "margin-left": 10,
-    "margin-right": 10,
-    "height": 20,
     "modules-left": [
         "group/power-group",
         "group/brightness-group"
@@ -45,24 +40,11 @@
             "sway/language"
         ]
     },
-    "group/tray-group": {
-        "orientation": "horizontal",
-        "modules": [
-            "tray"
-        ]
-    },
     "custom/suspend": {
         "format": "{}",
         "exec": "echo '󰒲'",
         "interval": "once",
         "on-click": "systemctl suspend",
-        "tooltip": false
-    },
-    "custom/poweroff": {
-        "format": "{}",
-        "exec": "echo ''",
-        "interval": "once",
-        "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
         "tooltip": false
     },
     "custom/monitor1_brightness": {
@@ -116,5 +98,8 @@
         "format-connected": " {device_alias}",
         "format-connected-battery": " {device_alias} {device_battery_percentage}%",
         "on-click": "blueberry"
+    },
+    "pulseaudio": {
+        "on-click": "pwvucontrol"
     }
 }

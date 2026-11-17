@@ -17,7 +17,6 @@
     set $term ghostty
 
     # Application launcher
-    # set $menu bemenu-run -p bemenu -i --fixed-height --list 15 --center -W 0.2 -H 30 -B 3 -R 10 --cw 7 --ch 20 --fn "pango:DejaVu Sans Mono 14"
     set $menu fuzzel
 #
 ### Autostart
@@ -29,7 +28,9 @@
 
     exec mako
     exec nm-applet
-    exec pasystray
+    # pasystray is XEmbed-only (no StatusNotifierItem) and segfaults under
+    # GTK's Wayland backend; volume lives in the waybar pulseaudio module
+    # and the wob OSD instead.
 #
 ### Tools
 #
@@ -81,12 +82,6 @@
     input "type:pointer" {
         accel_profile flat
     }
-#
-### Audio
-#
-    # Virtual speacker and mic for applying preprocessing
-    # exec pactl load-module module-null-sink sink_name=Virtual-Speaker sink_properties=device.description=Virtual-Speaker
-    # exec pactl load-module module-remap-source source_name=Remap-Source master=Virtual-Speaker.monitor
 #
 ### Control volume
 #

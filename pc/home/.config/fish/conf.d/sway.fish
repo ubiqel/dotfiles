@@ -10,6 +10,10 @@ if true
     # by-path keeps the NVIDIA card pinned even if card numbering changes.
     set -x WLR_DRM_DEVICES (realpath /dev/dri/by-path/pci-0000:01:00.0-card)
 
+    # Host keyring agent only: the guest has no gnome-keyring, and an
+    # unconditional export here would hand it a dead socket path.
+    set -x SSH_AUTH_SOCK $XDG_RUNTIME_DIR/keyring/ssh
+
     set TTY1 (tty)
     [ "$TTY1" = /dev/tty1 ] && exec sway --unsupported-gpu
 end

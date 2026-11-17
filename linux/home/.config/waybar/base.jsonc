@@ -1,4 +1,9 @@
 {
+    "margin-top": 5,
+    "margin-bottom": 5,
+    "margin-left": 10,
+    "margin-right": 10,
+    "height": 20,
     "sway/workspaces": {
         "format": "{icon}",
         "on-click": "activate",
@@ -9,14 +14,6 @@
         "format": "{}",
         "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
         "hide-single-layout": false
-    },
-    "sway/window": {
-        "format": "{}",
-        "max-length": 35,
-        "rewrite": {
-            "": "Harsh"
-        },
-        "separate-outputs": true
     },
     "clock": {
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
@@ -54,7 +51,6 @@
                 ""
             ]
         },
-        "on-click": "pwvucontrol",
         "scroll-step": 2
     },
     "tray": {
@@ -75,46 +71,17 @@
             "deactivated": ""
         }
     },
-    "privacy": {
-        "icon-spacing": 4,
-        "icon-size": 18,
-        "transition-duration": 250,
+    "group/tray-group": {
+        "orientation": "horizontal",
         "modules": [
-            {
-                "type": "screenshare",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
-            {
-                "type": "audio-out",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
-            {
-                "type": "audio-in",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            }
+            "tray"
         ]
     },
-    "systemd-failed-units": {
-        "hide-on-ok": false,
-        "format": "✗ {nr_failed}",
-        "format-ok": "✓",
-        "system": true,
-        "user": true
-    },
-    "wlr/taskbar": {
-        "format": "{icon}",
-        "icon-size": 14,
-        "icon-theme": "Numix-Circle",
-        "tooltip-format": "{title}",
-        "on-click": "activate",
-        "on-click-middle": "close",
-        "ignore-list": [],
-        "app_ids-mapping": {},
-        "rewrite": {
-            ".*(steam_app_[0-9]+).*": "Game"
-        }
+    "custom/poweroff": {
+        "format": "{}",
+        "exec": "echo ''",
+        "interval": "once",
+        "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
+        "tooltip": false
     }
 }
