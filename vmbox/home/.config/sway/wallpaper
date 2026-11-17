@@ -1,0 +1,49 @@
+#!/bin/sh
+# Set the guest background to one of the installed wallpapers.
+#
+# The drop-in runs this with `exec_always`, so it has to re-apply the same image
+# after every `swaymsg reload` (also issued by vmbox-sync): sway restarts swaybg
+# without arguments on reload, so an IPC-set background would otherwise vanish.
+# The choice is cached for the session (XDG_RUNTIME_DIR is wiped at logout), so
+# a reload keeps the wallpaper while a new login picks a fresh one.
+#
+# A background is applied with swaymsg instead of an `output * bg <backtick>`
+# line because that line is evaluated at config parse time: with a missing or
+# empty wallpaper directory the substitution expands to nothing, sway rejects
+# the whole config and the session starts without a background (reachable on
+# pre-defaults overlays, which get this profile through vmbox-sync). Here the
+# same condition just falls back to a solid colour.
+set -eu
+
+dir="$HOME/Pictures/Wallpapers/Landscape"
+runtime_dir=${XDG_RUNTIME_DIR:-$HOME/.cache}
+cache="$runtime_dir/sway-wallpaper"
+
+# `exec_always` can run before the first output exists; wait briefly for one so
+# the background is not applied to an empty output list.
+i=0
+while [ "$i" -lt 50 ]; do
+    if swaymsg -t get_outputs -r 2>/dev/null | grep -q '"name"'; then
+        break
+    fi
+    sleep 0.1
+    i=$((i + 1))
+done
+
+if [ -d "$dir" ]; then
+    file=$(find "$dir" -maxdepth 1 -type f -name '*.jpg' | shuf -n 1)
+else
+    file=
+fi
+if [ -n "$file" ]; then
+    mkdir -p "$(dirname "$cache")"
+    printf '%s\n' "$file" >"$cache"
+elif [ -r "$cache" ]; then
+    file=$(cat "$cache")
+    [ -f "$file" ] || file=
+fi
+
+if [ -n "$file" ]; then
+    exec swaymsg output '*' bg "$file" fill
+fi
+exec swaymsg output '*' bg '#1e1e2e' solid_color

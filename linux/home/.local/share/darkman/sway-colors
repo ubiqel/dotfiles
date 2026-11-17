@@ -74,7 +74,11 @@ EOF
 #
 # Darkman is a systemd user service and does not inherit SWAYSOCK from the
 # compositor's environment, so discover the live socket here. Scan the runtime
-# dir and skip stale sockets left behind by dead compositors.
+# dir and skip stale sockets left behind by dead compositors. Unlike the
+# vmbox-sync copy this takes the first live socket instead of reading client
+# environments: a nested compositor on the same account is not expected on a
+# darkman host, and a wrong choice only recolours that compositor's borders —
+# the cache file written above is still the one sway loads.
 if [ -z "${SWAYSOCK:-}" ]; then
     runtime_dir=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
     for socket in "$runtime_dir"/sway-ipc."$(id -u)".*.sock; do
