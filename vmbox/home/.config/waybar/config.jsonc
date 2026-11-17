@@ -15,7 +15,8 @@
     "group/power-group": {
         "orientation": "horizontal",
         "modules": [
-            "custom/poweroff"
+            "custom/poweroff",
+            "custom/suspend"
         ]
     },
     "group/system-indicators": {

@@ -40,13 +40,6 @@
             "sway/language"
         ]
     },
-    "custom/suspend": {
-        "format": "{}",
-        "exec": "echo '󰒲'",
-        "interval": "once",
-        "on-click": "systemctl suspend",
-        "tooltip": false
-    },
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
         "exec-on-event": false,
