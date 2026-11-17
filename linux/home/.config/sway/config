@@ -54,20 +54,6 @@
     # Inhibitors
     for_window [instance="steam_app_*"] inhibit_idle focus
 #
-### Idle configuration
-#
-    set $idle_script ~/.config/sway/idle_control.sh
-
-    exec swayidle -w \
-        idlehint 600 \
-        timeout 600  '$idle_script lock-if-idle' \
-        timeout 1200 '$idle_script dpms-off-if-idle' \
-            resume '$idle_script dpms-on' \
-        before-sleep '$idle_script lock' \
-        after-resume '$idle_script dpms-on'
-
-    bindsym --to-code Ctrl+Alt+l exec $idle_script lock
-#
 ### Input configuration
 #
     # Keyboard
