@@ -22,38 +22,21 @@
 #
 ### Autostart
 #
+    # for sharing screen with xdg-desktop-portal-wlr
     exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
     exec /usr/bin/lxqt-policykit-agent
 
     exec mako
-    exec udiskie --tray
     exec nm-applet
-    exec blueman-applet
     exec pasystray
-
-    exec dex --autostart --environment sway
-
-    exec 'tmux new-session -d -s temp_ressurect; sleep 5; tmux kill-session -t temp_ressurect'
 #
 ### Tools
 #
     bindsym --to-code Print exec grim -g "$(slurp)" - | swappy -f -
-
-    bindsym --no-repeat Super_R exec voxtype record start
-    bindsym --release Super_R exec voxtype record stop
 #
 ### Output configuration
 #
-
-    # Wallpaper
-    set $wallpapers_landscape $HOME/Pictures/Wallpapers/Landscape
-
-    output DP-2 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
-    output DP-3 bg `find $wallpapers_landscape -type f | shuf -n 1` fill
-
-    # for sharing screen with xdg-desktop-portal-wlr
-    exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
     # XWayland
     for_window [shell="xwayland"] title_format "[XWayland] %title"
@@ -308,9 +291,6 @@
     smart_borders on
 
     default_border pixel 2
-
-    # Titlebar and border colors, kept in sync with darkman.
-    include ~/.cache/sway/theme-colors.conf
 #
 # Other
 #
