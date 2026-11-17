@@ -81,7 +81,7 @@
         "format": "{}",
         "exec": "echo ''",
         "interval": "once",
-        "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
+        "on-click": "swaynag -t warning -m 'Power off this machine?' -B 'Yes, shut down' 'systemctl poweroff'",
         "tooltip": false
     }
 }

@@ -1,5 +1,11 @@
 #!/bin/fish
-
+# Stow the profiles for this machine (common, linux, pc).
+#
+# --adopt applies to every profile, not just pc: if a target file already
+# exists in $HOME, stow moves it into the stow package before linking, so the
+# repo silently picks up the host's version for common and linux as well.
+# Check `git status`/`git diff` afterwards and revert anything unintended
+# before committing.
 set SCRIPT_DIR (dirname (realpath (status -f)))
 set STOW_DIR (dirname $SCRIPT_DIR)
 
