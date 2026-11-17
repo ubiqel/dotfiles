@@ -71,6 +71,23 @@ EOF
 # Apply live only when Sway is running. Darkman starts at login (and may be
 # D-Bus activated) before a compositor exists; the cache file above is what
 # matters then, Sway picks it up when it loads.
+#
+# Darkman is a systemd user service and does not inherit SWAYSOCK from the
+# compositor's environment, so discover the live socket here. Scan the runtime
+# dir and skip stale sockets left behind by dead compositors.
+if [ -z "${SWAYSOCK:-}" ]; then
+    runtime_dir=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+    for socket in "$runtime_dir"/sway-ipc."$(id -u)".*.sock; do
+        [ -S "$socket" ] || continue
+        pid=${socket##*/sway-ipc."$(id -u)".}
+        pid=${pid%.sock}
+        [ -d "/proc/$pid" ] || continue
+        SWAYSOCK=$socket
+        export SWAYSOCK
+        break
+    done
+fi
+
 if [ -n "${SWAYSOCK:-}" ]; then
     swaymsg "client.focused $focused_border $focused_bg $focused_fg $focused_border $focused_child_border"
     swaymsg "client.focused_inactive $inactive_bg $inactive_bg $inactive_fg $inactive_bg $inactive_bg"
