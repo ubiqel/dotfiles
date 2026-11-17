@@ -1,0 +1,52 @@
+{
+    "include": [
+        "base.jsonc"
+    ],
+    "margin-top": 5,
+    "margin-bottom": 5,
+    "margin-left": 10,
+    "margin-right": 10,
+    "height": 20,
+    "modules-left": [
+        "group/power-group"
+    ],
+    "modules-center": [
+        "sway/workspaces"
+    ],
+    "modules-right": [
+        "group/system-indicators",
+        "group/tray-group"
+    ],
+    "group/power-group": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/poweroff"
+        ]
+    },
+    "group/system-indicators": {
+        "orientation": "horizontal",
+        "modules": [
+            "inhibitor",
+            "pulseaudio",
+            "network",
+            "clock",
+            "sway/language"
+        ]
+    },
+    "group/tray-group": {
+        "orientation": "horizontal",
+        "modules": [
+            "tray"
+        ]
+    },
+    "custom/poweroff": {
+        "format": "{}",
+        "exec": "echo ''",
+        "interval": "once",
+        "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
+        "tooltip": false
+    },
+    "pulseaudio": {
+        "on-click": "pavucontrol"
+    }
+}
