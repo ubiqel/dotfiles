@@ -1,65 +1,56 @@
 {
-    "margin-top" : 5,
-    "margin-bottom" : 5,
+    "include": [
+        "base.jsonc"
+    ],
+    "margin-top": 5,
+    "margin-bottom": 5,
     "margin-left": 10,
     "margin-right": 10,
-    "height" : 20,
-
+    "height": 20,
     "modules-left": [
-      "group/power-group",
-      "group/brightness-group"
+        "group/power-group",
+        "group/brightness-group"
     ],
     "modules-center": [
-      "sway/workspaces"
+        "sway/workspaces"
     ],
     "modules-right": [
-      "group/system-indicators",
-      "group/tray-group"
+        "group/system-indicators",
+        "group/tray-group"
     ],
-
-    // =============================================================================
-    // Pill Groups
-    // =============================================================================
     "group/power-group": {
-      "orientation": "horizontal",
-      "modules": [
-        "custom/poweroff",
-        "custom/suspend"
-      ]
+        "orientation": "horizontal",
+        "modules": [
+            "custom/poweroff",
+            "custom/suspend"
+        ]
     },
-
     "group/brightness-group": {
-      "orientation": "horizontal",
-      "modules": [
-        "custom/monitor2_brightness",
-        "custom/monitor1_brightness"
-      ]
+        "orientation": "horizontal",
+        "modules": [
+            "custom/monitor2_brightness",
+            "custom/monitor1_brightness"
+        ]
     },
-
     "group/system-indicators": {
-      "orientation": "horizontal",
-      "modules": [
-        "inhibitor",
-        "custom/darkman",
-        "custom/voxtype",
-        "pulseaudio",
-        "bluetooth",
-        "network",
-        "clock",
-        "sway/language"
-      ]
+        "orientation": "horizontal",
+        "modules": [
+            "inhibitor",
+            "custom/darkman",
+            "custom/voxtype",
+            "pulseaudio",
+            "bluetooth",
+            "network",
+            "clock",
+            "sway/language"
+        ]
     },
-
     "group/tray-group": {
-      "orientation": "horizontal",
-      "modules": [
-        "tray"
-      ]
+        "orientation": "horizontal",
+        "modules": [
+            "tray"
+        ]
     },
-
-    // =============================================================================
-    // Suspend Module
-    // =============================================================================
     "custom/suspend": {
         "format": "{}",
         "exec": "echo '󰒲'",
@@ -67,7 +58,6 @@
         "on-click": "systemctl suspend",
         "tooltip": false
     },
-
     "custom/poweroff": {
         "format": "{}",
         "exec": "echo ''",
@@ -75,10 +65,6 @@
         "on-click": "swaynag -t warning -m 'Power off this PC?' -B 'Yes, shut down' 'systemctl poweroff'",
         "tooltip": false
     },
-
-    // =============================================================================
-    // Backlight Modules
-    // =============================================================================
     "custom/monitor1_brightness": {
         "format": "󰃠 M1: {}%",
         "exec-on-event": false,
@@ -91,7 +77,6 @@
         "on-scroll-down": "monlux down 'edid:GBT:M27Q P:23133B000026' 5; pkill -SIGRTMIN+8 waybar",
         "tooltip": false
     },
-
     "custom/monitor2_brightness": {
         "format": "󰃠 M2: {}%",
         "exec-on-event": false,
@@ -104,10 +89,6 @@
         "on-scroll-down": "monlux down 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
         "tooltip": false
     },
-
-    // =============================================================================
-    // Darkman Module
-    // =============================================================================
     "custom/darkman": {
         "format": "{}",
         "return-type": "json",
@@ -116,10 +97,6 @@
         "interval": 5,
         "tooltip": false
     },
-
-    // =============================================================================
-    // Voxtype Module
-    // =============================================================================
     "custom/voxtype": {
         "exec": "voxtype status --follow --format json",
         "return-type": "json",
@@ -134,125 +111,10 @@
         "on-click": "voxtype-configure-launcher",
         "on-click-right": "systemctl --user restart voxtype"
     },
-
-    // =============================================================================
-    // Core Modules
-    // =============================================================================
-    "inhibitor": {
-        "what": ["idle", "sleep", "shutdown"],
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        }
-    },
-    "sway/language": {
-        "format": "{}",
-        "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
-        "hide-single-layout": false
-    },
-    "sway/window": {
-      "format": "{}",
-      "max-length": 35,
-      "rewrite": {
-        "": "Harsh"
-      },
-      "separate-outputs": true
-    },
-    "sway/workspaces": {
-      "format": "{icon}",
-      "on-click": "activate",
-      "format-icons": {
-      },
-      "sort-by-number": true
-    },
-    "clock": {
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-      "format-alt": "{:%Y-%m-%d}"
-    },
-    "network": {
-      "format": "{ifname}",
-      "format-wifi": "{signalStrength}% ",
-      "format-ethernet": "{ipaddr}/{cidr} 󰊗",
-      "format-alt": "{ifname}: {ipaddr}/{cidr}",
-      "format-linked": "{ifname} (No IP) ",
-      "format-disconnected": " ⚠",
-      "tooltip-format": "{ifname} via {gwaddr} 󰊗",
-      "tooltip-format-wifi": "{essid}",
-      "tooltip-format-ethernet": "{ifname} ",
-      "tooltip-format-disconnected": "Disconnected",
-      "max-length": 50
-    },
-    "pulseaudio": {
-      "format": "{icon} {volume}%",
-      "format-muted": "",
-      "format-bluetooth": "{volume}% {icon}",
-      "format-bluetooth-muted": " {icon}",
-      "format-icons": {
-        "headphone": "",
-        "hands-free": "",
-        "headset": "",
-        "phone": "",
-        "phone-muted": "",
-        "portable": "",
-        "car": "",
-        "default": ["", "", ""]
-      },
-      "on-click": "pwvucontrol",
-      "scroll-step": 2
-    },
-    "bluetooth" : {
+    "bluetooth": {
         "format": " {status}",
         "format-connected": " {device_alias}",
         "format-connected-battery": " {device_alias} {device_battery_percentage}%",
         "on-click": "blueberry"
-    },
-    "privacy": {
-        "icon-spacing": 4,
-        "icon-size": 18,
-        "transition-duration": 250,
-        "modules": [
-            {
-                "type": "screenshare",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
-            {
-                "type": "audio-out",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
-            {
-                "type": "audio-in",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            }
-        ]
-    },
-    "systemd-failed-units": {
-        "hide-on-ok": false,
-        "format": "✗ {nr_failed}",
-        "format-ok": "✓",
-        "system": true,
-        "user": true
-    },
-    "tray": {
-      "icon-size": 18,
-      "spacing": 8,
-      "show-passive-items": false,
-      "format": "{icon}"
-    },
-    "wlr/taskbar": {
-        "format": "{icon}",
-        "icon-size": 14,
-        "icon-theme": "Numix-Circle",
-        "tooltip-format": "{title}",
-        "on-click": "activate",
-        "on-click-middle": "close",
-        "ignore-list": [],
-        "app_ids-mapping": {},
-        "rewrite": {
-            ".*(steam_app_[0-9]+).*": "Game"
-        }
     }
 }
