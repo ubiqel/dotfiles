@@ -9,7 +9,12 @@
   "session": {
     "sidebar": "auto",
     "scrollbar": false,
-    "thinking": "show"
+    "thinking": "hide",
+    "verbosity": "medium",
+    "markdown": "rendered",
+    "permissions": "autoaccept",
+    "tps": true,
+    "new_location": "launch"
   },
   "animations": true
 }
