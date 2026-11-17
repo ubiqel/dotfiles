@@ -71,14 +71,6 @@
         "on-scroll-down": "monlux down 'edid:XMI:Mi Monitor:7041110045904' 5; pkill -SIGRTMIN+9 waybar",
         "tooltip": false
     },
-    "custom/darkman": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "if darkman get | grep -q 'dark'; then echo '{\"text\":\"\",\"class\":\"dark\"}'; else echo '{\"text\":\"󰖨\",\"class\":\"light\"}'; fi",
-        "on-click": "darkman toggle",
-        "interval": 5,
-        "tooltip": false
-    },
     "custom/voxtype": {
         "exec": "voxtype status --follow --format json",
         "return-type": "json",

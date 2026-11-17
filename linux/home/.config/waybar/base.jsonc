@@ -83,5 +83,13 @@
         "interval": "once",
         "on-click": "swaynag -t warning -m 'Power off this machine?' -B 'Yes, shut down' 'systemctl poweroff'",
         "tooltip": false
+    },
+    "custom/darkman": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "if darkman get | grep -q 'dark'; then echo '{\"text\":\"\",\"class\":\"dark\"}'; else echo '{\"text\":\"󰖨\",\"class\":\"light\"}'; fi",
+        "on-click": "darkman toggle",
+        "interval": 5,
+        "tooltip": false
     }
 }
