@@ -68,8 +68,13 @@ client.unfocused $unfocused_bg $unfocused_bg $unfocused_fg $unfocused_bg $unfocu
 client.urgent $urgent_bg $urgent_bg $urgent_fg $urgent_bg $urgent_bg
 EOF
 
-swaymsg "client.focused $focused_border $focused_bg $focused_fg $focused_border $focused_child_border"
-swaymsg "client.focused_inactive $inactive_bg $inactive_bg $inactive_fg $inactive_bg $inactive_bg"
-swaymsg "client.focused_tab_title $tab_title_bg $tab_title_bg $tab_title_fg"
-swaymsg "client.unfocused $unfocused_bg $unfocused_bg $unfocused_fg $unfocused_bg $unfocused_bg"
-swaymsg "client.urgent $urgent_bg $urgent_bg $urgent_fg $urgent_bg $urgent_bg"
+# Apply live only when Sway is running. Darkman starts at login (and may be
+# D-Bus activated) before a compositor exists; the cache file above is what
+# matters then, Sway picks it up when it loads.
+if [ -n "${SWAYSOCK:-}" ]; then
+    swaymsg "client.focused $focused_border $focused_bg $focused_fg $focused_border $focused_child_border"
+    swaymsg "client.focused_inactive $inactive_bg $inactive_bg $inactive_fg $inactive_bg $inactive_bg"
+    swaymsg "client.focused_tab_title $tab_title_bg $tab_title_bg $tab_title_fg"
+    swaymsg "client.unfocused $unfocused_bg $unfocused_bg $unfocused_fg $unfocused_bg $unfocused_bg"
+    swaymsg "client.urgent $urgent_bg $urgent_bg $urgent_fg $urgent_bg $urgent_bg"
+fi

@@ -34,8 +34,6 @@
 
     exec dex --autostart --environment sway
 
-    exec darkman run
-
     exec 'tmux new-session -d -s temp_ressurect; sleep 5; tmux kill-session -t temp_ressurect'
 #
 ### Tools
@@ -81,7 +79,6 @@
         timeout 600  '$idle_script lock-if-idle' \
         timeout 1200 '$idle_script dpms-off-if-idle' \
             resume '$idle_script dpms-on' \
-        timeout 3600 '$idle_script suspend-if-idle' \
         before-sleep '$idle_script lock' \
         after-resume '$idle_script dpms-on'
 
