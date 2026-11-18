@@ -1,7 +1,7 @@
 ---
 description: Read-only review specialist. Reports findings; never modifies files.
 mode: subagent
-model: opencode-go/glm-5.3#high
+model: opencode-go/deepseek-v4.1-flash#max
 permissions:
   - action: edit
     resource: "*"
