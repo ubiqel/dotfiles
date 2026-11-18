@@ -1,6 +1,7 @@
 ---
 description: Read-only review specialist. Reports findings; never modifies files.
 mode: subagent
+model: opencode-go/glm-5.3#high
 permissions:
   - action: edit
     resource: "*"

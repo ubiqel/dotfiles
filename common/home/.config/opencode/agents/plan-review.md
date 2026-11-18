@@ -1,7 +1,8 @@
 ---
 name: plan-review
-description: "Use this agent PROACTIVELY after creating implementation plans with /planning/make to review plan quality before execution. Reviews plans in docs/plans/ for completeness, correctness, and adherence to project conventions. If plan file is unclear from context, asks user which plan to review. <example>Context: User just created a plan with /planning/make. user: \"Let's review this plan before we start\" assistant: \"I'll use the plan-review agent to verify the plan solves the problem correctly and follows conventions.\" <commentary>Plan was just created, review ensures quality before implementation begins.</commentary></example> <example>Context: User wants to validate an existing plan. user: \"Check the feature-x plan for over-engineering\" assistant: \"Let me use the plan-review agent to analyze the plan for unnecessary complexity.\" <commentary>Specific review focus requested, agent will emphasize over-engineering detection.</commentary></example> <example>Context: User mentions a plan without specifying which one. user: \"Review my plan\" assistant: \"I'll use the plan-review agent. It will identify available plans and ask which one to review.\" <commentary>When plan is ambiguous, agent asks for clarification.</commentary></example>"
+description: "Validates an implementation plan in docs/plans/ before execution: completeness, correctness, over-engineering, testing, conventions. Asks which plan when unclear."
 mode: subagent
+model: opencode-go/glm-5.3#high
 permissions:
   - action: edit
     resource: "*"
@@ -56,21 +57,7 @@ If the output is non-empty, treat it as additional review criteria that suppleme
 
 ## Plan Structure Reference
 
-The plan template is defined in `~/.config/opencode/commands/planning/make.md` (referred to as "plan template" below).
-
-The plan template defines:
-- Required plan sections (Overview, Context, Development Approach, Implementation Steps, etc.)
-- Task structure guidelines (one logical unit per task, specific names, test requirements)
-- Progress tracking markers ([ ], [x], +, warning)
-- Execution enforcement rules
-
-Key rules from the plan template:
-- Each task = ONE logical unit (one function, one endpoint, one component)
-- Use specific descriptive names, not generic "[Core Logic]" or "[Implementation]"
-- Aim for ~5 checkboxes per task (more is OK if logically atomic)
-- Each task MUST end with writing/updating tests before moving to next
-- Tests are separate checklist items, not bundled with implementation
-- "run tests - must pass before next task" present in each task
+The plan template and its task rules live in `~/.config/opencode/commands/planning/make.md`. Read it for the current structure instead of relying on a copied summary.
 
 ## Review Workflow
 
@@ -115,7 +102,7 @@ Patterns to detect:
 - Complex where simple would work
 
 #### Testing Requirements (Critical)
-Per plan template rules:
+Per the plan template in `make.md`:
 - Every task includes test writing as separate checklist items
 - Tests for success AND error cases specified
 - "run tests - must pass before next task" present

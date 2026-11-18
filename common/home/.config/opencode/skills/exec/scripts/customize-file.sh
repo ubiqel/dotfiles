@@ -2,13 +2,13 @@
 # copy a bundled prompt or agent file to an override location for editing
 # usage: customize-file.sh <relative-path> [data-dir]
 # e.g.: customize-file.sh prompts/review.md
-# e.g.: customize-file.sh agents/quality.txt /path/to/plugin/data
+# e.g.: customize-file.sh agents/quality.txt ~/.config/opencode/exec-plan
 #
 # with a data-dir, copies to <data-dir>/<path> (user level, all projects).
 # without one, copies to .opencode/exec-plan/<path> (project level).
 #
-# an override shadows the bundled default permanently -- see the "Customization"
-# paragraph of README.md, which is authoritative for the consequences
+# an override shadows the bundled default permanently and stops tracking
+# changes to it; delete the copy to fall back to the bundled file
 #
 # refuses to overwrite an existing override; prints the destination path
 

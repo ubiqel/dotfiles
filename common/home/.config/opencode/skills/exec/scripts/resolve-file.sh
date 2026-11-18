@@ -1,11 +1,11 @@
 #!/bin/bash
 # resolve a file through the three-layer override chain
 # usage: resolve-file.sh <relative-path> [data-dir]
-# e.g.: resolve-file.sh prompts/task.md "$HOME/.config/opencode"
-# e.g.: resolve-file.sh agents/quality.txt "$HOME/.config/opencode"
+# e.g.: resolve-file.sh prompts/task.md "$HOME/.config/opencode/exec-plan"
+# e.g.: resolve-file.sh agents/quality.txt "$HOME/.config/opencode/exec-plan"
 #
-# data-dir: user-level config directory (normally ~/.config/opencode).
-# defaults to $HOME/.config/opencode when not provided as an argument.
+# data-dir: user-level override directory (normally ~/.config/opencode/exec-plan).
+# defaults to $HOME/.config/opencode/exec-plan when not provided as an argument.
 #
 # checks in order:
 #   1. .opencode/exec-plan/<path> (project override)
@@ -23,7 +23,7 @@ if [ -z "$path" ]; then
 fi
 
 # use argument if provided, fall back to env var
-data_dir="${2:-$HOME/.config/opencode}"
+data_dir="${2:-$HOME/.config/opencode/exec-plan}"
 
 # derive skill root from script location
 # script is at <skill-root>/scripts/resolve-file.sh

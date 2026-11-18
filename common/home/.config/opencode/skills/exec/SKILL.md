@@ -15,16 +15,26 @@ Execute plan file tasks sequentially, each in an isolated subagent.
 
 ALWAYS use the resolve script to read prompt and agent files. NEVER construct the override chain manually:
 ```
-bash ~/.config/opencode/skills/exec/scripts/resolve-file.sh prompts/task.md ~/.config/opencode
-bash ~/.config/opencode/skills/exec/scripts/resolve-file.sh agents/quality.txt ~/.config/opencode
+bash ~/.config/opencode/skills/exec/scripts/resolve-file.sh prompts/task.md ~/.config/opencode/exec-plan
+bash ~/.config/opencode/skills/exec/scripts/resolve-file.sh agents/quality.txt ~/.config/opencode/exec-plan
 ```
-The script checks project overrides, user overrides, and bundled defaults automatically.
+The script checks three layers, first match wins:
+1. Project override: `.opencode/exec-plan/<path>`
+2. User override: `~/.config/opencode/exec-plan/<path>`
+3. Bundled default: `~/.config/opencode/skills/exec/references/<path>`
+
+To customize a bundled prompt or agent file, copy it to an override path with the helper, then edit the copy:
+```
+bash ~/.config/opencode/skills/exec/scripts/customize-file.sh prompts/review.md
+bash ~/.config/opencode/skills/exec/scripts/customize-file.sh prompts/review.md ~/.config/opencode/exec-plan
+```
+The first form writes a project override, the second a user override. An override shadows the bundled file permanently and stops tracking changes to it; delete it to fall back.
 
 ### Placeholder Substitution
 
 After reading a prompt file, replace ALL placeholders with actual values before passing to a subagent. Subagents run in fresh contexts without plugin env vars.
 
-Always substitute: `PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, `DEFAULT_BRANCH`, `SKILL_ROOT` (`~/.config/opencode/skills/exec`), `RESOLVE_SCRIPT` (absolute path to `~/.config/opencode/skills/exec/scripts/resolve-file.sh`), `PLUGIN_DATA_DIR` (`~/.config/opencode`, passed as the second argument to resolve-file.sh so it can find user overrides), `USER_RULES` (resolved custom rules content from the rules loading step, or an empty string if no rules found), and phase-specific values (`FINDINGS_LIST`, `REVIEW_PHASE`, `DIFF_COMMAND`).
+Always substitute: `PLAN_FILE_PATH`, `PROGRESS_FILE_PATH`, `DEFAULT_BRANCH`, `RESOLVE_SCRIPT` (absolute path to `~/.config/opencode/skills/exec/scripts/resolve-file.sh`), `PLUGIN_DATA_DIR` (`~/.config/opencode/exec-plan`, passed as the second argument to resolve-file.sh so it can find user overrides), `USER_RULES` (resolved custom rules content from the rules loading step, or an empty string if no rules found), and the phase-specific values (`FINDINGS_LIST`, `REVIEW_PHASE`).
 
 ## Custom Rules Loading
 
@@ -46,11 +56,7 @@ Read the plan file. Count total Task sections (`### Task N:` or `### Iteration N
 
 Determine the default branch: `bash ~/.config/opencode/skills/exec/scripts/detect-branch.sh`
 
-Note: in `hg` repos, detect-branch.sh returns `remote/<name>` (checking `master`, `main`, `trunk` in that order) in modern-Mercurial repos that expose upstream default via `remote/<name>` refs, and falls back to `default` in repos that use the traditional named-branch convention instead. The external-review prompt (`prompts/codex-review.md`) and the finalize prompt (`prompts/finalizer.md`) use git-specific commands and are not VCS-translated upstream. Both phases will be skipped (see step 9 and step 11, which re-detect VCS locally). Users who want hg-native review/finalize can override via `.opencode/exec-plan/prompts/codex-review.md` and `.opencode/exec-plan/prompts/finalizer.md` — any `git rebase origin/DEFAULT_BRANCH` in the bundled template must be replaced with the hg equivalent in the override, e.g. `hg rebase -d remote/master` when the repo exposes remote-tracking refs, or `hg rebase -d default` when it uses the traditional named-branch convention.
-
 ### Step 2. Ask about worktree isolation
-
-**hg skip**: Detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`. If `vcs` is `hg`, skip the worktree question and proceed in the current directory. The native worktree tools are git-only; hg users can use `hg share` manually before invoking `/planning/exec`.
 
 First detect the current branch state — run `git branch --show-current` and compare with the default branch detected earlier (from `detect-branch.sh`). Two cases:
 
@@ -145,14 +151,14 @@ Repeat until no `[ ]` checkboxes remain in any Task section:
      - [ ] Either log and exit or handle gracefully
      ```
 5. **Spawn a subagent** using the `subagent` tool with:
-   - `agent: "general"`
+   - `agent: "implementer"`
    - The task prompt from `prompts/task.md`, with all placeholders substituted as described in the Placeholder Substitution section above (including `USER_RULES`)
 6. **After subagent returns**, re-read the plan file and check if that task's checkboxes are now `[x]`
    - If yes — task succeeded, continue loop
    - If no — **retry** with a fresh subagent for the same task up to 1 time. If the retry fails, stop and report failure to user
 7. **Report to user**: "Task N completed" (one line). The task subagent logs details to the progress file.
 
-CRITICAL: Spawn exactly ONE task subagent per iteration and WAIT for it to return before starting the next. NEVER batch-spawn multiple task subagents in a single message. Plan tasks are ordered and interdependent — later tasks build on the files earlier tasks create, and every task subagent edits the same plan-file checkboxes and overlapping source files, so running them in parallel corrupts the plan and the working tree. The "launch in a single message for parallel execution" instruction applies ONLY to the review phases (steps 7 and 10), never to this task loop.
+CRITICAL: Spawn exactly ONE task subagent per iteration and WAIT for it to return before starting the next. NEVER batch-spawn multiple task subagents in a single message. Plan tasks are ordered and interdependent — later tasks build on the files earlier tasks create, and every task subagent edits the same plan-file checkboxes and overlapping source files, so running them in parallel corrupts the plan and the working tree. The "launch in a single message for parallel execution" instruction applies ONLY to the review phases (steps 7 and 9), never to this task loop.
 
 CRITICAL: Do NOT stop the loop based on subagent return text. The ONLY condition to stop is: no `[ ]` checkboxes remain in any Task section (`### Task N:` or `### Iteration N:`). Always re-read the plan file to check.
 
@@ -178,9 +184,9 @@ Loop up to 5 times. Track the current iteration number:
 
 3. **If ALL agents reported zero issues** → report "Review phase 1: clean" and proceed to the next phase.
 
-4. **Spawn a fixer agent** — resolve `prompts/fixer.md` through the override chain. Launch with `agent: "general"`. Pass the FULL unedited review output as FINDINGS_LIST — the fixer decides what's real, not you.
+4. **Spawn a fixer agent** — resolve `prompts/fixer.md` through the override chain. Launch with `agent: "implementer"`. Pass the FULL unedited review output as FINDINGS_LIST — the fixer decides what's real, not you.
 
-5. **After fixer returns** → show the "FIXES:" section to the user. Report "Review phase 1: iteration N fixes applied". Check for uncommitted changes: detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`, then run `git status --porcelain` for `git` or `hg status` for `hg`. If output is non-empty, show every reported path and warn that these uncommitted changes are absent from the committed branch diff used by the next review. This is report-only: do not retry, abort, or commit leftovers because of this check. Loop back to step 1.
+5. **After fixer returns** → show the "FIXES:" section to the user. Report "Review phase 1: iteration N fixes applied". Check for uncommitted changes: `git status --porcelain`. If output is non-empty, show every reported path and warn that these uncommitted changes are absent from the committed branch diff used by the next review. This is report-only: do not retry, abort, or commit leftovers because of this check. Loop back to step 1.
 
 If 5 iterations are reached with issues still found, report "Review phase 1: max iterations reached, moving on" and continue.
 
@@ -198,71 +204,43 @@ Run once (no loop):
 
 3. **If no issues found** → report "Smells analysis: clean" and proceed to the next phase.
 
-4. **Spawn a fixer agent** — resolve `prompts/fixer.md` through the override chain. Launch with `agent: "general"`. Pass the FULL smells output as FINDINGS_LIST.
+4. **Spawn a fixer agent** — resolve `prompts/fixer.md` through the override chain. Launch with `agent: "implementer"`. Pass the FULL smells output as FINDINGS_LIST.
 
-5. **After fixer returns** → report fixes to user. Check for uncommitted changes: detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`, then run `git status --porcelain` for `git` or `hg status` for `hg`. If output is non-empty, show every reported path and warn that these uncommitted changes are absent from the committed branch diff used by the next review. This is report-only: do not retry, abort, or commit leftovers because of this check. Proceed to the next phase.
+5. **After fixer returns** → report fixes to user. Check for uncommitted changes: `git status --porcelain`. If output is non-empty, show every reported path and warn that these uncommitted changes are absent from the committed branch diff used by the next review. This is report-only: do not retry, abort, or commit leftovers because of this check. Proceed to the next phase.
 
-### Step 9. Review phase 3 — external review
+### Step 9. Review phase 3 — critical only
 
-**hg skip**: Detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`. If `vcs` is `hg`, skip this entire step. Report to user: "hg detected — skipping external review (git-only). Override `prompts/codex-review.md` via `.opencode/exec-plan/` to enable hg-native review." Proceed directly to step 10.
-
-Report to user: "--- Review phase 3: external review ---"
-
-Adversarial loop: the external reviewer reviews the code, fixer evaluates and fixes, the reviewer re-reviews. The loop exits early once an iteration produces no `CRITICAL` or `MAJOR` findings — minor-only iterations still get fixed by the fixer, but no further round-trip happens. Subsequent phases (smells, critical-only) act as the final safety net.
-
-All invocations go through `run-external-review.sh`. This port passes an empty first argument, so the script falls back to codex. Codex is not installed here, so the phase will normally report a skip. If you install a reviewer later, set the first argument to its command. Do NOT call `run-codex.sh` directly — it cannot honor a configured command. Older `codex-review.md` overrides may carry launcher or availability instructions before `## Prompt`; ignore those operational lines. Step 9 alone controls reviewer invocation and skip/failure handling.
-
-If the script exits 127 AND the `.err` file from item 2 carries the `run-external-review:` marker, no external tool is available: report `External review: skipped — <that marker line>`, quoting the reason verbatim (it distinguishes a configured command missing from `PATH` from codex missing with no command set), and proceed to step 10. A 127 without that marker came from the reviewer itself — typically a wrapper script whose own inner tool is missing — and is a reviewer failure, not a skip.
-
-Any other non-zero exit is a reviewer failure too, not a clean review: report `External review: reviewer failed (exit <code>) — <last line of the .err file>` and proceed to step 10. So is an exit 0 with empty stdout: report `External review: reviewer failed (no output)`, adding the last line of the `.err` file when it has one. Never treat empty output as "no findings" — the severity scan in item 4 would find nothing and the phase would report success without a review having run. Findings and the clean marker are judged on stdout only: codex echoes the whole prompt on stderr, severity definitions included, so a scan over stderr would read every clean review as blocking findings. A reviewer whose only output is on stderr, with no findings and no `NO ISSUES FOUND` marker on stdout, is a reviewer failure as well.
-
-Loop up to 10 times:
-
-1. **Resolve the review prompt** — read `prompts/codex-review.md` through the override chain. Replace `DIFF_COMMAND` using `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`: for `git`, every iteration uses `git diff DEFAULT_BRANCH...HEAD`; for `hg`, every iteration uses `hg diff -r 'ancestor(., DEFAULT_BRANCH)'`. Fixers commit their changes, so later reviews must include the committed branch diff. Also replace `PLAN_FILE_PATH` (so the reviewer can read the plan for intent) and `PROGRESS_FILE_PATH` (so the reviewer can read prior review iterations and fixer responses and avoid re-reporting fixed issues).
-
-2. **Run the external reviewer** — first write the resolved prompt to `/tmp/external-review-<plan-name>.txt` with the Write tool (same `<plan-name>` as the progress file, overwrite it each iteration), then run `bash ~/.config/opencode/skills/exec/scripts/run-external-review.sh '' "$(cat /tmp/external-review-<plan-name>.txt)" 2>/tmp/external-review-<plan-name>.err` with the shell tool's `background: true`, so the task output holds the reviewer's stdout alone. Do NOT paste the prompt text inline: it contains backticks and may contain `$` (the bundled prompt asks for findings formatted as `` `SEVERITY: file:line - description` ``), and the shell would run those as command substitutions before the reviewer saw the prompt. Write the file with the Write tool for that same reason — `echo "…" >` or a heredoc with an unquoted delimiter expands the backticks and `$` at write time, so the file the reviewer reads already has the format instruction blanked out. You will be notified when done — do NOT poll or sleep.
-
-3. **Check the output** — the `NO ISSUES FOUND` marker counts as clean only when item 4's severity scan also comes back empty, so run that scan first. Marker present and no `CRITICAL` or `MAJOR` found → phase is done, proceed to step 10. That marker is the only clean result — the contract makes it mandatory — so never infer "clean" from output that lacks it. But the marker alone does not make a review clean either: a reviewer that echoes the phrase while still reporting a blocking finding is treated like any other finding output, and the findings win. Non-empty output without the marker must carry at least one `CRITICAL`, `MAJOR` or `MINOR` tag somewhere in stdout — a tag is what makes the output a review rather than a message. Output with neither the marker nor any tag is a reviewer failure: report `External review: reviewer failed (no findings and no clean marker)`, quoting the reviewer's first output line, and proceed to step 10. This is a whole-output check, not a per-line one — do not require every line to be tagged, or wrapped descriptions and blank separators would fail a real review. Output that clears this gate falls through to item 4 for severity classification.
-
-4. **Classify severity** — scan the reviewer's stdout for `CRITICAL` or `MAJOR` markers (case-insensitive whole-word match). Set `has_blocking = true` if either is present, otherwise `has_blocking = false`. Findings without an explicit severity tag are treated as MINOR — `has_blocking` stays false in that case. That default applies to untagged lines sitting alongside at least one tagged line; item 3 has already rejected output carrying no tag at all, so it can never make an untagged non-review read as minor findings.
-
-5. **Report findings to user** — show a compact list (one line per finding).
-
-6. **Spawn a fixer agent** — same as other review phases, with the resolved `prompts/fixer.md` and the reviewer's stdout as FINDINGS_LIST. Fixer verifies, fixes, commits, reports FIXES.
-
-7. **Report fixer results to user** - show FIXES section. Log to progress file. Check for uncommitted changes: detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`, then run `git status --porcelain` for `git` or `hg status` for `hg`. If output is non-empty, show every reported path and warn that these uncommitted changes are absent from the committed branch diff used by the next review. This is report-only: do not retry, abort, or commit leftovers because of this check.
-
-8. **Decide whether to loop**:
-   - If `has_blocking` is false → report "External review: only minor findings — fixes applied, stopping loop" and proceed to step 10.
-   - Otherwise → loop back to step 1.
-
-If 10 iterations are reached with critical/major issues still found, report "External review: max iterations reached, moving on" and continue.
-
-### Step 10. Review phase 4 — critical only
-
-Report to user: "--- Review phase 4: critical/major only (single pass) ---"
+Report to user: "--- Review phase 3: critical/major only (single pass) ---"
 
 Same structure as step 7 but with `REVIEW_PHASE` set to `critical`. Resolve `prompts/review.md` and follow its playbook FROM THIS MAIN SESSION — launch 2 parallel `reviewer` subagents (quality, implementation) focusing on critical/major issues only. Subagents cannot launch more subagents, so the fanout MUST be initiated from the main orchestrator. Same fixer flow — pass findings to fixer, show FIXES to user.
 
-### Step 11. Finalize
+### Step 10. Finalize
 
-**hg skip**: Detect VCS with `vcs=$(bash ~/.config/opencode/skills/exec/scripts/detect-vcs.sh)`. If `vcs` is `hg`, skip this entire step. Report to user: "hg detected — skipping finalize (git-only). Override `prompts/finalizer.md` via `.opencode/exec-plan/` to enable hg-native finalize." Note that `DEFAULT_BRANCH` substitutes as whatever detect-branch.sh returned — `remote/master` (or `remote/main`/`remote/trunk`) in modern-Mercurial repos that expose remote-tracking refs, `default` in repos that use the traditional named-branch convention — so any `git rebase origin/DEFAULT_BRANCH` in the bundled template must be replaced with the hg equivalent (e.g. `hg rebase -d remote/master`, or `hg rebase -d default` in the named-branch case) in the override. Proceed directly to step 12.
-
-Check whether to run finalize. Ask the user with the `question` tool: "Run finalize (rebase + squash)?" Default **No**. If No, skip to step 12.
-
-After all reviews pass, rebase and clean up commits.
+After all reviews pass, rebase and clean up commits. Finalize always runs — never ask the user whether to run it.
 
 Report to user: "--- Finalize: rebase and clean up commits ---"
 
-Spawn one `subagent` with `agent: "general"` and the prompt from `prompts/finalizer.md`. Replace `DEFAULT_BRANCH`, `PLAN_FILE_PATH`, and `PROGRESS_FILE_PATH`.
+Spawn one `subagent` with `agent: "implementer"` and the prompt from `prompts/finalizer.md`. Replace `DEFAULT_BRANCH`, `PLAN_FILE_PATH`, and `PROGRESS_FILE_PATH`.
 
 This is best-effort — if rebase fails, report the issue but don't block completion.
 
+### Step 11. Run stats summary
+
+Report to user: "--- Run stats ---"
+
+Run the stats script directly from this session — it is one script, not a subagent job:
+
+```
+python3 ~/.config/opencode/skills/exec/scripts/stats.py "$OPENCODE_SESSION_ID" <default-branch> <progress-file>
+```
+
+`$OPENCODE_SESSION_ID` is this orchestrator session's id and is already set in the shell environment. Show the script's output to the user verbatim. This step is best-effort and non-blocking: if the script fails, report the failure in one line and continue to completion.
+
 ### Step 12. Completion
 
-- **Report autonomous decisions and deviations to the user.** The run had no human to answer questions, so subagents decided judgment calls themselves and logged them. Collect every such entry from the progress file — `grep -E '^(\[[^]]*\] )?\[(decision|deviation)\]' <progress-file>` — and present them in a dedicated section titled **"Decisions made autonomously / Deviations from the plan"**, one bullet per entry with its stated reason, so the user learns every question the run answered on its own and why. If there are none, state "no autonomous decisions or deviations were logged." Do this regardless of whether finalize ran — finalize is skipped on hg or when the user declines, so this is the guaranteed place the user always gets the report.
+- **Report autonomous decisions and deviations to the user.** The run had no human to answer questions, so subagents decided judgment calls themselves and logged them. Collect every such entry from the progress file — `grep -E '^(\[[^]]*\] )?\[(decision|deviation)\]' <progress-file>` — and present them in a dedicated section titled **"Decisions made autonomously / Deviations from the plan"**, one bullet per entry with its stated reason, so the user learns every question the run answered on its own and why. If there are none, state "no autonomous decisions or deviations were logged." Do this even when finalize failed — completion is the guaranteed place the user always gets the report.
 - Log completion to progress file: `bash ~/.config/opencode/skills/exec/scripts/append-progress.sh <progress-file> "completed"`
-- Move the finished plan into its `completed/` subdirectory and commit it (best-effort): `bash ~/.config/opencode/skills/exec/scripts/move-plan.sh <plan-file-path>`. The script is a no-op when the plan is already under `completed/` or missing, derives the target as a `completed/` sibling of the plan's directory (so it respects worktrees), and commits the move VCS-aware (git/hg). Do NOT push. If the script exits non-zero, report the failure but do not block completion.
+- Move the finished plan into its `completed/` subdirectory and commit it (best-effort): `bash ~/.config/opencode/skills/exec/scripts/move-plan.sh <plan-file-path>`. The script is a no-op when the plan is already under `completed/` or missing, derives the target as a `completed/` sibling of the plan's directory (so it respects worktrees), and commits the move with git. Do NOT push. If the script exits non-zero, report the failure but do not block completion.
 - Report the final line "All N tasks completed, reviews passed, branch finalized". Append ", plan moved to completed/" ONLY when move-plan.sh actually moved the file (it printed `moved plan to ...`); omit the suffix when the move was a no-op (already under `completed/` or missing) or exited non-zero
 
 ## Key rules
@@ -271,14 +249,14 @@ This is best-effort — if rebase fails, report the issue but don't block comple
 - Parent session only tracks: task number, success/failure, retry count
 - Plan file is the single source of truth for progress — always re-read it
 - No signals — just checkboxes in the plan for task progress
-- Maintain progress file (`/tmp/progress-<plan-name>.txt`) — see `prompts/progress-file.md` for format and when to write
+- Maintain the progress file (`/tmp/progress-<plan-name>.txt`): task and fixer subagents append task/fix entries plus `[decision]`/`[deviation]` lines; you log review findings and completion. `stats.py` parses it at the end
 - Do not modify the plan file yourself during the task, review, and finalize phases — only subagents modify it. The sole exception is the terminal move in step 12 (after all phases finish), which the orchestrator performs via `move-plan.sh`
 - Do not implement or fix code yourself — only subagents implement and fix
 - If a subagent fails or leaves broken code, re-run the loop — do NOT investigate or fix it yourself
 - NEVER dismiss findings as "pre-existing", "not from changes", or "architectural" — ALL findings are actionable
 - NEVER summarize or filter agent findings — pass the full output to the fixer agent verbatim
 - All prompt and agent files MUST be resolved through the three-layer override chain before use
-- Review phases use the `reviewer` subagent (read-only). Task work and fixes use the `general` subagent
+- Review phases use the `reviewer` subagent (read-only). Task work, fixes, and finalize use the `implementer` subagent
 - After reading a prompt file, substitute all placeholders before passing to subagent (see Placeholder Substitution)
 - Subagents run with NO human available — they must NEVER ask the user a question (no `question` tool, no pausing for input). They decide judgment calls the plan does not settle from the project's lint rules, AGENTS.md, and code conventions, and log each as a `[decision]`/`[deviation]` line for the completion report
 - In worktree mode (`worktree_mode = true`) the main working directory is never touched — no branch is created or checked out there and no changes land there; all git operations run inside the worktree, and Step 4's create-branch.sh is skipped
