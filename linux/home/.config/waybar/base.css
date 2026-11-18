@@ -135,6 +135,8 @@ button:hover {
 
 #custom-suspend  { color: @red; padding-right: 5px; }
 #custom-poweroff { color: @maroon; padding-right: 15px; padding-left: 5px; }
+/* Guest power group is poweroff only, so it is the last child: match the 5px left side. */
+#custom-poweroff:last-child { padding-right: 5px; }
 
 #brightness-group {
   background-color: @base;
