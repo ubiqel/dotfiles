@@ -17,6 +17,13 @@
   "watcher": {
     "ignore": [".lane/**"]
   },
+  "permissions": [
+    {
+      "action": "*",
+      "resource": "*",
+      "effect": "allow"
+    }
+  ],
   "mcp": {
     "servers": {
       "browse": {
