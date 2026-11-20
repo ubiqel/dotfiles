@@ -7,6 +7,8 @@ x-scheme-handler/chrome=chromium.desktop
 application/x-terminal-emulator=com.mitchellh.ghostty.desktop
 x-scheme-handler/terminal=com.mitchellh.ghostty.desktop
 text/plain=nvim.desktop
+x-scheme-handler/opencode=ai.opencode.desktop.desktop
 
 [Added Associations]
 text/html=firefox.desktop;chromium.desktop;
+x-scheme-handler/opencode=ai.opencode.desktop.desktop;

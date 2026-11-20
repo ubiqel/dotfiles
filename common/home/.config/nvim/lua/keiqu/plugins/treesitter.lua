@@ -13,7 +13,6 @@ local parsers = {
   "bash",
   "fish",
   "json",
-  "jsonc",
   "yaml",
   "toml",
   "markdown",
