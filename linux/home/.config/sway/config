@@ -61,7 +61,7 @@
         xkb_layout us,ru
 
         # switch capslock and esc; also use right alt to switch layout
-        xkb_options caps:swapescape,grp:toggle
+        xkb_options caps:ctrl_modifier,grp:toggle
     }
 
     # Mouse
