@@ -316,7 +316,8 @@ then use the `question` tool:
       "header": "Mode",
       "options": [
         {"label": "Interactive", "description": "Switch to build and implement task by task"},
-        {"label": "Autonomous", "description": "Run /planning/exec for orchestrated execution with reviews"}
+        {"label": "Autonomous", "description": "Run /planning/exec for orchestrated execution with reviews"},
+        {"label": "Fast", "description": "Run /planning/exec-fast for uninterrupted, single-context execution with an optional one-pass review"}
       ],
       "multiple": false
     }]
@@ -324,6 +325,7 @@ then use the `question` tool:
   ```
   - **Interactive**: tell the user to switch to the `build` agent and implement task 1. The planner cannot edit code. Track progress in the plan checkboxes, marking items `[x]` immediately (do not batch).
   - **Autonomous**: tell the user to run `/planning/exec <plan-file-path>`. Do not try to invoke the command yourself.
+  - **Fast**: tell the user to run `/planning/exec-fast <plan-file-path>` for uninterrupted single-context execution with an optional one-pass review. Do not try to invoke the command yourself.
 - **Done**: commit plan with message like "docs: add <topic> implementation plan", stop
 
 ## execution enforcement
